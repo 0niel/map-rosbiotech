@@ -87,3 +87,8 @@ export const getShortestPath = (graph: Graph, startLabel: string, endLabel: stri
     return path;
 };
 
+export const searchNodeByLabel = (graph: Graph, label: string) => {
+    label = label.toLowerCase().trim();
+    return graph.vertices.find((v) => v.label && v.label.toLowerCase().trim().includes(label));
+};
+

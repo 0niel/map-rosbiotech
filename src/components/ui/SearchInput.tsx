@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 interface SearchInputProps {
   onSubmit: (data: string) => void;
+  onChange?: (data: string) => void;
 
   label?: string;
   placeholder?: string;
@@ -14,6 +15,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   placeholder,
   button,
   onSubmit,
+  onChange,
 }) => {
   const {
     register,
@@ -59,6 +61,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           id="default-search"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder={placeholder ?? "Поиск"}
+          onChange={(e) => onChange?.(e.target.value)}
           required
         />
         <button

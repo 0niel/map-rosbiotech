@@ -14,7 +14,7 @@ import Tabs from "../Tabs";
 import { BadgeInfo, Calendar } from "lucide-react";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
-import { Graph } from "~/lib/graph";
+import { Graph, searchNodeByLabel } from "~/lib/graph";
 import MapRoute, { MapRouteRef } from "./MapRoute";
 
 const fillRoom = (room: Element, color: string) => {
@@ -38,6 +38,38 @@ const campuses = [
 const loadJsonToGraph = (routesJson: string) => {
   const graph = JSON.parse(routesJson) as Graph;
   return graph;
+};
+
+const encodeRoomName = (roomName: string) => {
+  const roomNameEncoded = roomName.replace(
+    /\\u([0-9A-F]{4})/gi,
+    (_, p1: string) => String.fromCharCode(parseInt(p1, 16))
+  );
+  return roomNameEncoded;
+};
+
+const getRoomName = (el: Element) => {
+  const roomName = el.getAttribute("data-room");
+  if (!roomName) {
+    return null;
+  }
+
+  // Формат: "В-78__А-101", где "В-78" - кампус, "А-101" - номер комнаты
+
+  return encodeRoomName(roomName).split("__")[1];
+};
+
+const searchRoomByName = (name: string) => {
+  const rooms = document.querySelectorAll("[data-room]");
+
+  for (const room of rooms) {
+    const roomName = getRoomName(room);
+    if (roomName?.trim().toLowerCase().includes(name.trim().toLowerCase())) {
+      return room;
+    }
+  }
+
+  return null;
 };
 
 export const MapContainer = () => {
@@ -112,6 +144,7 @@ export const MapContainer = () => {
     setDrawerOpened(false);
   };
 
+  // TODO: Test-only
   useEffect(() => {
     if (mapRouteRef.current) {
       mapRouteRef.current.renderRoute("А-5", "А-4");
@@ -150,6 +183,23 @@ export const MapContainer = () => {
           <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0">
             <SearchInput
               onSubmit={(data) => console.log(data)}
+              onChange={(e) => {
+                if (e.length < 3) {
+                  return;
+                }
+                const roomInGraph = searchNodeByLabel(graph, e);
+                if (!roomInGraph) {
+                  console.log(`Room ${e} not found in graph`);
+                  return;
+                }
+                const room = searchRoomByName(e);
+                if (!room) {
+                  console.log(`Room ${e} not found in map`);
+                  return;
+                }
+
+                console.log(roomInGraph);
+              }}
               placeholder="Аудитория или сотрудник"
             />
           </div>
