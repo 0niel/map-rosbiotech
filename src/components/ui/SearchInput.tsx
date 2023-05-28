@@ -85,8 +85,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
           {button ?? "Найти"}
         </button>
       </div>
-      {showResults && (
-        <div className="mt-2 rounded-lg border border-gray-300 bg-white shadow-lg max-h-60 overflow-y-auto">
+      {showResults && results.length > 0 && (
+        <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {results.map((result) => (
             <div
               key={result.id}
