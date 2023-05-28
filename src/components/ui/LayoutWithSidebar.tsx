@@ -32,7 +32,7 @@ const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
       </button>
       <Sidebar collapsed={false} />
 
-      <div className="h-full p-4 sm:ml-64">{children}</div>
+      <div className="h-full sm:ml-64">{children}</div>
     </main>
   );
 };

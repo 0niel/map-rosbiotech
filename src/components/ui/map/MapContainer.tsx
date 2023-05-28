@@ -193,7 +193,7 @@ export const MapContainer = () => {
   };
 
   return (
-    <div className="h-full rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
+    <div className="h-full rounded-lg md:border-2 md:border-dashed md:border-gray-200 md:p-4 dark:border-gray-700">
       <RightDrawer
         isOpen={drawerOpened}
         onClose={handleCloseDrawer}
@@ -248,7 +248,7 @@ export const MapContainer = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-12 right-12 z-20">
+        <div className="absolute bottom-12 md:right-12 z-20 right-2">
           <FloorSelectorButtons
             floors={[1, 2, 3, 4]}
             selectedFloor={selectedFloor}
