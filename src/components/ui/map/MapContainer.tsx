@@ -12,6 +12,7 @@ import RightDrawer from "../RightDrawer";
 import { Info } from "lucide-react";
 import Tabs from "../Tabs";
 import { BadgeInfo, Calendar } from "lucide-react";
+import DropdownRadio from "../DropdownRadio";
 
 const fillRoom = (room: Element, color: string) => {
   const rect = room.querySelector("rect");
@@ -25,6 +26,7 @@ export const MapContainer = () => {
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
   const [selectedFloor, setSelectedFloor] = useState(3);
+  const [selectedCampus, setSelectedCampus] = useState("В-78");
 
   // Текущая выбранная комната, после клика по ней и изменения атрибутов
   const [selectedRoom, setSelectedRoom] = useState<Element | null>(null);
@@ -113,6 +115,28 @@ export const MapContainer = () => {
       </RightDrawer>
 
       <div className="mb-4 h-full w-full">
+        <div className="absolute sm:right-12 sm:top-12 z-10 right-8 top-20">
+          <DropdownRadio
+            title={selectedCampus}
+            options={[
+              {
+                id: "0",
+                label: "В-78",
+                description: "Проспект Вернадского, 78",
+              },
+              {
+                id: "1",
+                label: "В-86",
+                description: "Проспект Вернадского, 86",
+              },
+            ]}
+            onSelectionChange={(value) => {
+              if (value?.label) {
+                setSelectedCampus(value.label);
+              }
+            }}
+          />
+        </div>
         <div className="absolute bottom-12 right-12 z-10">
           <FloorSelectorButtons
             floors={[1, 2, 3, 4]}
