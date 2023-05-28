@@ -13,6 +13,9 @@ import { Info } from "lucide-react";
 import Tabs from "../Tabs";
 import { BadgeInfo, Calendar } from "lucide-react";
 import DropdownRadio from "../DropdownRadio";
+import routesJson from "public/routes.json";
+import { Graph } from "~/lib/graph";
+import MapRoute, { MapRouteRef } from "./MapRoute";
 
 const fillRoom = (room: Element, color: string) => {
   const rect = room.querySelector("rect");
@@ -32,7 +35,18 @@ const campuses = [
   },
 ];
 
+const loadJsonToGraph = (routesJson: string) => {
+  const graph = JSON.parse(routesJson) as Graph;
+  return graph;
+};
+
 export const MapContainer = () => {
+  const [graph, setGraph] = useState<Graph>(
+    loadJsonToGraph(JSON.stringify(routesJson))
+  );
+
+  const mapRouteRef = useRef<MapRouteRef>(null);
+
   const [drawerOpened, setDrawerOpened] = useState(false);
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
@@ -98,6 +112,12 @@ export const MapContainer = () => {
     setDrawerOpened(false);
   };
 
+  useEffect(() => {
+    if (mapRouteRef.current) {
+      mapRouteRef.current.renderRoute("А-5", "А-4");
+    }
+  }, [graph]);
+
   return (
     <div className="h-full rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
       <RightDrawer
@@ -127,7 +147,7 @@ export const MapContainer = () => {
 
       <div className="relative z-0 mb-4 h-full w-full">
         <div className="absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
-          <div className="z-20 w-full sm:max-w-md sm:mx-auto md:mx-0 mr-4">
+          <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0">
             <SearchInput
               onSubmit={(data) => console.log(data)}
               placeholder="Аудитория или сотрудник"
@@ -174,6 +194,12 @@ export const MapContainer = () => {
           ref={transformComponentRef}
         >
           <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
+            <MapRoute
+              ref={mapRouteRef}
+              className="pointer-events-none absolute z-20 h-full w-full"
+              graph={graph}
+            />
+
             <Floor2 />
           </TransformComponent>
         </TransformWrapper>
