@@ -21,6 +21,17 @@ const fillRoom = (room: Element, color: string) => {
   }
 };
 
+const campuses = [
+  {
+    label: "В-78",
+    description: "Проспект Вернадского, 78",
+  },
+  {
+    label: "В-86",
+    description: "Проспект Вернадского, 86",
+  },
+];
+
 export const MapContainer = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
 
@@ -114,30 +125,33 @@ export const MapContainer = () => {
         </div>
       </RightDrawer>
 
-      <div className="mb-4 h-full w-full">
-        <div className="absolute sm:right-12 sm:top-12 z-10 right-8 top-20">
-          <DropdownRadio
-            title={selectedCampus}
-            options={[
-              {
-                id: "0",
-                label: "В-78",
-                description: "Проспект Вернадского, 78",
-              },
-              {
-                id: "1",
-                label: "В-86",
-                description: "Проспект Вернадского, 86",
-              },
-            ]}
-            onSelectionChange={(value) => {
-              if (value?.label) {
-                setSelectedCampus(value.label);
-              }
-            }}
-          />
+      <div className="relative z-0 mb-4 h-full w-full">
+        <div className="absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
+          <div className="z-20 w-full sm:max-w-md">
+            <SearchInput
+              onSubmit={(data) => console.log(data)}
+              placeholder="Аудитория или сотрудник"
+            />
+          </div>
+          <div className="z-30 md:fixed md:right-10">
+            <DropdownRadio
+              title={selectedCampus}
+              options={Array.from(campuses, (campus, i) => ({
+                label: campus.label,
+                description: campus.description,
+                id: i.toString(),
+              }))}
+              onSelectionChange={(selectedOption) => {
+                if (!selectedOption) {
+                  return;
+                }
+                setSelectedCampus(selectedOption.label);
+              }}
+            />
+          </div>
         </div>
-        <div className="absolute bottom-12 right-12 z-10">
+
+        <div className="absolute bottom-12 right-12 z-20">
           <FloorSelectorButtons
             floors={[1, 2, 3, 4]}
             selectedFloor={selectedFloor}
@@ -150,12 +164,7 @@ export const MapContainer = () => {
             />
           </div>
         </div>
-        <div className="absolute z-10  w-[calc(100%-4rem)] sm:left-64 sm:top-4 sm:m-8 sm:w-96">
-          <SearchInput
-            onSubmit={(data) => console.log(data)}
-            placeholder="Аудитория или сотрудник"
-          />
-        </div>
+
         <TransformWrapper
           minScale={0.05}
           initialScale={0.3}
