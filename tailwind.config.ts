@@ -22,7 +22,18 @@ module.exports = {
   ],
 
   theme: {
-
+    fontFamily: {
+      'body': [
+        'Inter',
+        'ui-sans-serif',
+        'system-ui',
+      ],
+      'sans': [
+        'Inter',
+        'ui-sans-serif',
+        'system-ui',
+      ]
+    },
   },
-  plugins: [require("flowbite/plugin"), require("tailwindcss-animate")],
+  plugins: [require("flowbite/plugin"), require("tailwindcss-animate"), require('@tailwindcss/typography')],
 }
