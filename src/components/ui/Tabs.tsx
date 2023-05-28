@@ -27,31 +27,33 @@ const Tabs: React.FC<TabsProps> & { Tab: typeof Tab } = ({
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   return (
-    <div className="border-b border-gray-200 dark:border-gray-700">
-      <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-        {tabs.map((tab, index) => (
-          <li key={index} className="mr-2">
-            <button
-              onClick={() => !tab.props.disabled && setActiveTab(index)}
-              className={`inline-flex p-4 rounded-t-lg border-b-2 ${
-                activeTab === index && !tab.props.disabled
-                  ? "text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500"
-                  : "border-transparent"
-              } ${
-                tab.props.disabled
-                  ? "text-gray-400 cursor-not-allowed dark:text-gray-500"
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-              }`}
-              disabled={tab.props.disabled}
-            >
-              {tab.props.icon}
-              {tab.props.name}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <>
+      <div className="border-b border-gray-200 mb-4">
+        <ul className="-mb-px flex flex-wrap justify-center text-center text-sm font-medium text-gray-500">
+          {tabs.map((tab, index) => (
+            <li key={index} className="mr-2">
+              <button
+                onClick={() => !tab.props.disabled && setActiveTab(index)}
+                className={`inline-flex rounded-t-lg border-b-2 p-4 ${
+                  activeTab === index && !tab.props.disabled
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent"
+                } ${
+                  tab.props.disabled
+                    ? "cursor-not-allowed text-gray-400"
+                    : "hover:border-gray-300 hover:text-gray-600"
+                }`}
+                disabled={tab.props.disabled}
+              >
+                <div className="mr-2 h-5 w-5">{tab.props.icon}</div>
+                {tab.props.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       <div>{tabs[activeTab]?.props.children}</div>
-    </div>
+    </>
   );
 };
 
