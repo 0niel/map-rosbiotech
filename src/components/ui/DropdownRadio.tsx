@@ -47,18 +47,18 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
 
       <div
         id="dropdownRadioHelper"
-        className={`z-10 absolute top-0 right-0 mt-12 ${
+        className={`absolute right-0 top-0 z-10 mt-12 ${
           isVisible ? "fixed" : "hidden"
         } w-60 divide-y divide-gray-100 rounded-lg bg-white shadow`}
       >
         <ul
-          className="space-y-1 p-3 text-sm text-gray-700 "
+          className="space-y-1 p-3 text-sm text-gray-700"
           aria-labelledby="dropdownRadioHelperButton"
         >
           {options.map((option) => (
             <li key={option.id}>
               <div
-                className="flex rounded p-2 hover:bg-gray-100 "
+                className="flex rounded p-2 hover:bg-gray-100"
                 onClick={() => handleOptionClick(option)}
               >
                 <div className="flex h-5 items-center">
@@ -77,7 +77,9 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
                     htmlFor={`helper-radio-${option.id}`}
                     className="font-medium text-gray-900"
                   >
-                    <div>{option.label}</div>
+                    <div className="text-sm font-medium text-blue-500">
+                      {option.label}
+                    </div>
                     <p
                       id={`helper-radio-text-${option.id}`}
                       className="text-xs font-normal text-gray-500"
