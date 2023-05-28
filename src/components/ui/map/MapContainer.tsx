@@ -243,6 +243,7 @@ export const MapContainer = () => {
                 }
                 setSelectedCampus(selectedOption.label);
               }}
+              defaultSelectedOptionId="0"
             />
           </div>
         </div>

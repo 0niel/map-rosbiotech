@@ -11,16 +11,20 @@ type DropdownRadioProps = {
   title: string;
   options: DropdownRadioOption[];
   onSelectionChange: (selectedOption: DropdownRadioOption | null) => void;
+  defaultSelectedOptionId?: string;
 };
 
 const DropdownRadio: React.FC<DropdownRadioProps> = ({
   title,
   options,
   onSelectionChange,
+  defaultSelectedOptionId,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOption, setSelectedOption] =
-    useState<DropdownRadioOption | null>(null);
+    useState<DropdownRadioOption | null>(
+      options.find((option) => option.id === defaultSelectedOptionId) || null
+    );
 
   const handleButtonClick = () => {
     setIsVisible(!isVisible);
