@@ -115,10 +115,10 @@ export const MapContainer = () => {
       >
         <div className="p-4">
           <Tabs>
-            <Tabs.Tab name="Информация" icon={<span>1</span>}>
+            <Tabs.Tab name="Информация" icon={<Info />}>
               <div>1</div>
             </Tabs.Tab>
-            <Tabs.Tab name="Расписание" icon={<span>2</span>}>
+            <Tabs.Tab name="Расписание" icon={<Calendar />}>
               <div>2</div>
             </Tabs.Tab>
           </Tabs>
@@ -127,7 +127,7 @@ export const MapContainer = () => {
 
       <div className="relative z-0 mb-4 h-full w-full">
         <div className="absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
-          <div className="z-20 w-full sm:max-w-md">
+          <div className="z-20 w-full sm:max-w-md sm:mx-auto md:mx-0 mr-4">
             <SearchInput
               onSubmit={(data) => console.log(data)}
               placeholder="Аудитория или сотрудник"
