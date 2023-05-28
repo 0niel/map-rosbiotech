@@ -220,7 +220,7 @@ export const MapContainer = () => {
       </RightDrawer>
 
       <div className="relative z-0 mb-4 h-full w-full">
-        <div className="absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
+        <div className="absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between pointer-events-none">
           <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0">
             <SearchInput
               onSubmit={(data) => console.log(data)}

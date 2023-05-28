@@ -37,7 +37,7 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
   };
 
   return (
-    <>
+    <div className="pointer-events-auto">
       <button
         id="dropdownRadioHelperButton"
         data-dropdown-toggle="dropdownRadioHelper"
@@ -97,7 +97,7 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
           ))}
         </ul>
       </div>
-    </>
+    </div>
   );
 };
 
