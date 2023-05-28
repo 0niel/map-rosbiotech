@@ -6,7 +6,7 @@ import {
 import Floor2 from "~/components/svg/floor_2.svg";
 import FloorSelectorButtons from "./FloorSelectorButtons";
 import { useEffect, useRef, useState } from "react";
-import SearchInput from "../SearchInput";
+import SearchInput, { type SearchResult } from "../SearchInput";
 import ScaleButtons from "./ScaleButtons";
 import RightDrawer from "../RightDrawer";
 import { Info } from "lucide-react";
@@ -14,8 +14,9 @@ import Tabs from "../Tabs";
 import { BadgeInfo, Calendar } from "lucide-react";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
-import { Graph, searchNodeByLabel } from "~/lib/graph";
-import MapRoute, { MapRouteRef } from "./MapRoute";
+import { type Graph, searchNodesByLabel } from "~/lib/graph";
+import MapRoute, { type MapRouteRef } from "./MapRoute";
+import { title } from "process";
 
 const fillRoom = (room: Element, color: string) => {
   const rect = room.querySelector("rect");
@@ -48,7 +49,7 @@ const encodeRoomName = (roomName: string) => {
   return roomNameEncoded;
 };
 
-const getRoomName = (el: Element) => {
+const getRoomNameByElement = (el: Element) => {
   const roomName = el.getAttribute("data-room");
   if (!roomName) {
     return null;
@@ -59,17 +60,19 @@ const getRoomName = (el: Element) => {
   return encodeRoomName(roomName).split("__")[1];
 };
 
-const searchRoomByName = (name: string) => {
+const searchRoomsByName = (name: string) => {
   const rooms = document.querySelectorAll("[data-room]");
 
+  const foundRooms = [];
+
   for (const room of rooms) {
-    const roomName = getRoomName(room);
+    const roomName = getRoomNameByElement(room);
     if (roomName?.trim().toLowerCase().includes(name.trim().toLowerCase())) {
-      return room;
+      foundRooms.push(room);
     }
   }
 
-  return null;
+  return foundRooms;
 };
 
 export const MapContainer = () => {
@@ -151,6 +154,44 @@ export const MapContainer = () => {
     }
   }, [graph]);
 
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  const handleSearch = (data: string) => {
+    console.log(`Searching for ${data}`);
+    if (data.length < 3) {
+      return;
+    }
+    const roomsInGraph = searchNodesByLabel(graph, data);
+    if (!roomsInGraph) {
+      console.log(`Room ${data} not found in graph`);
+      return [];
+    }
+    const rooms = searchRoomsByName(data);
+    if (!rooms) {
+      console.log(`Room ${data} not found in map`);
+      return [];
+    }
+
+    const found = roomsInGraph.filter((room) => {
+      const name = room.label;
+
+      if (rooms.map((room) => getRoomNameByElement(room)).includes(name)) {
+        return true;
+      }
+
+      return false;
+    });
+
+    const results = Array.from(found, (room, i) => ({
+      id: i.toString(),
+      title: room.label,
+    }));
+
+    console.log(`Found ${results.length} rooms`);
+
+    setSearchResults(results);
+  };
+
   return (
     <div className="h-full rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
       <RightDrawer
@@ -183,23 +224,8 @@ export const MapContainer = () => {
           <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0">
             <SearchInput
               onSubmit={(data) => console.log(data)}
-              onChange={(e) => {
-                if (e.length < 3) {
-                  return;
-                }
-                const roomInGraph = searchNodeByLabel(graph, e);
-                if (!roomInGraph) {
-                  console.log(`Room ${e} not found in graph`);
-                  return;
-                }
-                const room = searchRoomByName(e);
-                if (!room) {
-                  console.log(`Room ${e} not found in map`);
-                  return;
-                }
-
-                console.log(roomInGraph);
-              }}
+              onChange={handleSearch}
+              searchResults={searchResults}
               placeholder="Аудитория или сотрудник"
             />
           </div>

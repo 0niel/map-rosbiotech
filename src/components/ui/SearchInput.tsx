@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+
+export interface SearchResult {
+  id: string;
+  title: string;
+}
 
 interface SearchInputProps {
   onSubmit: (data: string) => void;
   onChange?: (data: string) => void;
+  onSearchResultSelected?: (result: SearchResult) => void;
 
   label?: string;
   placeholder?: string;
   button?: string;
+
+  searchResults: SearchResult[];
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -16,12 +24,36 @@ const SearchInput: React.FC<SearchInputProps> = ({
   button,
   onSubmit,
   onChange,
+  onSearchResultSelected,
+  searchResults,
 }) => {
-
   const [search, setSearch] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    if (searchResults) {
+      setResults(searchResults);
+      setShowResults(true);
+    } else {
+      setShowResults(false);
+    }
+  }, [searchResults]);
+
+  const handleSelect = (result: SearchResult) => {
+    setSearch(result.title);
+    setShowResults(false);
+    onSubmit(result.id);
+    onSearchResultSelected?.(result);
+  };
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    onChange?.(value);
+  };
 
   return (
-    <>
+    <div className="relative">
       <label
         htmlFor="default-search"
         className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -38,8 +70,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder={placeholder ?? "Поиск"}
           onChange={(e) => {
-            setSearch(e.target.value);
-            onChange?.(e.target.value);
+            void handleSearch(e.target.value);
           }}
           required
         />
@@ -54,7 +85,20 @@ const SearchInput: React.FC<SearchInputProps> = ({
           {button ?? "Найти"}
         </button>
       </div>
-    </>
+      {showResults && (
+        <div className="mt-2 rounded-lg border border-gray-300 bg-white shadow-lg max-h-60 overflow-y-auto">
+          {results.map((result) => (
+            <div
+              key={result.id}
+              className="cursor-pointer p-4 hover:bg-gray-200"
+              onClick={() => handleSelect(result)}
+            >
+              <p className="text-sm text-gray-900">{result.title}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
