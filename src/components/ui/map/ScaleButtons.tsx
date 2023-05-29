@@ -1,11 +1,11 @@
 import { Plus, Minus } from "lucide-react";
 
-interface ScaleButtons {
+interface ScaleButtonsProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
 }
 
-const ScaleButtons: React.FC<ScaleButtons> = ({ onZoomIn, onZoomOut }) => {
+const ScaleButtons: React.FC<ScaleButtonsProps> = ({ onZoomIn, onZoomOut }) => {
   const buttonStyle =
     "rounded-lg p-2 text-sm font-medium transition duration-150 ease-in-out hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-700 active:text-white active:ring-blue-500";
   
