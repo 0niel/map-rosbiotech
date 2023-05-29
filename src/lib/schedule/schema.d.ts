@@ -288,6 +288,13 @@ export interface components {
       /** Groups */
       groups: (string)[];
     };
+    /** GroupTiny */
+    GroupTiny: {
+      /** Id */
+      id: number;
+      /** Name */
+      name: string;
+    };
     /** Groups */
     Groups: {
       /** Total */
@@ -325,6 +332,7 @@ export interface components {
       subgroup?: number;
       /** Weeks */
       weeks: (number)[];
+      group: components["schemas"]["GroupTiny"];
     };
     /** LessonCall */
     LessonCall: {
