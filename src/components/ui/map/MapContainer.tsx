@@ -36,10 +36,10 @@ const campuses = [
     label: "В-78",
     description: "Проспект Вернадского, 78",
   },
-  {
-    label: "В-86",
-    description: "Проспект Вернадского, 86",
-  },
+  // {
+  //   label: "В-86",
+  //   description: "Проспект Вернадского, 86",
+  // },
 ];
 
 const loadJsonToGraph = (routesJson: string) => {
