@@ -32,7 +32,7 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
       <label htmlFor="time" className="text-sm text-gray-900">
         <input
           type="time"
-          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           min="08:00"
           max="20:00"
           step="900"

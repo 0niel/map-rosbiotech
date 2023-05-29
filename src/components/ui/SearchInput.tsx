@@ -13,7 +13,8 @@ interface SearchInputProps {
 
   label?: string;
   placeholder?: string;
-  button?: string;
+  showSubmitButton: boolean;
+  submitButton?: string;
 
   searchResults: SearchResult[];
 }
@@ -21,7 +22,8 @@ interface SearchInputProps {
 const SearchInput: React.FC<SearchInputProps> = ({
   label,
   placeholder,
-  button,
+  submitButton,
+  showSubmitButton,
   onSubmit,
   onChange,
   onSearchResultSelected,
@@ -53,7 +55,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   return (
-    <div className="relative pointer-events-auto">
+    <div className="pointer-events-auto relative">
       <label
         htmlFor="default-search"
         className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -75,16 +77,18 @@ const SearchInput: React.FC<SearchInputProps> = ({
           }}
           required
         />
-        <button
-          type="submit"
-          className="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
-          onClick={(e) => {
-            e.preventDefault();
-            onSubmit(search);
-          }}
-        >
-          {button ?? "Найти"}
-        </button>
+        {showSubmitButton && (
+          <button
+            type="submit"
+            className="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            onClick={(e) => {
+              e.preventDefault();
+              onSubmit(search);
+            }}
+          >
+            {submitButton ?? "Найти"}
+          </button>
+        )}
       </div>
       {showResults && results.length > 0 && (
         <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">

@@ -14,6 +14,7 @@ import ScheduleAPI from "~/lib/schedule/api";
 import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
 import DateAndTimePicker from "./DateAndTimePicker";
+import { MapPin } from "lucide-react";
 import { type RoomOnMap } from "~/lib/map/RoomOnMap";
 import {
   fillRoom,
@@ -25,6 +26,7 @@ import MapControls from "./MapControls";
 import { type components } from "~/lib/schedule/schema";
 import RoomDrawer from "./RoomDrawer";
 import { useMutation } from "react-query";
+import RoutesModal from "./RoutesModal";
 
 const scheduleAPI = new ScheduleAPI();
 
@@ -185,6 +187,8 @@ export const MapContainer = () => {
   const [dateTimePickerShow, setDateTimePickerShow] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<Date>(new Date());
 
+  const [routesModalShow, setRoutesModalShow] = useState(false);
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2">
@@ -215,6 +219,7 @@ export const MapContainer = () => {
             <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
               <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
                 <SearchInput
+                  showSubmitButton={true}
                   onSubmit={(data) => {
                     const result = searchInMapAndGraph(data, graph)[0];
 
@@ -251,6 +256,31 @@ export const MapContainer = () => {
                   defaultSelectedOptionId="0"
                 />
               </div>
+            </div>
+
+            <RoutesModal
+              isOpen={routesModalShow}
+              onClose={() => setRoutesModalShow(false)}
+              onSubmit={(start: string, end: string) => {
+                setRoutesModalShow(false);
+
+                mapRouteRef.current?.renderRoute(start, end);
+              }}
+              aviableRooms={graph.vertices
+                .map((v) => v.label ?? "")
+                .filter((v) => v !== "")}
+            />
+
+            {/* Кнопка маршрута снизу слева */}
+            <div className="absolute bottom-4 left-4 z-40">
+              <button
+                className="flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-4"
+                onClick={() => {
+                  setRoutesModalShow(true);
+                }}
+              >
+                <MapPin className="h-6 w-6" />
+              </button>
             </div>
 
             <MapControls
