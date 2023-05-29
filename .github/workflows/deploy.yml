@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Deploy
         run: |
-          cd ${{ secrets. }}
+          cd ${{ secrets.DEV_FOLDER }}
           docker compose --env-file .env.local pull
           docker compose --env-file .env.local up -d
   deploy-prod:
