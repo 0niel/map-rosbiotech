@@ -52,7 +52,6 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
           continue;
         }
 
-
         svg
           .append("line")
           .attr("class", "route")

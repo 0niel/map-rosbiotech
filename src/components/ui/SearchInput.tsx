@@ -43,7 +43,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const handleSelect = (result: SearchResult) => {
     setSearch(result.title);
     setShowResults(false);
-    onSubmit(result.id);
+    onSubmit(result.title);
     onSearchResultSelected?.(result);
   };
 
@@ -69,6 +69,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           id="default-search"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder={placeholder ?? "Поиск"}
+          value={search}
           onChange={(e) => {
             void handleSearch(e.target.value);
           }}

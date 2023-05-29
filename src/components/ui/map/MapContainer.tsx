@@ -15,7 +15,11 @@ import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
 import DateAndTimePicker from "./DateAndTimePicker";
 import { type RoomOnMap } from "~/lib/map/RoomOnMap";
-import { fillRoom, getRoomNameByElement } from "~/lib/map/roomHelpers";
+import {
+  fillRoom,
+  getRoomNameByElement,
+  searchRoomsByName,
+} from "~/lib/map/roomHelpers";
 import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
 import { type components } from "~/lib/schedule/schema";
@@ -79,15 +83,7 @@ export const MapContainer = () => {
   );
   const selectedRoomRef = useRef<RoomOnMap | null>(null);
 
-  const handleRoomClick = (e: Event) => {
-    e.stopPropagation();
-    const target = e.target as HTMLElement;
-    const room = target.closest("[data-room]");
-
-    if (!room) {
-      return;
-    }
-
+  const selectRoomEl = (room: Element) => {
     if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
       selectedRoomRef.current.element.replaceWith(
         selectedRoomRef.current.baseElement
@@ -114,6 +110,8 @@ export const MapContainer = () => {
       return;
     }
 
+    transformComponentRef.current?.zoomToElement(room as HTMLElement);
+
     const remote = data.find((room) => room.name === name);
 
     setSelectedRoomOnMap({
@@ -124,6 +122,29 @@ export const MapContainer = () => {
     });
 
     setDrawerOpened(true);
+  };
+
+  const unselectRoomEl = () => {
+    if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
+      selectedRoomRef.current.element.replaceWith(
+        selectedRoomRef.current.baseElement
+      );
+    }
+
+    setSelectedRoomOnMap(null);
+    setDrawerOpened(false);
+  };
+
+  const handleRoomClick = (e: Event) => {
+    e.stopPropagation();
+    const target = e.target as HTMLElement;
+    const room = target.closest("[data-room]");
+
+    if (!room) {
+      return;
+    }
+
+    selectRoomEl(room);
   };
 
   useEffect(() => {
@@ -151,6 +172,7 @@ export const MapContainer = () => {
 
   const handleCloseDrawer = () => {
     setDrawerOpened(false);
+    unselectRoomEl();
   };
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -194,8 +216,18 @@ export const MapContainer = () => {
               <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
                 <SearchInput
                   onSubmit={(data) => {
-                    const results = searchInMapAndGraph(data, graph);
-                    setSearchResults(results);
+                    const result = searchInMapAndGraph(data, graph)[0];
+
+                    if (!result) {
+                      return;
+                    }
+
+                    const roomEl = searchRoomsByName(result.title)[0];
+                    if (!roomEl) {
+                      return;
+                    }
+
+                    selectRoomEl(roomEl);
                   }}
                   onChange={handleSearch}
                   searchResults={searchResults}
