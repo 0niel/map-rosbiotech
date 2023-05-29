@@ -1,13 +1,17 @@
 import { Plus, Minus } from "lucide-react";
+import { type components } from "~/lib/schedule/schema";
 
 interface RoomInfoTabContentProps {
   dateTime: Date;
+  room: components["schemas"]["Room"] | null;
 }
 
 const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
   dateTime,
+  room,
 }) => {
-  // Назначение, Загруженность, Статус, Мероприятие, Ответственный
+  console.log("SUPER SELECTED ROOM: ");
+
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-left text-sm text-gray-500">

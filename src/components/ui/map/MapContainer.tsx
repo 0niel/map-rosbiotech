@@ -19,18 +19,18 @@ import MapRoute, { type MapRouteRef } from "./MapRoute";
 import ScheduleAPI from "~/lib/schedule/api";
 import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
-import Datepicker from "tailwind-datepicker-react";
 import RoomInfoTabContent from "./RoomInfoTabContent";
-import { type components } from "~/lib/schedule/schema";
+import DateAndTimePicker from "./DateAndTimePicker";
+import { RoomOnMap } from "~/lib/map/RoomOnMap";
+import {
+  fillRoom,
+  getRoomNameByElement,
+  searchRoomsByName,
+} from "~/lib/map/roomHelpers";
+import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
+import MapControls from "./MapControls";
 
 const scheduleAPI = new ScheduleAPI();
-
-const fillRoom = (room: Element, color: string) => {
-  const rect = room.querySelector("rect");
-  if (rect) {
-    rect.style.fill = color;
-  }
-};
 
 const campuses = [
   {
@@ -47,49 +47,6 @@ const loadJsonToGraph = (routesJson: string) => {
   const graph = JSON.parse(routesJson) as Graph;
   return graph;
 };
-
-const encodeRoomName = (roomName: string) => {
-  const roomNameEncoded = roomName.replace(
-    /\\u([0-9A-F]{4})/gi,
-    (_, p1: string) => String.fromCharCode(parseInt(p1, 16))
-  );
-  return roomNameEncoded;
-};
-
-const getRoomNameByElement = (el: Element) => {
-  const roomName = el.getAttribute("data-room");
-  if (!roomName) {
-    return null;
-  }
-
-  // Формат: "В-78__А-101", где "В-78" - кампус, "А-101" - номер комнаты
-
-  return encodeRoomName(roomName).split("__")[1];
-};
-
-const searchRoomsByName = (name: string) => {
-  const rooms = document.querySelectorAll("[data-room]");
-
-  const foundRooms = [];
-
-  for (const room of rooms) {
-    const roomName = getRoomNameByElement(room);
-    if (roomName?.trim().toLowerCase().includes(name.trim().toLowerCase())) {
-      foundRooms.push(room);
-    }
-  }
-
-  return foundRooms;
-};
-
-interface RoomOnMap {
-  element: Element;
-  // Базовое состояние комнаты, которое восстанавливается после клика на другую комнату
-  baseElement: Element;
-  name: string;
-  // Если null, то в API нет информации о комнате
-  remote: components["schemas"]["Room"] | null;
-}
 
 export const MapContainer = () => {
   const { isLoading, error, data } = useQuery({
@@ -198,38 +155,7 @@ export const MapContainer = () => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const handleSearch = (data: string) => {
-    console.log(`Searching for ${data}`);
-    if (data.length < 3) {
-      return;
-    }
-    const roomsInGraph = searchNodesByLabel(graph, data);
-    if (!roomsInGraph) {
-      console.log(`Room ${data} not found in graph`);
-      return [];
-    }
-    const rooms = searchRoomsByName(data);
-    if (!rooms) {
-      console.log(`Room ${data} not found in map`);
-      return [];
-    }
-
-    const found = roomsInGraph.filter((room) => {
-      const name = room.label;
-
-      if (rooms.map((room) => getRoomNameByElement(room)).includes(name)) {
-        return true;
-      }
-
-      return false;
-    });
-
-    const results = Array.from(found, (room, i) => ({
-      id: i.toString(),
-      title: room.label,
-    }));
-
-    console.log(`Found ${results.length} rooms`);
-
+    const results = searchInMapAndGraph(data, graph);
     setSearchResults(results);
   };
 
@@ -239,47 +165,12 @@ export const MapContainer = () => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2">
-        <div className="flex w-full max-w-xl flex-row space-x-4">
-          <Datepicker
-            options={{
-              language: "ru",
-              dateFormat: "dd.mm.yyyy",
-
-              autoHide: true,
-              todayBtn: false,
-              clearBtn: false,
-            }}
-            show={dateTimePickerShow}
-            setShow={setDateTimePickerShow}
-            selected={selectedDateTime}
-          />
-          <label htmlFor="time" className="text-sm text-gray-900">
-            <input
-              type="time"
-              className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              min="08:00"
-              max="20:00"
-              step="900"
-              value={selectedDateTime?.toLocaleTimeString("ru-RU", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-              id="time"
-              onChange={(e) => {
-                const [hours, minutes] = e.target.value.split(":");
-
-                let date = new Date();
-                if (selectedDateTime) {
-                  date = selectedDateTime;
-                }
-
-                date.setHours(Number(hours));
-                date.setMinutes(Number(minutes));
-                setSelectedDateTime(date);
-              }}
-            />
-          </label>
-        </div>
+        <DateAndTimePicker
+          dateTimePickerShow={dateTimePickerShow}
+          setDateTimePickerShow={setDateTimePickerShow}
+          selectedDateTime={selectedDateTime}
+          setSelectedDateTime={setSelectedDateTime}
+        />
       </div>
 
       <div className="h-full rounded-lg dark:border-gray-700">
@@ -302,7 +193,7 @@ export const MapContainer = () => {
           <div className="p-4">
             <Tabs>
               <Tabs.Tab name="Информация" icon={<Info />}>
-                <RoomInfoTabContent dateTime={selectedDateTime} />
+                <RoomInfoTabContent dateTime={selectedDateTime} room={null} />
               </Tabs.Tab>
               <Tabs.Tab name="Расписание" icon={<Calendar />}>
                 <div>2</div>
@@ -342,19 +233,13 @@ export const MapContainer = () => {
               </div>
             </div>
 
-            <div className="absolute bottom-12 right-2 z-20 md:right-12">
-              <FloorSelectorButtons
-                floors={[1, 2, 3, 4]}
-                selectedFloor={selectedFloor}
-                onFloorSelect={(floor) => setSelectedFloor(floor)}
-              />
-              <div className="mt-4">
-                <ScaleButtons
-                  onZoomIn={() => transformComponentRef.current?.zoomIn()}
-                  onZoomOut={() => transformComponentRef.current?.zoomOut()}
-                />
-              </div>
-            </div>
+            <MapControls
+              onZoomIn={() => transformComponentRef.current?.zoomIn()}
+              onZoomOut={() => transformComponentRef.current?.zoomOut()}
+              floors={[1, 2, 3, 4]}
+              selectedFloor={selectedFloor}
+              setSelectedFloor={setSelectedFloor}
+            />
 
             <TransformWrapper
               minScale={0.05}
