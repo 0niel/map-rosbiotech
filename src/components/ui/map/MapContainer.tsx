@@ -20,6 +20,7 @@ import ScheduleAPI from "~/lib/schedule/api";
 import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
 import Datepicker from "tailwind-datepicker-react";
+import RoomInfoTabContent from "./RoomInfoTabContent";
 
 const scheduleAPI = new ScheduleAPI();
 
@@ -278,7 +279,7 @@ export const MapContainer = () => {
           <div className="p-4">
             <Tabs>
               <Tabs.Tab name="Информация" icon={<Info />}>
-                <div>1</div>
+                <RoomInfoTabContent dateTime={selectedDateTime} />
               </Tabs.Tab>
               <Tabs.Tab name="Расписание" icon={<Calendar />}>
                 <div>2</div>
