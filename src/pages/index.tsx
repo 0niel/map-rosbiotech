@@ -1,8 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import LayoutWithSidebar from "~/components/ui/LayoutWithSidebar";
-import { MapContainer } from "~/components/ui/map/MapContainer";
+import DynamicLayoutWithSidebar from "~/components/ui/layoutWithSidebar/DynamicLayoutWithSidebar";
+import DynamicMapContainer from "~/components/ui/map/DynamicMapContainer";
 
 const Map: NextPage = () => {
   return (
@@ -16,9 +16,9 @@ const Map: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutWithSidebar>
-        <MapContainer />
-      </LayoutWithSidebar>
+      <DynamicLayoutWithSidebar>
+        <DynamicMapContainer />
+      </DynamicLayoutWithSidebar>
     </>
   );
 };
