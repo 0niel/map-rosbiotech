@@ -17,6 +17,11 @@ import routesJson from "public/routes.json";
 import { type Graph, searchNodesByLabel } from "~/lib/graph";
 import MapRoute, { type MapRouteRef } from "./MapRoute";
 import { title } from "process";
+import ScheduleAPI from "~/lib/schedule/api";
+import { useQuery } from "react-query";
+import { Spinner } from "flowbite-react";
+
+const scheduleAPI = new ScheduleAPI();
 
 const fillRoom = (room: Element, color: string) => {
   const rect = room.querySelector("rect");
@@ -76,6 +81,24 @@ const searchRoomsByName = (name: string) => {
 };
 
 export const MapContainer = () => {
+  const { isLoading, error, data } = useQuery({
+    queryFn: async () => {
+      const campuses = await scheduleAPI.getCampuses();
+
+      const campusId = campuses.find(
+        (campus) => campus.short_name === selectedCampus
+      )?.id;
+
+      if (!campusId) {
+        return null;
+      }
+
+      const rooms = await scheduleAPI.getRooms(campusId);
+
+      return rooms;
+    },
+  });
+
   const [graph, setGraph] = useState<Graph>(
     loadJsonToGraph(JSON.stringify(routesJson))
   );
@@ -97,7 +120,7 @@ export const MapContainer = () => {
   const selectedRoomRef = useRef<Element | null>(null);
   const selectedRoomBaseStateRef = useRef<Element | null>(null);
 
-  const handleClick = (e: Event) => {
+  const handleRoomClick = (e: Event) => {
     e.stopPropagation();
     const target = e.target as HTMLElement;
     const room = target.closest("[data-room]");
@@ -112,7 +135,7 @@ export const MapContainer = () => {
 
     if (room !== selectedRoomRef.current) {
       const base = room.cloneNode(true);
-      base.addEventListener("click", handleClick);
+      base.addEventListener("click", handleRoomClick);
       (room as HTMLElement).style.cursor = "pointer";
       setSelectedRoomBaseState(base as Element);
     }
@@ -129,30 +152,27 @@ export const MapContainer = () => {
   }, [selectedRoom, selectedRoomBaseState]);
 
   useEffect(() => {
+    if (!data || isLoading) {
+      return;
+    }
+    
     const rooms = document.querySelectorAll("[data-room]");
 
     rooms.forEach((room) => {
       (room as HTMLElement).style.cursor = "pointer";
-      room.addEventListener("click", handleClick);
+      room.addEventListener("click", handleRoomClick);
     });
 
     return () => {
       rooms.forEach((room) => {
-        room.removeEventListener("click", handleClick);
+        room.removeEventListener("click", handleRoomClick);
       });
     };
-  }, [selectedFloor]);
+  }, [selectedFloor, data, isLoading]);
 
   const handleCloseDrawer = () => {
     setDrawerOpened(false);
   };
-
-  // TODO: Test-only
-  useEffect(() => {
-    if (mapRouteRef.current) {
-      mapRouteRef.current.renderRoute("А-5", "А-4");
-    }
-  }, [graph]);
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
@@ -194,7 +214,6 @@ export const MapContainer = () => {
 
   return (
     <div className="h-full rounded-lg dark:border-gray-700">
-      
       <RightDrawer
         isOpen={drawerOpened}
         onClose={handleCloseDrawer}
@@ -220,68 +239,73 @@ export const MapContainer = () => {
         </div>
       </RightDrawer>
 
-      <div className="relative z-0 mb-4 h-full w-full">
-        <div className="absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between pointer-events-none">
-          <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
-            <SearchInput
-              onSubmit={(data) => console.log(data)}
-              onChange={handleSearch}
-              searchResults={searchResults}
-              placeholder="Аудитория или сотрудник"
-            />
+      {isLoading && <Spinner />}
+      {!isLoading && data && (
+        <div className="relative z-0 mb-4 h-full w-full">
+          <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
+            <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
+              <SearchInput
+                onSubmit={(data) => console.log(data)}
+                onChange={handleSearch}
+                searchResults={searchResults}
+                placeholder="Аудитория или сотрудник"
+              />
+            </div>
+            <div className="z-30 md:fixed md:right-10">
+              <DropdownRadio
+                title={selectedCampus}
+                options={Array.from(campuses, (campus, i) => ({
+                  label: campus.label,
+                  description: campus.description,
+                  id: i.toString(),
+                }))}
+                onSelectionChange={(selectedOption) => {
+                  if (!selectedOption) {
+                    return;
+                  }
+                  setSelectedCampus(selectedOption.label);
+                }}
+                defaultSelectedOptionId="0"
+              />
+            </div>
           </div>
-          <div className="z-30 md:fixed md:right-10">
-            <DropdownRadio
-              title={selectedCampus}
-              options={Array.from(campuses, (campus, i) => ({
-                label: campus.label,
-                description: campus.description,
-                id: i.toString(),
-              }))}
-              onSelectionChange={(selectedOption) => {
-                if (!selectedOption) {
-                  return;
-                }
-                setSelectedCampus(selectedOption.label);
-              }}
-              defaultSelectedOptionId="0"
+
+          <div className="absolute bottom-12 right-2 z-20 md:right-12">
+            <FloorSelectorButtons
+              floors={[1, 2, 3, 4]}
+              selectedFloor={selectedFloor}
+              onFloorSelect={(floor) => setSelectedFloor(floor)}
             />
+            <div className="mt-4">
+              <ScaleButtons
+                onZoomIn={() => transformComponentRef.current?.zoomIn()}
+                onZoomOut={() => transformComponentRef.current?.zoomOut()}
+              />
+            </div>
           </div>
+
+          <TransformWrapper
+            minScale={0.05}
+            initialScale={0.3}
+            maxScale={1}
+            panning={{ disabled: false }}
+            wheel={{ disabled: false, step: 0.05 }}
+            ref={transformComponentRef}
+          >
+            <TransformComponent
+              wrapperStyle={{ width: "100%", height: "100%" }}
+            >
+              <MapRoute
+                ref={mapRouteRef}
+                className="pointer-events-none absolute z-20 h-full w-full"
+                graph={graph}
+              />
+
+              <Floor2 />
+            </TransformComponent>
+          </TransformWrapper>
         </div>
-
-        <div className="absolute bottom-12 md:right-12 z-20 right-2">
-          <FloorSelectorButtons
-            floors={[1, 2, 3, 4]}
-            selectedFloor={selectedFloor}
-            onFloorSelect={(floor) => setSelectedFloor(floor)}
-          />
-          <div className="mt-4">
-            <ScaleButtons
-              onZoomIn={() => transformComponentRef.current?.zoomIn()}
-              onZoomOut={() => transformComponentRef.current?.zoomOut()}
-            />
-          </div>
-        </div>
-
-        <TransformWrapper
-          minScale={0.05}
-          initialScale={0.3}
-          maxScale={1}
-          panning={{ disabled: false }}
-          wheel={{ disabled: false, step: 0.05 }}
-          ref={transformComponentRef}
-        >
-          <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
-            <MapRoute
-              ref={mapRouteRef}
-              className="pointer-events-none absolute z-20 h-full w-full"
-              graph={graph}
-            />
-
-            <Floor2 />
-          </TransformComponent>
-        </TransformWrapper>
-      </div>
+      )}
     </div>
   );
 };
