@@ -255,23 +255,23 @@ const MapContainer = () => {
                   placeholder="Аудитория или сотрудник"
                 />
               </div>
-              <div className="z-30 md:fixed md:right-10">
-                <DropdownRadio
-                  title={selectedCampus}
-                  options={Array.from(campuses, (campus, i) => ({
-                    label: campus.label,
-                    description: campus.description,
-                    id: i.toString(),
-                  }))}
-                  onSelectionChange={(selectedOption) => {
-                    if (!selectedOption) {
-                      return;
-                    }
-                    setSelectedCampus(selectedOption.label);
-                  }}
-                  defaultSelectedOptionId="0"
-                />
-              </div>
+              {/*<div className="z-30 md:fixed md:right-10">*/}
+              {/*  <DropdownRadio*/}
+              {/*    title={selectedCampus}*/}
+              {/*    options={Array.from(campuses, (campus, i) => ({*/}
+              {/*      label: campus.label,*/}
+              {/*      description: campus.description,*/}
+              {/*      id: i.toString(),*/}
+              {/*    }))}*/}
+              {/*    onSelectionChange={(selectedOption) => {*/}
+              {/*      if (!selectedOption) {*/}
+              {/*        return;*/}
+              {/*      }*/}
+              {/*      setSelectedCampus(selectedOption.label);*/}
+              {/*    }}*/}
+              {/*    defaultSelectedOptionId="0"*/}
+              {/*  />*/}
+              {/*</div>*/}
             </div>
 
             <RoutesModal
