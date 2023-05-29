@@ -22,6 +22,29 @@ export function getWeekByDate(date: Date) {
     return week + 1;
 }
 
+export function getDateByWeek(week: number, weekday: number) {
+    // 1 сентября 2022 годаw
+    const date = new Date(2022, 8, 1);
+
+    // (1 - понедельник, 2 - вторник, ...)
+    const day = date.getDay() === 0 ? 7 : date.getDay();
+    const diff = weekday - day;
+
+    date.setDate(date.getDate() + diff + (week - 1) * 7);
+
+    return date;
+}
+
+
+export function getDaysInWeek(week: number) {
+    const days = [];
+
+    for (let i = 1; i <= 7; i++) {
+        days.push(getDateByWeek(week, i));
+    }
+
+    return days;
+}
 
 export function getWeekDaysByDate(date: Date) {
     const days = [];

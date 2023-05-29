@@ -10,6 +10,7 @@ import ScheduleAPI from "~/lib/schedule/api";
 import { getWeekByDate } from "~/lib/schedule/utils";
 import RightDrawer from "../RightDrawer";
 import Spinner from "../Spinner";
+import ScheduleCalendar from "./ScheduleCalendar";
 
 interface RoomDrawerProps {
   isOpen: boolean;
@@ -159,7 +160,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               )}
             </Tabs.Tab>
             <Tabs.Tab name="Расписание" icon={<Calendar />}>
-              <div>2</div>
+              <ScheduleCalendar date={dateTime} lessons={data?.lessons || []} />
             </Tabs.Tab>
           </Tabs>
         </div>
