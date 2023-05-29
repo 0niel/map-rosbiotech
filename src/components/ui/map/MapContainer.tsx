@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import {
   TransformWrapper,
   TransformComponent,
@@ -47,6 +48,8 @@ const loadJsonToGraph = (routesJson: string) => {
 };
 
 const MapContainer = () => {
+  const router = useRouter();
+
   const { isLoading, error, data } = useQuery(["rooms"], {
     queryFn: async () => {
       const campuses = await scheduleAPI.getCampuses();
@@ -84,6 +87,19 @@ const MapContainer = () => {
     null
   );
   const selectedRoomRef = useRef<RoomOnMap | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && transformComponentRef.current) {
+      if (!router.query.room) {
+        return;
+      }
+
+      const room = searchRoomsByName(router.query.room as string)[0] as Element;
+      if (room) {
+        selectRoomEl(room);
+      }
+    }
+  }, [isLoading, transformComponentRef.current]);
 
   const selectRoomEl = (room: Element) => {
     if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
@@ -322,4 +338,4 @@ const MapContainer = () => {
   );
 };
 
-export default MapContainer
+export default MapContainer;
