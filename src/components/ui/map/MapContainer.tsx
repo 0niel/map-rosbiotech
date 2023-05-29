@@ -46,7 +46,7 @@ const loadJsonToGraph = (routesJson: string) => {
   return graph;
 };
 
-export const MapContainer = () => {
+const MapContainer = () => {
   const { isLoading, error, data } = useQuery(["rooms"], {
     queryFn: async () => {
       const campuses = await scheduleAPI.getCampuses();
@@ -321,3 +321,5 @@ export const MapContainer = () => {
     </div>
   );
 };
+
+export default MapContainer
