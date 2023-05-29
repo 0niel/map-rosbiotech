@@ -19,11 +19,11 @@ const MapControls: React.FC<MapControlsProps> = ({
 }) => {
   return (
     <div className="absolute bottom-12 right-2 z-20 md:right-12">
-      <FloorSelectorButtons
-        floors={[1, 2, 3, 4]}
-        selectedFloor={selectedFloor}
-        onFloorSelect={(floor) => setSelectedFloor(floor)}
-      />
+      {/*<FloorSelectorButtons*/}
+      {/*  floors={[1, 2, 3, 4]}*/}
+      {/*  selectedFloor={selectedFloor}*/}
+      {/*  onFloorSelect={(floor) => setSelectedFloor(floor)}*/}
+      {/*/>*/}
       <div className="mt-4">
         <ScaleButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} />
       </div>
