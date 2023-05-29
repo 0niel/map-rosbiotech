@@ -21,6 +21,7 @@ import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
 import Datepicker from "tailwind-datepicker-react";
 import RoomInfoTabContent from "./RoomInfoTabContent";
+import { type components } from "~/lib/schedule/schema";
 
 const scheduleAPI = new ScheduleAPI();
 
@@ -81,6 +82,15 @@ const searchRoomsByName = (name: string) => {
   return foundRooms;
 };
 
+interface RoomOnMap {
+  element: Element;
+  // Базовое состояние комнаты, которое восстанавливается после клика на другую комнату
+  baseElement: Element;
+  name: string;
+  // Если null, то в API нет информации о комнате
+  remote: components["schemas"]["Room"] | null;
+}
+
 export const MapContainer = () => {
   const { isLoading, error, data } = useQuery({
     queryFn: async () => {
@@ -112,14 +122,10 @@ export const MapContainer = () => {
   const [selectedFloor, setSelectedFloor] = useState(3);
   const [selectedCampus, setSelectedCampus] = useState("В-78");
 
-  // Текущая выбранная комната, после клика по ней и изменения атрибутов
-  const [selectedRoom, setSelectedRoom] = useState<Element | null>(null);
-  // Базовое состояние комнаты, которое восстанавливается после клика на другую комнату
-  const [selectedRoomBaseState, setSelectedRoomBaseState] =
-    useState<Element | null>(null);
-
-  const selectedRoomRef = useRef<Element | null>(null);
-  const selectedRoomBaseStateRef = useRef<Element | null>(null);
+  const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
+    null
+  );
+  const selectedRoomRef = useRef<RoomOnMap | null>(null);
 
   const handleRoomClick = (e: Event) => {
     e.stopPropagation();
@@ -130,27 +136,41 @@ export const MapContainer = () => {
       return;
     }
 
-    if (selectedRoomRef.current && selectedRoomBaseStateRef.current) {
-      selectedRoomRef.current.replaceWith(selectedRoomBaseStateRef.current);
+    if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
+      selectedRoomRef.current.element.replaceWith(
+        selectedRoomRef.current.baseElement
+      );
     }
 
-    if (room !== selectedRoomRef.current) {
-      const base = room.cloneNode(true);
-      base.addEventListener("click", handleRoomClick);
-      (room as HTMLElement).style.cursor = "pointer";
-      setSelectedRoomBaseState(base as Element);
+    if (room === selectedRoomRef.current?.element) {
+      return;
     }
+
+    const base = room.cloneNode(true);
+    base.addEventListener("click", handleRoomClick);
+    (room as HTMLElement).style.cursor = "pointer";
+    const baseState = base as Element;
 
     fillRoom(room, "#2563EB");
-    setSelectedRoom(room);
+
+    const name = getRoomNameByElement(room);
+    if (!name) {
+      return;
+    }
+
+    setSelectedRoomOnMap({
+      element: room,
+      baseElement: baseState,
+      name: name,
+      remote: null,
+    });
 
     setDrawerOpened(true);
   };
 
   useEffect(() => {
-    selectedRoomRef.current = selectedRoom;
-    selectedRoomBaseStateRef.current = selectedRoomBaseState;
-  }, [selectedRoom, selectedRoomBaseState]);
+    selectedRoomRef.current = selectedRoomOnMap;
+  }, [selectedRoomOnMap]);
 
   useEffect(() => {
     if (!data || isLoading) {
@@ -272,7 +292,10 @@ export const MapContainer = () => {
               className="mb-4 inline-flex items-center text-base font-semibold text-gray-500 dark:text-gray-400"
             >
               <Info className="mr-2 h-5 w-5" />
-              Аудитория 301
+              Аудитория{" "}
+              {selectedRoomOnMap != null
+                ? selectedRoomOnMap.name
+                : "не выбрана"}
             </h5>
           }
         >
