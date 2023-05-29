@@ -1,12 +1,11 @@
 import { type Graph } from "~/lib/graph";
 import { searchNodesByLabel } from '~/lib/graph';
-import { type SearchResult } from '../SearchInput';
 import { getRoomNameByElement, searchRoomsByName } from './roomHelpers';
 
 export const searchInMapAndGraph = (
     data: string,
     graph: Graph
-): SearchResult[] => {
+): { id: string; title: string }[] => {
     console.log(`Searching for ${data}`);
     if (data.length < 3) {
         return [];

@@ -6,10 +6,6 @@ import {
 import Floor2 from "~/components/svg/floor_2.svg";
 import { useEffect, useRef, useState } from "react";
 import SearchInput, { type SearchResult } from "../SearchInput";
-import RightDrawer from "../RightDrawer";
-import { Info } from "lucide-react";
-import Tabs from "../Tabs";
-import { Calendar } from "lucide-react";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
 import { type Graph } from "~/lib/graph";
@@ -17,15 +13,14 @@ import MapRoute, { type MapRouteRef } from "./MapRoute";
 import ScheduleAPI from "~/lib/schedule/api";
 import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
-import RoomInfoTabContent from "./RoomInfoTabContent";
 import DateAndTimePicker from "./DateAndTimePicker";
 import { type RoomOnMap } from "~/lib/map/RoomOnMap";
 import { fillRoom, getRoomNameByElement } from "~/lib/map/roomHelpers";
 import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
 import { type components } from "~/lib/schedule/schema";
-import RoomTabs from "./RoomTabs";
 import RoomDrawer from "./RoomDrawer";
+import { useMutation } from "react-query";
 
 const scheduleAPI = new ScheduleAPI();
 
