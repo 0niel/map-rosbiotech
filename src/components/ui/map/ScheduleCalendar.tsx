@@ -29,6 +29,29 @@ const geеLessonsByDate = (
   return currentLessons;
 };
 
+const joinLessonsByGroups = (lessons: components["schemas"]["Lesson"][]) => {
+  const newLessons: components["schemas"]["Lesson"][] = [];
+
+  lessons?.forEach((lesson) => {
+    const newLesson = newLessons.find((newLesson) => {
+      return (
+        newLesson.discipline.name === lesson.discipline.name &&
+        newLesson.weekday === lesson.weekday &&
+        newLesson.calls.time_start === lesson.calls.time_start
+      );
+    });
+
+    if (newLesson) {
+      if (newLesson.group.name.indexOf(lesson.group.name) === -1) {
+        newLesson.group.name += `, ${lesson.group.name}`;
+      }
+    } else {
+      newLessons.push(lesson);
+    }
+  });
+  return newLessons;
+};
+
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   date,
   lessons,
@@ -96,32 +119,38 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
 
       {/* Расписание */}
       <div className="flex w-full flex-col space-y-2">
-        {geеLessonsByDate(lessons, selectedDate).map((lesson) => (
-          <div
-            className="flex w-full flex-col space-y-1 rounded-lg border border-gray-300 bg-white p-2"
-            key={lesson.id}
-          >
-            <div className="flex w-full flex-row items-center justify-between space-x-2">
-              <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                {lesson.lesson_type?.name}
-              </span>
-              <span className="text-xs font-medium text-gray-500">
-                {lesson.calls.time_start.slice(0, 5)} -{" "}
-                {lesson.calls.time_end.slice(0, 5)}
-              </span>
+        {joinLessonsByGroups(geеLessonsByDate(lessons, selectedDate)).map(
+          (lesson) => (
+            <div
+              className="flex w-full flex-col space-y-1 rounded-lg border border-gray-300 bg-white p-2"
+              key={lesson.id}
+            >
+              <div className="flex w-full flex-row items-center justify-between space-x-2">
+                <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                  {lesson.lesson_type?.name}
+                </span>
+                <span className="text-xs font-medium text-gray-500">
+                  {lesson.calls.time_start.slice(0, 5)} -{" "}
+                  {lesson.calls.time_end.slice(0, 5)}
+                </span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium text-gray-700">
+                  <Paperclip size={16} className="mr-1 inline" />
+                  {lesson.discipline.name}
+                </p>
+                <p className="text-xs font-medium text-gray-500">
+                  <User2 size={16} className="mr-1 inline" />
+                  {lesson.teachers.map((teacher) => teacher.name).join(", ")}
+                </p>
+                <p className="text-xs font-medium text-gray-500">
+                  <User2 size={16} className="mr-1 inline" />
+                  {lesson.group.name}
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium text-gray-700">
-                <Paperclip size={16} className="mr-1 inline" />
-                {lesson.discipline.name}
-              </p>
-              <p className="text-xs font-medium text-gray-500">
-                <User2 size={16} className="mr-1 inline" />
-                {lesson.teachers.map((teacher) => teacher.name).join(", ")}
-              </p>
-            </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
     </div>
   );
