@@ -1,17 +1,22 @@
 import { Plus, Minus } from "lucide-react";
 import { type components } from "~/lib/schedule/schema";
+import { useQuery } from "react-query";
 
 interface RoomInfoTabContentProps {
-  dateTime: Date;
-  room: components["schemas"]["Room"] | null;
+  purpose: string;
+  workload: number;
+  status: string;
+  eventName: string;
+  teacher: string;
 }
 
 const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
-  dateTime,
-  room,
+  purpose,
+  workload,
+  status,
+  eventName,
+  teacher,
 }) => {
-  console.log("SUPER SELECTED ROOM: ");
-
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-left text-sm text-gray-500">
@@ -29,7 +34,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
             >
               Назначение
             </th>
-            <td className="px-6 py-4">Практика</td>
+            <td className="px-6 py-4">{purpose}</td>
           </tr>
           <tr className="border-b bg-white">
             <th
@@ -38,7 +43,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
             >
               Загруженность
             </th>
-            <td className="px-6 py-4">65%</td>
+            <td className="px-6 py-4">{workload}%</td>
           </tr>
           <tr className="border-b bg-white">
             <th
@@ -47,7 +52,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
             >
               Статус
             </th>
-            <td className="px-6 py-4">Занято</td>
+            <td className="px-6 py-4">{status}</td>
           </tr>
           <tr className="border-b bg-white">
             <th
@@ -56,9 +61,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
             >
               Мероприятие
             </th>
-            <td className="px-6 py-4">
-              Объектно-ориентированное программирование
-            </td>
+            <td className="px-6 py-4">{eventName}</td>
           </tr>
           <tr className="border-b bg-white">
             <th
@@ -67,7 +70,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
             >
               Ответственный
             </th>
-            <td className="px-6 py-4">Путуриде З.Ш.</td>
+            <td className="px-6 py-4">{teacher}</td>
           </tr>
         </tbody>
       </table>

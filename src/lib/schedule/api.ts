@@ -35,6 +35,32 @@ class ScheduleAPI {
         return response.data as components['schemas']['Room'][];
     }
 
+    async getRoomInfo(room_id: number): Promise<components['schemas']['RoomInfo']> {
+        const response = await this.apiClient.get(`/rooms/info/${room_id}`);
+
+        return response.data as components['schemas']['RoomInfo'];
+    }
+
+    async getRoomSchedule(room_id: number): Promise<components['schemas']['Lesson'][]> {
+        const response = await this.apiClient.get(`/lessons/rooms/${room_id}`);
+
+        return response.data as components['schemas']['Lesson'][];
+    }
+
+
+
+    async getRoomsStatuses(dateTime: Date, room_ids: number[]): Promise<{
+        name: string,
+        status: string
+    }[]> {
+        console.log(dateTime.toISOString());
+        const response = await this.apiClient.get(`/rooms/statuses?date_time=${dateTime.toISOString()}&ids=${room_ids.join('&ids=')}`);
+
+        return response.data as {
+            name: string,
+            status: string
+        }[];
+    }
 }
 
 

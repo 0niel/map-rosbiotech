@@ -1,6 +1,6 @@
-import { Graph } from "~/lib/graph";
+import { type Graph } from "~/lib/graph";
 import { searchNodesByLabel } from '~/lib/graph';
-import { SearchResult } from '../SearchInput';
+import { type SearchResult } from '../SearchInput';
 import { getRoomNameByElement, searchRoomsByName } from './roomHelpers';
 
 export const searchInMapAndGraph = (

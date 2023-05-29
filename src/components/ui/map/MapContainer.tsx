@@ -4,31 +4,28 @@ import {
   type ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
 import Floor2 from "~/components/svg/floor_2.svg";
-import FloorSelectorButtons from "./FloorSelectorButtons";
 import { useEffect, useRef, useState } from "react";
 import SearchInput, { type SearchResult } from "../SearchInput";
-import ScaleButtons from "./ScaleButtons";
 import RightDrawer from "../RightDrawer";
 import { Info } from "lucide-react";
 import Tabs from "../Tabs";
-import { BadgeInfo, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
-import { type Graph, searchNodesByLabel } from "~/lib/graph";
+import { type Graph } from "~/lib/graph";
 import MapRoute, { type MapRouteRef } from "./MapRoute";
 import ScheduleAPI from "~/lib/schedule/api";
 import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
 import RoomInfoTabContent from "./RoomInfoTabContent";
 import DateAndTimePicker from "./DateAndTimePicker";
-import { RoomOnMap } from "~/lib/map/RoomOnMap";
-import {
-  fillRoom,
-  getRoomNameByElement,
-  searchRoomsByName,
-} from "~/lib/map/roomHelpers";
+import { type RoomOnMap } from "~/lib/map/RoomOnMap";
+import { fillRoom, getRoomNameByElement } from "~/lib/map/roomHelpers";
 import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
+import { type components } from "~/lib/schedule/schema";
+import RoomTabs from "./RoomTabs";
+import RoomDrawer from "./RoomDrawer";
 
 const scheduleAPI = new ScheduleAPI();
 
@@ -49,7 +46,7 @@ const loadJsonToGraph = (routesJson: string) => {
 };
 
 export const MapContainer = () => {
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data } = useQuery(["rooms"], {
     queryFn: async () => {
       const campuses = await scheduleAPI.getCampuses();
 
@@ -64,6 +61,9 @@ export const MapContainer = () => {
       const rooms = await scheduleAPI.getRooms(campusId);
 
       return rooms;
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 
@@ -114,12 +114,18 @@ export const MapContainer = () => {
     if (!name) {
       return;
     }
+    
+    if (!data) {
+      return;
+    }
+
+    const remote = data.find((room) => room.name === name);
 
     setSelectedRoomOnMap({
       element: room,
       baseElement: baseState,
       name: name,
-      remote: null,
+      remote: remote || null,
     });
 
     setDrawerOpened(true);
@@ -174,33 +180,13 @@ export const MapContainer = () => {
       </div>
 
       <div className="h-full rounded-lg dark:border-gray-700">
-        <RightDrawer
+        <RoomDrawer
           isOpen={drawerOpened}
           onClose={handleCloseDrawer}
-          titleComponent={
-            <h5
-              id="drawer-right-label"
-              className="mb-4 inline-flex items-center text-base font-semibold text-gray-500 dark:text-gray-400"
-            >
-              <Info className="mr-2 h-5 w-5" />
-              Аудитория{" "}
-              {selectedRoomOnMap != null
-                ? selectedRoomOnMap.name
-                : "не выбрана"}
-            </h5>
-          }
-        >
-          <div className="p-4">
-            <Tabs>
-              <Tabs.Tab name="Информация" icon={<Info />}>
-                <RoomInfoTabContent dateTime={selectedDateTime} room={null} />
-              </Tabs.Tab>
-              <Tabs.Tab name="Расписание" icon={<Calendar />}>
-                <div>2</div>
-              </Tabs.Tab>
-            </Tabs>
-          </div>
-        </RightDrawer>
+          room={selectedRoomOnMap?.remote || null}
+          dateTime={selectedDateTime}
+          scheduleAPI={scheduleAPI}
+        />
 
         {isLoading && <Spinner />}
         {!isLoading && data && (
@@ -208,7 +194,10 @@ export const MapContainer = () => {
             <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
               <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
                 <SearchInput
-                  onSubmit={(data) => console.log(data)}
+                  onSubmit={(data) => {
+                    const results = searchInMapAndGraph(data, graph);
+                    setSearchResults(results);
+                  }}
                   onChange={handleSearch}
                   searchResults={searchResults}
                   placeholder="Аудитория или сотрудник"
