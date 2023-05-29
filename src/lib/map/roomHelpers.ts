@@ -30,7 +30,7 @@ export const searchRoomsByName = (name: string) => {
 
     for (const room of rooms) {
         const roomName = getRoomNameByElement(room);
-        if (roomName?.trim().toLowerCase().includes(name.trim().toLowerCase())) {
+        if (roomName?.trim().toLowerCase() == name.trim().toLowerCase()) {
             foundRooms.push(room);
         }
     }
