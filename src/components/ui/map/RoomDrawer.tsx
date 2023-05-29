@@ -118,9 +118,8 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
         titleComponent={
           <h5
             id="drawer-right-label"
-            className="mb-4 inline-flex items-center text-base font-semibold text-gray-500 dark:text-gray-400"
+            className="mb-4 inline-flex items-center text-base font-bold text-gray-900 dark:text-gray-400"
           >
-            <Info className="mr-2 h-5 w-5" />
             Аудитория {room != null ? room.name : "не выбрана"}
           </h5>
         }

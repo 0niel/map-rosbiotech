@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import Datepicker from "tailwind-datepicker-react";
 
 interface DateAndTimePickerProps {
@@ -28,6 +28,11 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
         show={dateTimePickerShow}
         setShow={setDateTimePickerShow}
         selected={selectedDateTime}
+        onChange={(date: Date) => {
+          if (date) {
+            setSelectedDateTime(date);
+          }
+        }}
       />
       <label htmlFor="time" className="text-sm text-gray-900">
         <input
@@ -42,6 +47,7 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
           })}
           id="time"
           onChange={(e) => {
+            e.preventDefault();
             const [hours, minutes] = e.target.value.split(":");
 
             let date = new Date();
