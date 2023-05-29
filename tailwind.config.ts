@@ -3,6 +3,7 @@ module.exports = {
   darkMode: ["class"],
   content: [
     "./node_modules/flowbite-react/**/*.js",
+    "./node_modules/tailwind-datepicker-react/dist/**/*.js",
     "./src/**/*.{js,ts,jsx,tsx}"
   ],
 
