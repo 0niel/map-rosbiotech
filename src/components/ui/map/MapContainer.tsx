@@ -114,7 +114,7 @@ export const MapContainer = () => {
     if (!name) {
       return;
     }
-    
+
     if (!data) {
       return;
     }
@@ -188,7 +188,11 @@ export const MapContainer = () => {
           scheduleAPI={scheduleAPI}
         />
 
-        {isLoading && <Spinner />}
+        {isLoading && (
+          <div className="flex h-full items-center justify-center">
+            <Spinner />
+          </div>
+        )}
         {!isLoading && data && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
             <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
