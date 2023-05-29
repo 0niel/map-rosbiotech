@@ -37,8 +37,19 @@ jobs:
           docker tag cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:${{ github.sha }} \
             cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:latest
           docker push cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:latest
-  deploy:
+  deploy-dev:
     runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Deploy
+        run: |
+          cd ${{ secrets. }}
+          docker compose --env-file .env.local pull
+          docker compose --env-file .env.local up -d
+  deploy-prod:
+    runs-on: mirea-runner
     needs: build
     steps:
       - name: Checkout
