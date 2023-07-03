@@ -2,7 +2,7 @@
 import axios, { type AxiosInstance, AxiosResponse, type AxiosError } from 'axios';
 import { type components } from './schema'
 
-const API_URL = 'https://timetable.mirea.ninja/api'
+const API_URL = 'https://timetable.mirea.ru/api'
 
 
 class ScheduleAPI {
