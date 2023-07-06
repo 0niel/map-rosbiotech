@@ -207,7 +207,7 @@ const MapContainer = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2 sm:max-w-md">  
+      <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2 sm:max-w-md">
         <DateAndTimePicker
           dateTimePickerShow={dateTimePickerShow}
           setDateTimePickerShow={setDateTimePickerShow}
@@ -232,7 +232,7 @@ const MapContainer = () => {
         )}
         {!isLoading && data && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
-            <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between">
+            <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between px-4 py-2 md:px-0 md:py-0">
               <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
                 <SearchInput
                   showSubmitButton={true}
@@ -287,8 +287,8 @@ const MapContainer = () => {
                 .filter((v) => v !== "")}
             />
 
-            {/* Кнопка маршрута снизу слева */}
-            <div className="absolute bottom-4 left-4 z-40">
+            <div className="absolute bottom-0 left-0 right-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
+              {/* Кнопка маршрута снизу слева */}
               <button
                 className="flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-4"
                 onClick={() => {
@@ -297,15 +297,15 @@ const MapContainer = () => {
               >
                 <MapPin className="h-6 w-6" />
               </button>
-            </div>
 
-            <MapControls
-              onZoomIn={() => transformComponentRef.current?.zoomIn()}
-              onZoomOut={() => transformComponentRef.current?.zoomOut()}
-              floors={[1, 2, 3, 4]}
-              selectedFloor={selectedFloor}
-              setSelectedFloor={setSelectedFloor}
-            />
+              <MapControls
+                onZoomIn={() => transformComponentRef.current?.zoomIn()}
+                onZoomOut={() => transformComponentRef.current?.zoomOut()}
+                floors={[1, 2, 3, 4]}
+                selectedFloor={selectedFloor}
+                setSelectedFloor={setSelectedFloor}
+              />
+            </div>
 
             <TransformWrapper
               minScale={0.05}
