@@ -207,7 +207,7 @@ const MapContainer = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2">
+      <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2 sm:max-w-md">  
         <DateAndTimePicker
           dateTimePickerShow={dateTimePickerShow}
           setDateTimePickerShow={setDateTimePickerShow}
@@ -313,6 +313,8 @@ const MapContainer = () => {
               maxScale={1}
               panning={{ disabled: false }}
               wheel={{ disabled: false, step: 0.05 }}
+              pinch={{ step: 0.05 }}
+              zoomAnimation={{ disabled: true }}
               ref={transformComponentRef}
             >
               <TransformComponent

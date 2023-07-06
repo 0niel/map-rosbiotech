@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import Datepicker from "tailwind-datepicker-react";
 
 interface DateAndTimePickerProps {
@@ -18,6 +18,18 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
     <div className="flex w-full max-w-xl flex-row space-x-4">
       <Datepicker
         options={{
+          theme: {
+            background: "",
+            todayBtn: "",
+            clearBtn: "",
+            icons: "",
+            text: "",
+            disabledText: "",
+            input: "cursor-pointer",
+            inputIcon: "cursor-pointer",
+            selected: "",
+          },
+
           language: "ru",
           dateFormat: "dd.mm.yyyy",
 
@@ -34,6 +46,7 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
           }
         }}
       />
+
       <label htmlFor="time" className="text-sm text-gray-900">
         <input
           type="time"
