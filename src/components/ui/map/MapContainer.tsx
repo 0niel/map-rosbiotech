@@ -4,7 +4,11 @@ import {
   TransformComponent,
   type ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
+import Floor0 from "~/components/svg/floor_0.svg";
+import Floor1 from "~/components/svg/floor_1.svg";
 import Floor2 from "~/components/svg/floor_2.svg";
+import Floor3 from "~/components/svg/floor_3.svg";
+import Floor4 from "~/components/svg/floor_4.svg";
 import { useEffect, useRef, useState } from "react";
 import SearchInput, { type SearchResult } from "../SearchInput";
 import DropdownRadio from "../DropdownRadio";
@@ -80,7 +84,7 @@ const MapContainer = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
-  const [selectedFloor, setSelectedFloor] = useState(3);
+  const [selectedFloor, setSelectedFloor] = useState(2);
   const [selectedCampus, setSelectedCampus] = useState("В-78");
 
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
@@ -301,7 +305,7 @@ const MapContainer = () => {
               <MapControls
                 onZoomIn={() => transformComponentRef.current?.zoomIn()}
                 onZoomOut={() => transformComponentRef.current?.zoomOut()}
-                floors={[1, 2, 3, 4]}
+                floors={[0, 1, 2, 3, 4]}
                 selectedFloor={selectedFloor}
                 setSelectedFloor={setSelectedFloor}
               />
@@ -309,7 +313,7 @@ const MapContainer = () => {
 
             <TransformWrapper
               minScale={0.05}
-              initialScale={0.3}
+              initialScale={0.2}
               maxScale={1}
               panning={{ disabled: false }}
               wheel={{ disabled: false, step: 0.05 }}
@@ -329,8 +333,26 @@ const MapContainer = () => {
                   className="pointer-events-none absolute z-20 h-full w-full"
                   graph={graph}
                 />
-
-                <Floor2 />
+                {
+                  selectedFloor == 0 && (<Floor0 />)
+                }
+                {
+                  selectedFloor == 1 && (<Floor1 />)
+                }
+                {
+                  selectedFloor == 2 && (<Floor2 />)
+                }
+                {
+                  selectedFloor == 3 && (<Floor3 />)
+                }
+                {
+                  selectedFloor == 4 && (<Floor4 />)
+                }
+                {/*<Floor0 />*/}
+                {/*<Floor1 />*/}
+                {/*<Floor2 />*/}
+                {/*<Floor3 />*/}
+                {/*<Floor4 />*/}
               </TransformComponent>
             </TransformWrapper>
           </div>

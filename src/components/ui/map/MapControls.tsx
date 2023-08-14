@@ -18,7 +18,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   onZoomOut,
 }) => {
     return (
-      <div>
+      <div style={{userSelect: "none"}}>
       <FloorSelectorButtons
         floors={floors}
         selectedFloor={selectedFloor}
