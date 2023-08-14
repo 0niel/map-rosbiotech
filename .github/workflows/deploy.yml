@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - release/beta-14-08-demo
 
 env:
   JOB_STARTED_AT: ${{ github.event.created_at }}
@@ -31,31 +32,31 @@ jobs:
           --label "org.image.created=${{ env.JOB_STARTED_AT }}" \
           --label "org.image.revision=${{ github.ref_name }}" \
           --label "org.image.version=${{ github.sha }}" \
-          --tag cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:${{ github.sha }} \
+          --tag cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:1408demo_fix \
           .
-          docker push cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:${{ github.sha }}
-          docker tag cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:${{ github.sha }} \
-            cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:latest
-          docker push cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:latest
-  deploy-dev:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Deploy
-        run: |
-          cd ${{ secrets.DEV_FOLDER }}
-          docker compose --env-file .env.local pull
-          docker compose --env-file .env.local up -d
-  deploy-prod:
-    runs-on: mirea-runner
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Deploy
-        run: |
-          cd ${{ secrets.PRODUCTION_FOLDER }}
-          docker compose --env-file .env.local pull
-          docker compose --env-file .env.local up -d
+          docker push cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:1408demo_fix
+#          docker tag cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:${{ github.sha }} \
+#            cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:latest
+#          docker push cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_IMAGE }}:latest
+#  deploy-dev:
+#    runs-on: self-hosted
+#    needs: build
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Deploy
+#        run: |
+#          cd ${{ secrets.DEV_FOLDER }}
+#          docker compose --env-file .env.local pull
+#          docker compose --env-file .env.local up -d
+#  deploy-prod:
+#    runs-on: mirea-runner
+#    needs: build
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Deploy
+#        run: |
+#          cd ${{ secrets.PRODUCTION_FOLDER }}
+#          docker compose --env-file .env.local pull
+#          docker compose --env-file .env.local up -d
