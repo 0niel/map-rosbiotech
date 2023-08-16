@@ -235,7 +235,7 @@ const MapContainer = () => {
             <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between px-4 py-2 md:px-0 md:py-0">
               <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
                 <SearchInput
-                  showSubmitButton={true}
+                  showSubmitButton={false}
                   onSubmit={(data) => {
                     const result = searchInMapAndGraph(data, graph)[0];
 

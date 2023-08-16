@@ -1,0 +1,11 @@
+{
+  "name": "SVG Data Mapper",
+  "id": "1164206661871234195",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/index.html",
+  "editorType": [
+    "figma"
+  ],
+  "author": "Sergey Dmitriev"
+}
