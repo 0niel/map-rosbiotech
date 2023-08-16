@@ -6,6 +6,5 @@
   "ui": "dist/index.html",
   "editorType": [
     "figma"
-  ],
-  "author": "Sergey Dmitriev"
+  ]
 }
