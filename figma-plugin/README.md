@@ -1,3 +1,8 @@
+## Screenshots
+![image](https://github.com/mirea-ninja/map/assets/51058739/fbb66d01-01b0-4ed3-b281-6714a19173da)
+![Figma_qNCruHtfoO](https://github.com/mirea-ninja/map/assets/51058739/fb608baf-1952-4ce1-83a9-26d4fcb6705b)
+
+
 Below are the steps to get your plugin running. You can also find instructions at:
 
   https://www.figma.com/plugin-docs/setup/
