@@ -17,8 +17,8 @@ const MapControls: React.FC<MapControlsProps> = ({
   onZoomIn,
   onZoomOut,
 }) => {
-    return (
-      <div>
+  return (
+    <div>
       <FloorSelectorButtons
         floors={floors}
         selectedFloor={selectedFloor}
@@ -27,7 +27,7 @@ const MapControls: React.FC<MapControlsProps> = ({
       <div className="mt-4">
         <ScaleButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} />
       </div>
-      </div>
+    </div>
   );
 };
 

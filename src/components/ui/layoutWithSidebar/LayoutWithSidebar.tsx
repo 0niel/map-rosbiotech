@@ -6,6 +6,8 @@ interface LayoutWithSidebarProps {
 }
 
 const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
   return (
     <main className="flex h-screen flex-col">
       <button
@@ -13,7 +15,8 @@ const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
         data-drawer-toggle="logo-sidebar"
         aria-controls="logo-sidebar"
         type="button"
-        className="ml-3 mt-2 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:hidden w-10 h-10"
+        className="ml-3 mt-2 mb-2 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:hidden w-10 h-10"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         <span className="sr-only">Открыть боковую панель</span>
         <svg
@@ -30,7 +33,7 @@ const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
           ></path>
         </svg>
       </button>
-      <Sidebar collapsed={false} />
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
       <div className="h-full sm:ml-64">{children}</div>
     </main>

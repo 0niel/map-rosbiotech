@@ -6,7 +6,7 @@ import {
 } from "react-zoom-pan-pinch";
 import Floor2 from "~/components/svg/floor_2.svg";
 import { useEffect, useRef, useState } from "react";
-import SearchInput, { type SearchResult } from "../SearchInput";
+import SearchButton, { type SearchResult } from "../SearchButton";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
 import { type Graph } from "~/lib/graph";
@@ -55,7 +55,7 @@ const MapContainer = () => {
       const campuses = await scheduleAPI.getCampuses();
 
       const campusId = campuses.find(
-        (campus) => campus.short_name === selectedCampus
+        (campus) => campus.short_name === selectedCampus,
       )?.id;
 
       if (!campusId) {
@@ -72,7 +72,7 @@ const MapContainer = () => {
   });
 
   const [graph, setGraph] = useState<Graph>(
-    loadJsonToGraph(JSON.stringify(routesJson))
+    loadJsonToGraph(JSON.stringify(routesJson)),
   );
 
   const mapRouteRef = useRef<MapRouteRef>(null);
@@ -84,7 +84,7 @@ const MapContainer = () => {
   const [selectedCampus, setSelectedCampus] = useState("В-78");
 
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
-    null
+    null,
   );
   const selectedRoomRef = useRef<RoomOnMap | null>(null);
 
@@ -94,7 +94,9 @@ const MapContainer = () => {
         return;
       }
 
-      const room = searchMapObjectsByName(router.query.room as string)[0] as Element;
+      const room = searchMapObjectsByName(
+        router.query.room as string,
+      )[0] as Element;
       if (room) {
         selectRoomEl(room);
       }
@@ -104,7 +106,7 @@ const MapContainer = () => {
   const selectRoomEl = (room: Element) => {
     if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
       selectedRoomRef.current.element.replaceWith(
-        selectedRoomRef.current.baseElement
+        selectedRoomRef.current.baseElement,
       );
     }
 
@@ -145,7 +147,7 @@ const MapContainer = () => {
   const unselectRoomEl = () => {
     if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
       selectedRoomRef.current.element.replaceWith(
-        selectedRoomRef.current.baseElement
+        selectedRoomRef.current.baseElement,
       );
     }
 
@@ -157,10 +159,13 @@ const MapContainer = () => {
     e.stopPropagation();
     const target = e.target as HTMLElement;
     let room = target.closest(mapObjectSelector);
-    if (getMapObjectNameByElement(room?.parentElement as Element) === getMapObjectNameByElement(room as Element)) {
+    if (
+      getMapObjectNameByElement(room?.parentElement as Element) ===
+      getMapObjectNameByElement(room as Element)
+    ) {
       room = room?.parentElement as Element;
     }
-    
+
     if (!room) {
       return;
     }
@@ -210,13 +215,48 @@ const MapContainer = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex w-full flex-row items-start border-b border-gray-200 px-4 py-2 sm:max-w-md">
-        <DateAndTimePicker
-          dateTimePickerShow={dateTimePickerShow}
-          setDateTimePickerShow={setDateTimePickerShow}
-          selectedDateTime={selectedDateTime}
-          setSelectedDateTime={setSelectedDateTime}
-        />
+      <div className="absolute left-14 right-0 top-0 block transition-all duration-300 sm:hidden">
+        <div className="pointer-events-none flex flex-row items-center justify-between px-4 py-2">
+          <div className="z-20 mr-4 w-full transition-all duration-300 ease-in-out sm:mx-auto sm:w-80 sm:max-w-md md:mx-0 md:p-4">
+            <SearchButton
+              showSubmitButton={false}
+              onSubmit={(data) => {
+                const result = searchInMapAndGraph(data, graph)[0];
+
+                if (!result) {
+                  return;
+                }
+
+                const roomEl = searchMapObjectsByName(result.title)[0];
+                if (!roomEl) {
+                  return;
+                }
+
+                selectRoomEl(roomEl);
+              }}
+              onChange={handleSearch}
+              searchResults={searchResults}
+              text="Поиск..."
+            />
+          </div>
+          <div className="z-30 md:fixed md:right-10">
+            <DropdownRadio
+              title={selectedCampus}
+              options={Array.from(campuses, (campus, i) => ({
+                label: campus.label,
+                description: campus.description,
+                id: i.toString(),
+              }))}
+              onSelectionChange={(selectedOption) => {
+                if (!selectedOption) {
+                  return;
+                }
+                setSelectedCampus(selectedOption.label);
+              }}
+              defaultSelectedOptionId="0"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="h-full rounded-lg dark:border-gray-700">
@@ -235,9 +275,9 @@ const MapContainer = () => {
         )}
         {!isLoading && data && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
-            <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex flex-row items-center justify-between px-4 py-2 md:px-0 md:py-0">
-              <div className="z-20 mr-4 w-full sm:mx-auto sm:max-w-md md:mx-0 md:p-4">
-                <SearchInput
+            <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 hidden flex-row items-center justify-between px-4 py-2 transition-all duration-300 ease-in-out sm:flex md:px-0 md:py-0">
+              <div className="z-20 mr-4 w-full transition-all duration-300 ease-in-out sm:mx-auto sm:w-80 sm:max-w-md md:mx-0 md:p-4">
+                <SearchButton
                   showSubmitButton={false}
                   onSubmit={(data) => {
                     const result = searchInMapAndGraph(data, graph)[0];
@@ -255,7 +295,7 @@ const MapContainer = () => {
                   }}
                   onChange={handleSearch}
                   searchResults={searchResults}
-                  placeholder="Аудитория или сотрудник"
+                  text="Поиск..."
                 />
               </div>
               <div className="z-30 md:fixed md:right-10">
@@ -290,10 +330,10 @@ const MapContainer = () => {
                 .filter((v) => v !== "")}
             />
 
-            <div className="absolute bottom-0 left-0 right-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4 pointer-events-none">
+            <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
               {/* Кнопка маршрута снизу слева */}
               <button
-                className="pointer-events-auto flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-4"
+                className="pointer-events-auto flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-3 sm:p-4"
                 onClick={() => {
                   setRoutesModalShow(true);
                 }}
