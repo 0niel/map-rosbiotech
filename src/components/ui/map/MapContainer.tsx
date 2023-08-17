@@ -330,7 +330,7 @@ const MapContainer = () => {
                 .filter((v) => v !== "")}
             />
 
-            <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
+            <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
               {/* Кнопка маршрута снизу слева */}
               <button
                 className="pointer-events-auto flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-3 sm:p-4"
