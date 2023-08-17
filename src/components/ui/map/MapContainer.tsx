@@ -24,9 +24,7 @@ import {
 } from "~/lib/map/roomHelpers";
 import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
-import { type components } from "~/lib/schedule/schema";
 import RoomDrawer from "./RoomDrawer";
-import { useMutation } from "react-query";
 import RoutesModal from "./RoutesModal";
 
 const scheduleAPI = new ScheduleAPI();
@@ -287,10 +285,10 @@ const MapContainer = () => {
                 .filter((v) => v !== "")}
             />
 
-            <div className="absolute bottom-0 left-0 right-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
+            <div className="absolute bottom-0 left-0 right-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4 pointer-events-none">
               {/* Кнопка маршрута снизу слева */}
               <button
-                className="flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-4"
+                className="pointer-events-auto flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-4"
                 onClick={() => {
                   setRoutesModalShow(true);
                 }}

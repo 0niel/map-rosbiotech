@@ -1,45 +1,77 @@
-import Image from "next/image";
-import { Home, Link } from "lucide-react";
-import SidebarItem, { SidebarItemProps } from "./SidebarItem";
+import { Badge, Sidebar as FbSidebar } from 'flowbite-react';
+import Link from 'next/link';
+import { HiMap } from 'react-icons/hi';
+import clsx from 'clsx';
 
-interface SidebarProps {
-  collapsed: boolean;
-}
 
-const sidebarItems: SidebarItemProps[] = [
+const sidebarItems = [
   {
-    icon: <Home size={24} />,
+    icon: HiMap,
     label: "Главная",
     href: "/",
   },
 ];
 
+interface SidebarProps {
+  collapsed: boolean;
+}
+
+
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
   return (
-    <aside
-      id="logo-sidebar"
-      className="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transition-transform sm:translate-x-0"
-      aria-label="Sidebar"
-    >
-      <div className="h-full overflow-y-auto bg-gray-50 px-3 py-4 dark:bg-gray-800">
-        <div className="mb-5 flex items-center pl-2.5">
-          <Image
-            width={28}
-            height={28}
-            src="mirea-gerb.svg"
-            className="mr-2 h-7 w-7"
-            alt="Логотип РТУ МИРЭА"
-          />
-          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-            РТУ МИРЭА
-          </span>
-        </div>
-        <ul className="space-y-2 font-medium">
+    <FbSidebar aria-label="Боковая панель" className="fixed top-0 z-40 h-screen w-64 -translate-x-full transition-transform sm:translate-x-0">
+      <FbSidebar.Logo
+        href="#"
+        img="mirea-gerb.svg"
+        imgAlt="РТУ МИРЭА герб"
+      >
+        <p>
+          РТУ МИРЭА
+        </p>
+      </FbSidebar.Logo>
+      <FbSidebar.Items>
+        <FbSidebar.ItemGroup>
           {sidebarItems.map((item) => (
-            <SidebarItem key={item.label} {...item} />
+            <FbSidebar.Item
+              key={item.href}
+              href={item.href}
+              icon={item.icon}
+              >
+              <p>
+                {item.label}
+              </p>
+              </FbSidebar.Item>
           ))}
-        </ul>
-      </div>
-    </aside>
+        
+        </FbSidebar.ItemGroup>
+      </FbSidebar.Items>
+      <FbSidebar.CTA>
+        <div className="mb-3 flex items-center">
+          <Badge color="warning">
+            Бета
+          </Badge>
+          <button
+            aria-label="Close"
+            className="-m-1.5 ml-auto inline-flex h-6 w-6 rounded-lg bg-gray-100 p-1 text-cyan-900 hover:bg-gray-200 focus:ring-2 focus:ring-gray-400 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
+            type="button"
+          >
+            
+          </button>
+        </div>
+        <div className="mb-3 text-sm text-cyan-900 dark:text-gray-400">
+          <p>
+            Карта и навигация находится в постоянной разработке. Мы стараемся сделать её лучше.
+          </p>
+        </div>
+        <Link
+          className="text-sm text-cyan-900 underline hover:text-cyan-800 dark:text-gray-400 dark:hover:text-gray-300"
+          href="https://t.me/mirea_help_bot"
+        >
+          <p>
+            Сообщить об ошибке
+          </p>
+        </Link>
+      </FbSidebar.CTA>
+    </FbSidebar>
   );
 };
