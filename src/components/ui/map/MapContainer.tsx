@@ -208,14 +208,18 @@ const MapContainer = () => {
 
   useEffect(() => {
     const map = campuses.find((campus) => campus.label === selectedCampus);
-    setCampusMap(map);
-    transformComponentRef.current?.resetTransform();
+
+    const currentScreenWidth = window.innerWidth;
+    const isSmallScreen = currentScreenWidth < 1024;
+
     transformComponentRef.current?.setTransform(
-      map?.initialPositionX ?? 0,
+      isSmallScreen ? map?.initialPositionX * 2 : map?.initialPositionX ?? 0,
       map?.initialPositionY ?? 0,
       map?.initialScale ?? 1,
+      undefined,
     );
-  }, [selectedCampus, selectedFloor]);
+    setCampusMap(map);
+  }, [selectedCampus]);
 
   useEffect(() => {
     if (!data || isLoading) {
@@ -234,7 +238,7 @@ const MapContainer = () => {
         room.removeEventListener("click", handleRoomClick);
       });
     };
-  }, [campusMap, data, isLoading]);
+  }, [campusMap, data, isLoading, selectedFloor]);
 
   const handleCloseDrawer = () => {
     setDrawerOpened(false);
