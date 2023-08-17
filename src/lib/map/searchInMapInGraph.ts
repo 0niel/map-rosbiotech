@@ -1,6 +1,6 @@
 import { type Graph } from "~/lib/graph";
 import { searchNodesByLabel } from '~/lib/graph';
-import { getRoomNameByElement, searchRoomsByName } from './roomHelpers';
+import { getMapObjectNameByElement, searchMapObjectsByName } from './roomHelpers';
 
 export const searchInMapAndGraph = (
     data: string,
@@ -15,7 +15,7 @@ export const searchInMapAndGraph = (
         console.log(`Room ${data} not found in graph`);
         return [];
     }
-    const rooms = searchRoomsByName(data);
+    const rooms = searchMapObjectsByName(data);
     if (!rooms) {
         console.log(`Room ${data} not found in map`);
         return [];
@@ -24,7 +24,7 @@ export const searchInMapAndGraph = (
     const found = roomsInGraph.filter((room) => {
         const name = room.label;
 
-        if (rooms.map((room) => getRoomNameByElement(room)).includes(name)) {
+        if (rooms.map((room) => getMapObjectNameByElement(room)).includes(name)) {
             return true;
         }
 

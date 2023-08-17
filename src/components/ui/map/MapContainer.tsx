@@ -19,8 +19,10 @@ import { MapPin } from "lucide-react";
 import { type RoomOnMap } from "~/lib/map/RoomOnMap";
 import {
   fillRoom,
-  getRoomNameByElement,
-  searchRoomsByName,
+  getAllMapObjectsElements,
+  getMapObjectNameByElement,
+  mapObjectSelector,
+  searchMapObjectsByName,
 } from "~/lib/map/roomHelpers";
 import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
@@ -92,7 +94,7 @@ const MapContainer = () => {
         return;
       }
 
-      const room = searchRoomsByName(router.query.room as string)[0] as Element;
+      const room = searchMapObjectsByName(router.query.room as string)[0] as Element;
       if (room) {
         selectRoomEl(room);
       }
@@ -117,7 +119,7 @@ const MapContainer = () => {
 
     fillRoom(room, "#2563EB");
 
-    const name = getRoomNameByElement(room);
+    const name = getMapObjectNameByElement(room);
     if (!name) {
       return;
     }
@@ -154,8 +156,11 @@ const MapContainer = () => {
   const handleRoomClick = (e: Event) => {
     e.stopPropagation();
     const target = e.target as HTMLElement;
-    const room = target.closest("[data-room]");
-
+    let room = target.closest(mapObjectSelector);
+    if (getMapObjectNameByElement(room?.parentElement as Element) === getMapObjectNameByElement(room as Element)) {
+      room = room?.parentElement as Element;
+    }
+    
     if (!room) {
       return;
     }
@@ -172,15 +177,15 @@ const MapContainer = () => {
       return;
     }
 
-    const rooms = document.querySelectorAll("[data-room]");
+    const roomsElements = getAllMapObjectsElements();
 
-    rooms.forEach((room) => {
+    roomsElements.forEach((room) => {
       (room as HTMLElement).style.cursor = "pointer";
       room.addEventListener("click", handleRoomClick);
     });
 
     return () => {
-      rooms.forEach((room) => {
+      roomsElements.forEach((room) => {
         room.removeEventListener("click", handleRoomClick);
       });
     };
@@ -241,7 +246,7 @@ const MapContainer = () => {
                       return;
                     }
 
-                    const roomEl = searchRoomsByName(result.title)[0];
+                    const roomEl = searchMapObjectsByName(result.title)[0];
                     if (!roomEl) {
                       return;
                     }
@@ -314,6 +319,7 @@ const MapContainer = () => {
               pinch={{ step: 0.05 }}
               zoomAnimation={{ disabled: true }}
               ref={transformComponentRef}
+              smooth={false}
             >
               <TransformComponent
                 wrapperStyle={{

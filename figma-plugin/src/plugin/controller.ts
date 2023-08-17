@@ -138,25 +138,7 @@ function getNewNodeName(node: SceneNode, mapObject: MapObjectComponent, campus: 
     return null;
   }
 
-  return `${campus}__${typeShortName}__${textByChildren}`;
-}
-
-function decodeIds(svg: string) {
-  svg = svg.replace(/id="([^"]+)"/g, (match, p1) => {
-    if (p1.includes("__")) {
-      return `data-room="${p1}"`;
-    } else {
-      return "";
-    }
-  });
-  svg = svg.replace(/&#(\d+);/g, function (match, p1) {
-    return String.fromCharCode(parseInt(p1));
-  });
-  svg = svg.replace(/data-room="([^"]+)"/g, function (match, p1) {
-    return 'data-room="' + decodeURIComponent(escape(p1)) + '"';
-  });
-
-  return svg;
+  return `MO__${campus}__${typeShortName}__${textByChildren}`;
 }
 
 function mapSvgComponents(campus: string) {

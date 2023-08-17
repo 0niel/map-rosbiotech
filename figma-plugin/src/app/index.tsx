@@ -4,7 +4,7 @@ import UI from './ui';
 import AddComponentSection from '@/src/app/components/sections/AddComponent';
 import ViewComponentsSection from '@/src/app/components/sections/ViewComponents';
 import MapComponentsSection from './components/sections/MapComponents';
-
+import EncodeMapObjectsSection from './components/sections/EncodeMapObject';
 import './styles/global.css';
 
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
@@ -26,6 +26,10 @@ const router = createMemoryRouter([
   {
     path: '/map-components',
     element: <MapComponentsSection />,
+  },
+  {
+    path: '/encode-map-objects',
+    element: <EncodeMapObjectsSection />,
   },
 ]);
 

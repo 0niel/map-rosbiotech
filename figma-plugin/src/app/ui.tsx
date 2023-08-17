@@ -71,6 +71,7 @@ const UI = ({}) => {
             <Button onClick={() => navigate('/map-components')}>Замаппить компоненты</Button>
           </>
         )}
+        <Button onClick={() => navigate('/encode-map-objects')}>Закодировать map-object</Button>
 
         <div className="flex flex-col">
           <Label htmlFor="file">Импорт конфига из json</Label>
