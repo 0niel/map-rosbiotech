@@ -4,8 +4,7 @@ import {
   TransformComponent,
   type ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
-import Floor2 from "~/components/svg/floor_2.svg";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import SearchButton, { type SearchResult } from "../SearchButton";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
@@ -14,7 +13,6 @@ import MapRoute, { type MapRouteRef } from "./MapRoute";
 import ScheduleAPI from "~/lib/schedule/api";
 import { useQuery } from "react-query";
 import { Spinner } from "flowbite-react";
-import DateAndTimePicker from "./DateAndTimePicker";
 import { MapPin } from "lucide-react";
 import { type RoomOnMap } from "~/lib/map/RoomOnMap";
 import {
@@ -28,6 +26,10 @@ import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
 import RoomDrawer from "./RoomDrawer";
 import RoutesModal from "./RoutesModal";
+import V78Map from "~/components/svg-maps/v-78/DynamicMap";
+import S20Map from "~/components/svg-maps/s-20/DynamicMap";
+import MP1 from "~/components/svg-maps/mp-1/DynamicMap";
+import React from "react";
 
 const scheduleAPI = new ScheduleAPI();
 
@@ -35,11 +37,34 @@ const campuses = [
   {
     label: "В-78",
     description: "Проспект Вернадского, 78",
+    map: V78Map,
+    floors: [0, 1, 2, 3, 4],
+    initialScale: 0.2,
+    initialPositionX: -600,
+    initialPositionY: -134,
   },
   // {
   //   label: "В-86",
   //   description: "Проспект Вернадского, 86",
   // },
+  {
+    label: "С-20",
+    description: "Стромынка, 20",
+    map: S20Map,
+    floors: [1, 2, 3, 4],
+    initialScale: 0.25,
+    initialPositionX: 183.5,
+    initialPositionY: 102.5,
+  },
+  {
+    label: "МП-1",
+    description: "Малая Пироговская, 1",
+    map: MP1,
+    floors: [-1, 1, 2, 3, 4, 5],
+    initialScale: 0.25,
+    initialPositionX: -130,
+    initialPositionY: -77,
+  },
 ];
 
 const loadJsonToGraph = (routesJson: string) => {
@@ -177,6 +202,21 @@ const MapContainer = () => {
     selectedRoomRef.current = selectedRoomOnMap;
   }, [selectedRoomOnMap]);
 
+  const [campusMap, setCampusMap] = useState(
+    campuses.find((campus) => campus.label === "В-78"),
+  );
+
+  useEffect(() => {
+    const map = campuses.find((campus) => campus.label === selectedCampus);
+    setCampusMap(map);
+    transformComponentRef.current?.resetTransform();
+    transformComponentRef.current?.setTransform(
+      map?.initialPositionX ?? 0,
+      map?.initialPositionY ?? 0,
+      map?.initialScale ?? 1,
+    );
+  }, [selectedCampus, selectedFloor]);
+
   useEffect(() => {
     if (!data || isLoading) {
       return;
@@ -194,7 +234,7 @@ const MapContainer = () => {
         room.removeEventListener("click", handleRoomClick);
       });
     };
-  }, [selectedFloor, data, isLoading]);
+  }, [campusMap, data, isLoading]);
 
   const handleCloseDrawer = () => {
     setDrawerOpened(false);
@@ -341,18 +381,25 @@ const MapContainer = () => {
                 <MapPin className="h-6 w-6" />
               </button>
 
-              <MapControls
-                onZoomIn={() => transformComponentRef.current?.zoomIn()}
-                onZoomOut={() => transformComponentRef.current?.zoomOut()}
-                floors={[1, 2, 3, 4]}
-                selectedFloor={selectedFloor}
-                setSelectedFloor={setSelectedFloor}
-              />
+              <div className="z-30 md:fixed md:right-10">
+                <MapControls
+                  onZoomIn={() => transformComponentRef.current?.zoomIn()}
+                  onZoomOut={() => transformComponentRef.current?.zoomOut()}
+                  floors={
+                    campuses.find((c) => c.label === selectedCampus)?.floors ||
+                    []
+                  }
+                  selectedFloor={selectedFloor}
+                  setSelectedFloor={setSelectedFloor}
+                />
+              </div>
             </div>
 
             <TransformWrapper
               minScale={0.05}
-              initialScale={0.3}
+              initialScale={campusMap?.initialScale ?? 1}
+              initialPositionX={campusMap?.initialPositionX ?? 0}
+              initialPositionY={campusMap?.initialPositionY ?? 0}
               maxScale={1}
               panning={{ disabled: false }}
               wheel={{ disabled: false, step: 0.05 }}
@@ -360,6 +407,9 @@ const MapContainer = () => {
               zoomAnimation={{ disabled: true }}
               ref={transformComponentRef}
               smooth={false}
+              // onTransformed={(ref, event) => {
+              //   console.log(ref.state);
+              // }}
             >
               <TransformComponent
                 wrapperStyle={{
@@ -373,8 +423,9 @@ const MapContainer = () => {
                   className="pointer-events-none absolute z-20 h-full w-full"
                   graph={graph}
                 />
-
-                <Floor2 />
+                {React.createElement(campusMap?.map ?? "div", {
+                  floor: selectedFloor,
+                })}
               </TransformComponent>
             </TransformWrapper>
           </div>
