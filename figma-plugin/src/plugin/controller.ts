@@ -70,7 +70,10 @@ function convertNodeNames(nodes: readonly SceneNode[], campus: string) {
     if (node.type === "INSTANCE") {
       const mapObject = getMapObjectByNode(node);
       if (mapObject) {
-        node.name = getNewNodeName(node, mapObject, campus);
+        const newName = getNewNodeName(node, mapObject, campus);
+        if (newName) {
+          node.name = newName;
+        }
       }
     }
 
@@ -80,7 +83,10 @@ function convertNodeNames(nodes: readonly SceneNode[], campus: string) {
       if (instanceChild) {
         const mapObject = getMapObjectByNode(instanceChild);
         if (mapObject) {
-          node.name = getNewNodeName(instanceChild, mapObject, campus);
+          const newName = getNewNodeName(node, mapObject, campus);
+          if (newName) {
+            node.name = newName;
+          }
         }
       }
     }
@@ -108,7 +114,7 @@ function getTextByChildren(node: SceneNode) {
   const textByChildren: string[] = [];
   if ("children" in node) {
     node.children.forEach(childNode => {
-      if ("characters" in childNode) {
+      if ("characters" in childNode && childNode.visible) {
         if (childNode.characters.match(/[a-zA-Zа-яА-Я0-9]/g) && childNode.characters.length != 1) {
           textByChildren.push(childNode.characters);
         }
@@ -127,6 +133,10 @@ function getNewNodeName(node: SceneNode, mapObject: MapObjectComponent, campus: 
   }
 
   const textByChildren = getTextByChildren(node);
+
+  if (textByChildren.length === 0) {
+    return null;
+  }
 
   return `${campus}__${typeShortName}__${textByChildren}`;
 }
@@ -152,7 +162,25 @@ function decodeIds(svg: string) {
 function mapSvgComponents(campus: string) {
   let selectedNodes = figma.currentPage.selection;
   if (selectedNodes.length === 1 && selectedNodes[0].type === "GROUP" || selectedNodes[0].type === "FRAME") {
-    selectedNodes = selectedNodes[0].children;
+    if (selectedNodes[0].children.length < 5) {
+      selectedNodes = selectedNodes[0].children;
+    } else {
+      const getInstances = (node: SceneNode) => {
+        if (node.type === "INSTANCE") {
+          return [node];
+        }
+
+        if ("children" in node) {
+          return node.children.reduce((acc, child) => {
+            return [...acc, ...getInstances(child)];
+          }, [] as SceneNode[]);
+        }
+
+        return [] as SceneNode[];
+      }
+
+      selectedNodes = getInstances(selectedNodes[0]);
+    }
   }
 
   if (selectedNodes.length === 0) {
@@ -166,10 +194,20 @@ function mapSvgComponents(campus: string) {
 
 figma.on("selectionchange", () => {
   const { selection } = figma.currentPage;
-  if (selection && selection.length === 1 && selection[0].type === "INSTANCE") {
+
+  if (!selection || selection.length !== 1)
+    return;
+
+  if (selection[0].type === "INSTANCE") {
     const instance = selection[0] as InstanceNode;
 
     figma.ui.postMessage({ type: "instance-selected", message: { id: instance.mainComponent?.id, instances: instance.mainComponent?.instances.length } });
+  }
+
+  else if (selection[0].type === "COMPONENT") {
+    const component = selection[0] as ComponentNode;
+
+    figma.ui.postMessage({ type: "instance-selected", message: { id: component.id, instances: component.instances.length } });
   }
 
   figma.ui.postMessage({ type: "nodes-selected", message: { selected: selection.length > 0 } });
