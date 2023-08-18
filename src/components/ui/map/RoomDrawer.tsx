@@ -11,6 +11,7 @@ import { getWeekByDate } from "~/lib/schedule/utils";
 import RightDrawer from "../RightDrawer";
 import Spinner from "../Spinner";
 import ScheduleCalendar from "./ScheduleCalendar";
+import Image from "next/image";
 
 interface RoomDrawerProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ interface RoomDrawerProps {
 
 const getCurrentEvent = (
   lessons: components["schemas"]["Lesson"][],
-  dateTime: Date
+  dateTime: Date,
 ) => {
   const date = new Date(dateTime);
   const week = getWeekByDate(date);
@@ -138,8 +139,16 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                 </div>
               ) : null}
               {!room && (
-                <div className="flex h-full items-center justify-center">
-                  <p>Нет информации для отображения</p>
+                <div className="flex h-full flex-col items-center justify-center">
+                  <Image
+                    src="assets/ghost.svg"
+                    width={200}
+                    height={200}
+                    alt={""}
+                  />
+                  <p className="text-center text-gray-500">
+                    Нет данных по этой аудитории
+                  </p>
                 </div>
               )}
               {!isLoading && data && (

@@ -1,27 +1,23 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { HiSearch } from "react-icons/hi";
 
 interface SearchButtonProps {
   onClick: () => void;
-  text?: string;
 }
 
-const SearchButton: React.FC<SearchButtonProps> = ({
-  onClick,
-  text: placeholder,
-}) => {
+const SearchButton: React.FC<SearchButtonProps> = ({ onClick }) => {
   return (
-    <button
-      className="pointer-events-auto block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-100 p-2.5 pl-10 text-left text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-      onClick={onClick}
-    >
-      <div className="flex items-center">
-        <Search className="h-5 w-5 text-gray-400" />
-        <span className="ml-2 leading-5 text-gray-500">
-          {placeholder || "Поиск..."}
-        </span>
+    <div className="relative mt-1 lg:w-96">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <HiSearch className="h-5 w-5 text-gray-500" aria-hidden="true" />
       </div>
-    </button>
+      <button
+        className="focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        onClick={onClick}
+      >
+        <p className="text-start text-gray-500">Поиск</p>
+      </button>
+    </div>
   );
 };
 

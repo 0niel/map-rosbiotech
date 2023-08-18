@@ -1,5 +1,6 @@
 import React from "react";
 import { Sidebar } from "../sidebar/Sidebar";
+import HeaderNavbar from "../HeaderNavbar";
 
 interface LayoutWithSidebarProps {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
 
   return (
     <main className="flex h-screen flex-col">
-      <button
+      {/* <button
         data-drawer-target="logo-sidebar"
         data-drawer-toggle="logo-sidebar"
         aria-controls="logo-sidebar"
@@ -33,9 +34,11 @@ const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
           ></path>
         </svg>
       </button>
-      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} /> */}
 
-      <div className="h-full sm:ml-64">{children}</div>
+      <HeaderNavbar />
+
+      <div className="h-full">{children}</div>
     </main>
   );
 };

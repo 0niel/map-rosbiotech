@@ -19,6 +19,10 @@ const config = {
     defaultLocale: "en",
   },
 
+  images: {
+    domains: ["flowbite.s3.amazonaws.com", "flowbite.com"],
+  },
+
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((/** @type {{ test: { test: (arg0: string) => any; }; }} */ rule) =>

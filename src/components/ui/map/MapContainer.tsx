@@ -4,8 +4,8 @@ import {
   TransformComponent,
   type ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
-import { use, useEffect, useRef, useState } from "react";
-import SearchButton, { type SearchResult } from "../SearchButton";
+import { useEffect, useRef, useState } from "react";
+import SearchButton from "../SearchButton";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
 import { type Graph } from "~/lib/graph";
@@ -30,6 +30,7 @@ import V78Map from "~/components/svg-maps/v-78/DynamicMap";
 import S20Map from "~/components/svg-maps/s-20/DynamicMap";
 import MP1 from "~/components/svg-maps/mp-1/DynamicMap";
 import React from "react";
+import { SearchResult } from "../SearchInput";
 
 const scheduleAPI = new ScheduleAPI();
 
@@ -213,7 +214,9 @@ const MapContainer = () => {
     const isSmallScreen = currentScreenWidth < 1024;
 
     transformComponentRef.current?.setTransform(
-      isSmallScreen ? map?.initialPositionX * 2 : map?.initialPositionX ?? 0,
+      isSmallScreen
+        ? map?.initialPositionX ?? 0 * 2
+        : map?.initialPositionX ?? 0,
       map?.initialPositionY ?? 0,
       map?.initialScale ?? 1,
       undefined,
@@ -259,27 +262,28 @@ const MapContainer = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="absolute left-14 right-0 top-0 block transition-all duration-300 sm:hidden">
+      {/* <div className="absolute left-14 right-0 top-0 block transition-all duration-300 sm:hidden">
         <div className="pointer-events-none flex flex-row items-center justify-between px-4 py-2">
           <div className="z-20 mr-4 w-full transition-all duration-300 ease-in-out sm:mx-auto sm:w-80 sm:max-w-md md:mx-0 md:p-4">
             <SearchButton
-              showSubmitButton={false}
-              onSubmit={(data) => {
-                const result = searchInMapAndGraph(data, graph)[0];
+              // showSubmitButton={false}
+              // onSubmit={(data) => {
+              //   const result = searchInMapAndGraph(data, graph)[0];
 
-                if (!result) {
-                  return;
-                }
+              //   if (!result) {
+              //     return;
+              //   }
 
-                const roomEl = searchMapObjectsByName(result.title)[0];
-                if (!roomEl) {
-                  return;
-                }
+              //   const roomEl = searchMapObjectsByName(result.title)[0];
+              //   if (!roomEl) {
+              //     return;
+              //   }
 
-                selectRoomEl(roomEl);
-              }}
-              onChange={handleSearch}
-              searchResults={searchResults}
+              //   selectRoomEl(roomEl);
+              // }}
+              // onChange={handleSearch}
+              // searchResults={searchResults}
+              onClick={() => {}}
               text="Поиск..."
             />
           </div>
@@ -301,7 +305,7 @@ const MapContainer = () => {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="h-full rounded-lg dark:border-gray-700">
         <RoomDrawer
@@ -319,26 +323,27 @@ const MapContainer = () => {
         )}
         {!isLoading && data && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
-            <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 hidden flex-row items-center justify-between px-4 py-2 transition-all duration-300 ease-in-out sm:flex md:px-0 md:py-0">
+            {/* <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 hidden flex-row items-center justify-between px-4 py-2 transition-all duration-300 ease-in-out sm:flex md:px-0 md:py-0">
               <div className="z-20 mr-4 w-full transition-all duration-300 ease-in-out sm:mx-auto sm:w-80 sm:max-w-md md:mx-0 md:p-4">
                 <SearchButton
-                  showSubmitButton={false}
-                  onSubmit={(data) => {
-                    const result = searchInMapAndGraph(data, graph)[0];
+                  // showSubmitButton={false}
+                  // onSubmit={(data) => {
+                  //   const result = searchInMapAndGraph(data, graph)[0];
 
-                    if (!result) {
-                      return;
-                    }
+                  //   if (!result) {
+                  //     return;
+                  //   }
 
-                    const roomEl = searchMapObjectsByName(result.title)[0];
-                    if (!roomEl) {
-                      return;
-                    }
+                  //   const roomEl = searchMapObjectsByName(result.title)[0];
+                  //   if (!roomEl) {
+                  //     return;
+                  //   }
 
-                    selectRoomEl(roomEl);
-                  }}
-                  onChange={handleSearch}
-                  searchResults={searchResults}
+                  //   selectRoomEl(roomEl);
+                  // }}
+                  // onChange={handleSearch}
+                  // searchResults={searchResults}
+                  onClick={() => {}}
                   text="Поиск..."
                 />
               </div>
@@ -359,7 +364,7 @@ const MapContainer = () => {
                   defaultSelectedOptionId="0"
                 />
               </div>
-            </div>
+            </div> */}
 
             <RoutesModal
               isOpen={routesModalShow}
@@ -405,12 +410,20 @@ const MapContainer = () => {
               initialPositionX={campusMap?.initialPositionX ?? 0}
               initialPositionY={campusMap?.initialPositionY ?? 0}
               maxScale={1}
-              panning={{ disabled: false }}
+              panning={{ disabled: false, velocityDisabled: true}}
               wheel={{ disabled: false, step: 0.05 }}
-              pinch={{ step: 0.05 }}
+              pinch={{ step: 0.05  }}
               zoomAnimation={{ disabled: true }}
               ref={transformComponentRef}
               smooth={false}
+              alignmentAnimation={{ disabled: true }}
+              velocityAnimation={{ disabled: true }}
+              limitToBounds={false}
+              centerZoomedOut={false}
+              // centerOnInit={true}
+              disablePadding={false}
+              
+
               // onTransformed={(ref, event) => {
               //   console.log(ref.state);
               // }}
