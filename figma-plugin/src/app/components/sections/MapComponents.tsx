@@ -31,8 +31,6 @@ const MapComponentsSection = () => {
 
       const { type, message } = event.data.pluginMessage;
 
-      console.log(type, message);
-
       if (type === 'nodes-selected') {
         const { selected } = message;
 

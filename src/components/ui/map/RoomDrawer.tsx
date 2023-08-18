@@ -109,8 +109,6 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
     },
   });
 
-  console.log(data);
-
   return (
     <div className="relative">
       <RightDrawer

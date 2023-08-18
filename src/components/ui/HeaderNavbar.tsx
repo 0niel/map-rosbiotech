@@ -1,12 +1,16 @@
 import Image from "next/image";
 import DropdownRadio from "./DropdownRadio";
 import { Dropdown } from "flowbite-react";
-import { HiSearch, HiMap} from "react-icons/hi";
+import { HiSearch, HiMap } from "react-icons/hi";
 import SearchButton from "./SearchButton";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { BiTimeFive } from "react-icons/bi";
+import campuses from "~/lib/campuses";
+import { useMapStore } from "~/lib/stores/map";
 
 const HeaderNavbar = () => {
+  const mapStore = useMapStore();
+
   return (
     <>
       <header>
@@ -359,7 +363,7 @@ const HeaderNavbar = () => {
                       href="#"
                       className="group block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
-                      <HiMap   className="mx-auto mb-1 h-7 w-7 text-gray-400 group-hover:text-gray-500 " />
+                      <HiMap className="mx-auto mb-1 h-7 w-7 text-gray-400 group-hover:text-gray-500 " />
                       <div className="text-sm text-gray-900 dark:text-white">
                         тепловая карта
                       </div>
@@ -388,12 +392,18 @@ const HeaderNavbar = () => {
 
               <div className="ml-2">
                 <DropdownRadio
-                  title={"В-78"}
-                  options={[
-                    { label: "В-78", value: "В-78" },
-                    { label: "В-79", value: "В-79" },
-                  ]}
-                  onSelectionChange={(selectedOption) => {}}
+                  title={mapStore.campus}
+                  options={Array.from(campuses, (campus, i) => ({
+                    label: campus.label,
+                    description: campus.description,
+                    id: i.toString(),
+                  }))}
+                  onSelectionChange={(selectedOption) => {
+                    if (!selectedOption) {
+                      return;
+                    }
+                    mapStore.setCampus(selectedOption.label);
+                  }}
                   defaultSelectedOptionId="0"
                 />
               </div>

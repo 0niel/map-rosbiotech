@@ -4,7 +4,7 @@ import {
   TransformComponent,
   type ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import SearchButton from "../SearchButton";
 import DropdownRadio from "../DropdownRadio";
 import routesJson from "public/routes.json";
@@ -26,47 +26,13 @@ import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
 import RoomDrawer from "./RoomDrawer";
 import RoutesModal from "./RoutesModal";
-import V78Map from "~/components/svg-maps/v-78/DynamicMap";
-import S20Map from "~/components/svg-maps/s-20/DynamicMap";
-import MP1 from "~/components/svg-maps/mp-1/DynamicMap";
 import React from "react";
 import { SearchResult } from "../SearchInput";
+import campuses from "~/lib/campuses";
+import { useMapStore } from "~/lib/stores/map";
+import { svg } from "d3";
 
 const scheduleAPI = new ScheduleAPI();
-
-const campuses = [
-  {
-    label: "В-78",
-    description: "Проспект Вернадского, 78",
-    map: V78Map,
-    floors: [0, 1, 2, 3, 4],
-    initialScale: 0.2,
-    initialPositionX: -600,
-    initialPositionY: -134,
-  },
-  // {
-  //   label: "В-86",
-  //   description: "Проспект Вернадского, 86",
-  // },
-  {
-    label: "С-20",
-    description: "Стромынка, 20",
-    map: S20Map,
-    floors: [1, 2, 3, 4],
-    initialScale: 0.25,
-    initialPositionX: 183.5,
-    initialPositionY: 102.5,
-  },
-  {
-    label: "МП-1",
-    description: "Малая Пироговская, 1",
-    map: MP1,
-    floors: [-1, 1, 2, 3, 4, 5],
-    initialScale: 0.25,
-    initialPositionX: -130,
-    initialPositionY: -77,
-  },
-];
 
 const loadJsonToGraph = (routesJson: string) => {
   const graph = JSON.parse(routesJson) as Graph;
@@ -81,7 +47,7 @@ const MapContainer = () => {
       const campuses = await scheduleAPI.getCampuses();
 
       const campusId = campuses.find(
-        (campus) => campus.short_name === selectedCampus,
+        (campus) => campus.short_name === mapStore.campus,
       )?.id;
 
       if (!campusId) {
@@ -107,7 +73,7 @@ const MapContainer = () => {
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
   const [selectedFloor, setSelectedFloor] = useState(3);
-  const [selectedCampus, setSelectedCampus] = useState("В-78");
+  const mapStore = useMapStore();
 
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
     null,
@@ -183,6 +149,8 @@ const MapContainer = () => {
 
   const handleRoomClick = (e: Event) => {
     e.stopPropagation();
+    e.preventDefault();
+
     const target = e.target as HTMLElement;
     let room = target.closest(mapObjectSelector);
     if (
@@ -208,7 +176,7 @@ const MapContainer = () => {
   );
 
   useEffect(() => {
-    const map = campuses.find((campus) => campus.label === selectedCampus);
+    const map = campuses.find((campus) => campus.label === mapStore.campus);
 
     const currentScreenWidth = window.innerWidth;
     const isSmallScreen = currentScreenWidth < 1024;
@@ -222,26 +190,7 @@ const MapContainer = () => {
       undefined,
     );
     setCampusMap(map);
-  }, [selectedCampus]);
-
-  useEffect(() => {
-    if (!data || isLoading) {
-      return;
-    }
-
-    const roomsElements = getAllMapObjectsElements();
-
-    roomsElements.forEach((room) => {
-      (room as HTMLElement).style.cursor = "pointer";
-      room.addEventListener("click", handleRoomClick);
-    });
-
-    return () => {
-      roomsElements.forEach((room) => {
-        room.removeEventListener("click", handleRoomClick);
-      });
-    };
-  }, [campusMap, data, isLoading, selectedFloor]);
+  }, [mapStore.campus]);
 
   const handleCloseDrawer = () => {
     setDrawerOpened(false);
@@ -255,58 +204,23 @@ const MapContainer = () => {
     setSearchResults(results);
   };
 
-  const [dateTimePickerShow, setDateTimePickerShow] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<Date>(new Date());
 
   const [routesModalShow, setRoutesModalShow] = useState(false);
 
+  const mapImageRef = useRef<HTMLImageElement>(null);
+
+  const mapCliclableRegions = () => {
+    const roomsElements = getAllMapObjectsElements(document);
+
+    roomsElements.forEach((room) => {
+      (room as HTMLElement).style.cursor = "pointer";
+      room.addEventListener("click", handleRoomClick);
+    });
+  };
+
   return (
     <div className="flex h-full flex-col">
-      {/* <div className="absolute left-14 right-0 top-0 block transition-all duration-300 sm:hidden">
-        <div className="pointer-events-none flex flex-row items-center justify-between px-4 py-2">
-          <div className="z-20 mr-4 w-full transition-all duration-300 ease-in-out sm:mx-auto sm:w-80 sm:max-w-md md:mx-0 md:p-4">
-            <SearchButton
-              // showSubmitButton={false}
-              // onSubmit={(data) => {
-              //   const result = searchInMapAndGraph(data, graph)[0];
-
-              //   if (!result) {
-              //     return;
-              //   }
-
-              //   const roomEl = searchMapObjectsByName(result.title)[0];
-              //   if (!roomEl) {
-              //     return;
-              //   }
-
-              //   selectRoomEl(roomEl);
-              // }}
-              // onChange={handleSearch}
-              // searchResults={searchResults}
-              onClick={() => {}}
-              text="Поиск..."
-            />
-          </div>
-          <div className="z-30 md:fixed md:right-10">
-            <DropdownRadio
-              title={selectedCampus}
-              options={Array.from(campuses, (campus, i) => ({
-                label: campus.label,
-                description: campus.description,
-                id: i.toString(),
-              }))}
-              onSelectionChange={(selectedOption) => {
-                if (!selectedOption) {
-                  return;
-                }
-                setSelectedCampus(selectedOption.label);
-              }}
-              defaultSelectedOptionId="0"
-            />
-          </div>
-        </div>
-      </div> */}
-
       <div className="h-full rounded-lg dark:border-gray-700">
         <RoomDrawer
           isOpen={drawerOpened}
@@ -323,49 +237,6 @@ const MapContainer = () => {
         )}
         {!isLoading && data && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
-            {/* <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 hidden flex-row items-center justify-between px-4 py-2 transition-all duration-300 ease-in-out sm:flex md:px-0 md:py-0">
-              <div className="z-20 mr-4 w-full transition-all duration-300 ease-in-out sm:mx-auto sm:w-80 sm:max-w-md md:mx-0 md:p-4">
-                <SearchButton
-                  // showSubmitButton={false}
-                  // onSubmit={(data) => {
-                  //   const result = searchInMapAndGraph(data, graph)[0];
-
-                  //   if (!result) {
-                  //     return;
-                  //   }
-
-                  //   const roomEl = searchMapObjectsByName(result.title)[0];
-                  //   if (!roomEl) {
-                  //     return;
-                  //   }
-
-                  //   selectRoomEl(roomEl);
-                  // }}
-                  // onChange={handleSearch}
-                  // searchResults={searchResults}
-                  onClick={() => {}}
-                  text="Поиск..."
-                />
-              </div>
-              <div className="z-30 md:fixed md:right-10">
-                <DropdownRadio
-                  title={selectedCampus}
-                  options={Array.from(campuses, (campus, i) => ({
-                    label: campus.label,
-                    description: campus.description,
-                    id: i.toString(),
-                  }))}
-                  onSelectionChange={(selectedOption) => {
-                    if (!selectedOption) {
-                      return;
-                    }
-                    setSelectedCampus(selectedOption.label);
-                  }}
-                  defaultSelectedOptionId="0"
-                />
-              </div>
-            </div> */}
-
             <RoutesModal
               isOpen={routesModalShow}
               onClose={() => setRoutesModalShow(false)}
@@ -395,7 +266,7 @@ const MapContainer = () => {
                   onZoomIn={() => transformComponentRef.current?.zoomIn()}
                   onZoomOut={() => transformComponentRef.current?.zoomOut()}
                   floors={
-                    campuses.find((c) => c.label === selectedCampus)?.floors ||
+                    campuses.find((c) => c.label === mapStore.campus)?.floors ||
                     []
                   }
                   selectedFloor={selectedFloor}
@@ -410,19 +281,18 @@ const MapContainer = () => {
               initialPositionX={campusMap?.initialPositionX ?? 0}
               initialPositionY={campusMap?.initialPositionY ?? 0}
               maxScale={1}
-              panning={{ disabled: false, velocityDisabled: true}}
+              panning={{ disabled: false, velocityDisabled: true }}
               wheel={{ disabled: false, step: 0.05 }}
-              pinch={{ step: 0.05  }}
+              pinch={{ step: 0.05 }}
               zoomAnimation={{ disabled: true }}
               ref={transformComponentRef}
               smooth={false}
               alignmentAnimation={{ disabled: true }}
-              velocityAnimation={{ disabled: true }}
+              velocityAnimation={{ disabled: true, sensitivity: 0 }}
               limitToBounds={false}
               centerZoomedOut={false}
               // centerOnInit={true}
               disablePadding={false}
-              
 
               // onTransformed={(ref, event) => {
               //   console.log(ref.state);
@@ -442,6 +312,7 @@ const MapContainer = () => {
                 />
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
+                  onLoaded: () => mapCliclableRegions(),
                 })}
               </TransformComponent>
             </TransformWrapper>

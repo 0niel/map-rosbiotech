@@ -53,7 +53,6 @@ class ScheduleAPI {
         name: string,
         status: string
     }[]> {
-        console.log(dateTime.toISOString());
         const response = await this.apiClient.get(`/rooms/statuses?date_time=${dateTime.toISOString()}&ids=${room_ids.join('&ids=')}`);
 
         return response.data as {

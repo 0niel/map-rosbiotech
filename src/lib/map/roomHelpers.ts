@@ -33,7 +33,7 @@ export const fillRoom = (room: Element, color: string) => {
     }
 };
 
-type MapObjectType = "room" | "toilet" | "canteen" | "atm" | "stairs";
+// type MapObjectType = "room" | "toilet" | "canteen" | "atm" | "stairs";
 
 // const getTypeByShortName = (shortName: string): MapObjectType => {
 //     switch (shortName) {
@@ -84,7 +84,7 @@ export const getMapObjectNameByElement = (el: Element) => {
 
 export const mapObjectSelector = `[data-object]`;
 
-export const getAllMapObjectsElements = () => {
+export const getAllMapObjectsElements = (document: Document = window.document) => {
     const rooms = document.querySelectorAll(mapObjectSelector);
 
     const roomsEls = Array.from(rooms).map((room) => {
