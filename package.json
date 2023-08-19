@@ -8,7 +8,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "production": "npx prisma migrate deploy && node server.js"
+    "production": "node server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
