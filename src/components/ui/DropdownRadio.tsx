@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import React, { useState } from "react"
+import { ChevronDown } from "lucide-react"
 
 type DropdownRadioOption = {
-  id: string;
-  label: string;
-  description: string;
-};
+  id: string
+  label: string
+  description: string
+}
 
 type DropdownRadioProps = {
-  title: string;
-  options: DropdownRadioOption[];
-  onSelectionChange: (selectedOption: DropdownRadioOption | null) => void;
-  defaultSelectedOptionId?: string;
-};
+  title: string
+  options: DropdownRadioOption[]
+  onSelectionChange: (selectedOption: DropdownRadioOption | null) => void
+  defaultSelectedOptionId?: string
+}
 
 const DropdownRadio: React.FC<DropdownRadioProps> = ({
   title,
@@ -20,21 +20,20 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
   onSelectionChange,
   defaultSelectedOptionId,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [selectedOption, setSelectedOption] =
-    useState<DropdownRadioOption | null>(
-      options.find((option) => option.id === defaultSelectedOptionId) || null
-    );
+  const [isVisible, setIsVisible] = useState(false)
+  const [selectedOption, setSelectedOption] = useState<DropdownRadioOption | null>(
+    options.find((option) => option.id === defaultSelectedOptionId) || null,
+  )
 
   const handleButtonClick = () => {
-    setIsVisible(!isVisible);
-  };
+    setIsVisible(!isVisible)
+  }
 
   const handleOptionClick = (option: DropdownRadioOption) => {
-    setSelectedOption(option);
-    onSelectionChange(option);
-    setIsVisible(false);
-  };
+    setSelectedOption(option)
+    onSelectionChange(option)
+    setIsVisible(false)
+  }
 
   return (
     <div className="pointer-events-auto">
@@ -55,16 +54,10 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
           isVisible ? "fixed" : "hidden"
         } w-60 divide-y divide-gray-100 rounded-lg bg-white shadow`}
       >
-        <ul
-          className="space-y-1 p-3 text-sm text-gray-700"
-          aria-labelledby="dropdownRadioHelperButton"
-        >
+        <ul className="space-y-1 p-3 text-sm text-gray-700" aria-labelledby="dropdownRadioHelperButton">
           {options.map((option) => (
             <li key={option.id}>
-              <div
-                className="flex rounded p-2 hover:bg-gray-100"
-                onClick={() => handleOptionClick(option)}
-              >
+              <div className="flex rounded p-2 hover:bg-gray-100" onClick={() => handleOptionClick(option)}>
                 <div className="flex h-5 items-center">
                   <input
                     id={`helper-radio-${option.id}`}
@@ -77,17 +70,9 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
                   />
                 </div>
                 <div className="ml-2 text-sm">
-                  <label
-                    htmlFor={`helper-radio-${option.id}`}
-                    className="font-medium text-gray-900"
-                  >
-                    <div className="text-sm font-medium text-blue-500">
-                      {option.label}
-                    </div>
-                    <p
-                      id={`helper-radio-text-${option.id}`}
-                      className="text-xs font-normal text-gray-500"
-                    >
+                  <label htmlFor={`helper-radio-${option.id}`} className="font-medium text-gray-900">
+                    <div className="text-sm font-medium text-blue-500">{option.label}</div>
+                    <p id={`helper-radio-text-${option.id}`} className="text-xs font-normal text-gray-500">
                       {option.description}
                     </p>
                   </label>
@@ -98,7 +83,7 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DropdownRadio;
+export default DropdownRadio

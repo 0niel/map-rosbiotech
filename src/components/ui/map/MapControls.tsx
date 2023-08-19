@@ -1,22 +1,16 @@
-import React from "react";
-import FloorSelectorButtons from "./FloorSelectorButtons";
-import ScaleButtons from "./ScaleButtons";
+import React from "react"
+import FloorSelectorButtons from "./FloorSelectorButtons"
+import ScaleButtons from "./ScaleButtons"
 
 interface MapControlsProps {
-  selectedFloor: number;
-  setSelectedFloor: (floor: number) => void;
-  floors: number[];
-  onZoomIn: () => void;
-  onZoomOut: () => void;
+  selectedFloor: number
+  setSelectedFloor: (floor: number) => void
+  floors: number[]
+  onZoomIn: () => void
+  onZoomOut: () => void
 }
 
-const MapControls: React.FC<MapControlsProps> = ({
-  selectedFloor,
-  setSelectedFloor,
-  floors,
-  onZoomIn,
-  onZoomOut,
-}) => {
+const MapControls: React.FC<MapControlsProps> = ({ selectedFloor, setSelectedFloor, floors, onZoomIn, onZoomOut }) => {
   return (
     <div>
       <FloorSelectorButtons
@@ -28,7 +22,7 @@ const MapControls: React.FC<MapControlsProps> = ({
         <ScaleButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MapControls;
+export default MapControls

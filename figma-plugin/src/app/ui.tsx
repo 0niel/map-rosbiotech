@@ -65,7 +65,7 @@ const UI = ({}) => {
     <div className="flex flex-col">
       <div className="mt-20 flex flex-col space-y-4">
         <Button onClick={() => navigate('/add-component')}>Добавить компонента карты</Button>
-        {mapConfig.objectsComponents.length > 0 && (
+        {mapConfig.componentObjects.length > 0 && (
           <>
             <Button onClick={() => navigate('/view-components')}>Выбранные компоненты</Button>
             <Button onClick={() => navigate('/map-components')}>Замаппить компоненты</Button>
@@ -78,7 +78,7 @@ const UI = ({}) => {
           <Input id="file" type="file" onChange={handleFileChange} />
         </div>
 
-        {mapConfig.objectsComponents.length > 0 && (
+        {mapConfig.componentObjects.length > 0 && (
           <div className="flex flex-col space-y-2">
             <Label htmlFor="export-config">Экспорт конфига</Label>
             <Button id="export-config" onClick={onExportConfig}>

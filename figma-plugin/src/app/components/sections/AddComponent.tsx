@@ -56,18 +56,18 @@ const AddComponentSection = () => {
       type: type,
     } as any;
 
-    const index = mapConfig.objectsComponents.findIndex((object) => object.id === selectedComponent?.id);
+    const index = mapConfig.componentObjects.findIndex((object) => object.id === selectedComponent?.id);
     if (index !== -1) {
       updateMapConfig({
-        objectsComponents: [
-          ...mapConfig.objectsComponents.slice(0, index),
+        componentObjects: [
+          ...mapConfig.componentObjects.slice(0, index),
           newMapObject,
-          ...mapConfig.objectsComponents.slice(index + 1),
+          ...mapConfig.componentObjects.slice(index + 1),
         ],
       });
     } else {
       updateMapConfig({
-        objectsComponents: [...mapConfig.objectsComponents, newMapObject],
+        componentObjects: [...mapConfig.componentObjects, newMapObject],
       });
     }
 

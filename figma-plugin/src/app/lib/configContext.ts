@@ -7,7 +7,7 @@ export interface ConfigContextType {
 
 export const ConfigContext = createContext<ConfigContextType>({
     mapConfig: {
-        objectsComponents: []
+        componentObjects: []
     },
     updateMapConfig: () => { }
 });

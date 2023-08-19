@@ -1,14 +1,11 @@
-import React from "react";
-import { Sidebar } from "../sidebar/Sidebar";
-import HeaderNavbar from "../HeaderNavbar";
+import React from "react"
+import HeaderNavbar from "../HeaderNavbar"
 
 interface LayoutWithSidebarProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
-
   return (
     <main className="flex h-screen flex-col">
       {/* <button
@@ -40,7 +37,7 @@ const LayoutWithSidebar: React.FC<LayoutWithSidebarProps> = ({ children }) => {
 
       <div className="h-full">{children}</div>
     </main>
-  );
-};
+  )
+}
 
-export default LayoutWithSidebar;
+export default LayoutWithSidebar

@@ -1,113 +1,93 @@
-import React from "react";
-import FloorSelectorButtons from "./FloorSelectorButtons";
-import ScaleButtons from "./ScaleButtons";
-import { type components } from "~/lib/schedule/schema";
-import Tabs from "../Tabs";
-import { Calendar, Info } from "lucide-react";
-import RoomInfoTabContent from "./RoomInfoTabContent";
-import { useQuery } from "react-query";
-import type ScheduleAPI from "~/lib/schedule/api";
-import { getWeekByDate } from "~/lib/schedule/utils";
-import RightDrawer from "../RightDrawer";
-import Spinner from "../Spinner";
-import ScheduleCalendar from "./ScheduleCalendar";
-import Image from "next/image";
+import React from "react"
+import { type components } from "~/lib/schedule/schema"
+import Tabs from "../Tabs"
+import { Calendar, Info } from "lucide-react"
+import RoomInfoTabContent from "./RoomInfoTabContent"
+import { useQuery } from "react-query"
+import type ScheduleAPI from "~/lib/schedule/api"
+import { getWeekByDate } from "~/lib/schedule/utils"
+import RightDrawer from "../RightDrawer"
+import Spinner from "../Spinner"
+import ScheduleCalendar from "./ScheduleCalendar"
+import Image from "next/image"
 
 interface RoomDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  scheduleAPI: ScheduleAPI;
-  dateTime: Date;
-  room: components["schemas"]["Room"] | null;
+  isOpen: boolean
+  onClose: () => void
+  scheduleAPI: ScheduleAPI
+  dateTime: Date
+  room: components["schemas"]["Room"] | null
 }
 
-const getCurrentEvent = (
-  lessons: components["schemas"]["Lesson"][],
-  dateTime: Date,
-) => {
-  const date = new Date(dateTime);
-  const week = getWeekByDate(date);
+const getCurrentEvent = (lessons: components["schemas"]["Lesson"][], dateTime: Date) => {
+  const date = new Date(dateTime)
+  const week = getWeekByDate(date)
   // weekday 1 - понедельник, 2 - вторник, ...
-  const weekday = date.getDay() === 0 ? 7 : date.getDay();
+  const weekday = date.getDay() === 0 ? 7 : date.getDay()
 
   const currentLessons = lessons.filter((lesson) => {
-    const lessonWeeks = lesson.weeks;
-    const lessonWeekday = lesson.weekday;
+    const lessonWeeks = lesson.weeks
+    const lessonWeekday = lesson.weekday
 
-    const isWeekday = lessonWeekday === weekday;
-    const isWeek = lessonWeeks.includes(week);
+    const isWeekday = lessonWeekday === weekday
+    const isWeek = lessonWeeks.includes(week)
 
-    const lessonStartTime = lesson.calls.time_start.slice(0, 5);
-    const lessonEndTime = lesson.calls.time_end.slice(0, 5);
+    const lessonStartTime = lesson.calls.time_start.slice(0, 5)
+    const lessonEndTime = lesson.calls.time_end.slice(0, 5)
 
-    const lessonStartDateTime = new Date(dateTime);
-    const lessonEndDateTime = new Date(dateTime);
+    const lessonStartDateTime = new Date(dateTime)
+    const lessonEndDateTime = new Date(dateTime)
 
-    const [lessonStartHours, lessonStartMinutes] = lessonStartTime.split(":");
-    const [lessonEndHours, lessonEndMinutes] = lessonEndTime.split(":");
+    const [lessonStartHours, lessonStartMinutes] = lessonStartTime.split(":")
+    const [lessonEndHours, lessonEndMinutes] = lessonEndTime.split(":")
 
-    if (
-      !lessonStartHours ||
-      !lessonStartMinutes ||
-      !lessonEndHours ||
-      !lessonEndMinutes
-    ) {
-      return false;
+    if (!lessonStartHours || !lessonStartMinutes || !lessonEndHours || !lessonEndMinutes) {
+      return false
     }
 
-    lessonStartDateTime.setHours(parseInt(lessonStartHours));
-    lessonStartDateTime.setMinutes(parseInt(lessonStartMinutes));
-    lessonEndDateTime.setHours(parseInt(lessonEndHours));
-    lessonEndDateTime.setMinutes(parseInt(lessonEndMinutes));
+    lessonStartDateTime.setHours(parseInt(lessonStartHours))
+    lessonStartDateTime.setMinutes(parseInt(lessonStartMinutes))
+    lessonEndDateTime.setHours(parseInt(lessonEndHours))
+    lessonEndDateTime.setMinutes(parseInt(lessonEndMinutes))
 
-    const isTime = date >= lessonStartDateTime && date <= lessonEndDateTime;
+    const isTime = date >= lessonStartDateTime && date <= lessonEndDateTime
 
-    return isWeekday && isWeek && isTime;
-  });
+    return isWeekday && isWeek && isTime
+  })
 
   if (currentLessons.length === 0) {
-    return null;
+    return null
   }
 
-  const currentLesson = currentLessons[0];
+  const currentLesson = currentLessons[0]
 
   if (!currentLesson) {
-    return null;
+    return null
   }
 
-  const discipline = currentLesson.discipline.name;
-  const teachers = currentLesson.teachers
-    .map((teacher) => teacher.name)
-    .join(", ");
+  const discipline = currentLesson.discipline.name
+  const teachers = currentLesson.teachers.map((teacher) => teacher.name).join(", ")
 
-  return { discipline, teachers };
-};
+  return { discipline, teachers }
+}
 
-const RoomDrawer: React.FC<RoomDrawerProps> = ({
-  isOpen,
-  onClose,
-  dateTime,
-  room,
-  scheduleAPI,
-}) => {
+const RoomDrawer: React.FC<RoomDrawerProps> = ({ isOpen, onClose, dateTime, room, scheduleAPI }) => {
   const { isLoading, error, data } = useQuery(["room", room, dateTime], {
     queryFn: async () => {
       if (!room) {
-        return;
+        return
       }
-      const roomLessons = await scheduleAPI.getRoomSchedule(room.id);
-      const roomInfo = await scheduleAPI.getRoomInfo(room.id);
-      const roomStatus = await scheduleAPI.getRoomsStatuses(dateTime, [
-        room.id,
-      ]);
+      const roomLessons = await scheduleAPI.getRoomSchedule(room.id)
+      const roomInfo = await scheduleAPI.getRoomInfo(room.id)
+      const roomStatus = await scheduleAPI.getRoomsStatuses(dateTime, [room.id])
 
       return {
         lessons: roomLessons,
         info: roomInfo,
         status: roomStatus[0]?.status,
-      };
+      }
     },
-  });
+  })
 
   return (
     <div className="relative">
@@ -138,15 +118,8 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               ) : null}
               {!room && (
                 <div className="flex h-full flex-col items-center justify-center">
-                  <Image
-                    src="assets/ghost.svg"
-                    width={200}
-                    height={200}
-                    alt={""}
-                  />
-                  <p className="text-center text-gray-500">
-                    Нет данных по этой аудитории
-                  </p>
+                  <Image src="assets/ghost.svg" width={200} height={200} alt={""} />
+                  <p className="text-center text-gray-500">Нет данных по этой аудитории</p>
                 </div>
               )}
               {!isLoading && data && (
@@ -154,14 +127,8 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   workload={data?.info?.workload || 0}
                   status={data?.status === "free" ? "Свободна" : "Занята"}
                   purpose={data?.info?.purpose || ""}
-                  eventName={
-                    getCurrentEvent(data?.lessons || [], dateTime)
-                      ?.discipline || ""
-                  }
-                  teacher={
-                    getCurrentEvent(data?.lessons || [], dateTime)?.teachers ||
-                    ""
-                  }
+                  eventName={getCurrentEvent(data?.lessons || [], dateTime)?.discipline || ""}
+                  teacher={getCurrentEvent(data?.lessons || [], dateTime)?.teachers || ""}
                 />
               )}
             </Tabs.Tab>
@@ -172,7 +139,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
         </div>
       </RightDrawer>
     </div>
-  );
-};
+  )
+}
 
-export default RoomDrawer;
+export default RoomDrawer

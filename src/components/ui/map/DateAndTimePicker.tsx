@@ -1,11 +1,11 @@
-import React from "react";
-import Datepicker from "tailwind-datepicker-react";
+import React from "react"
+import Datepicker from "tailwind-datepicker-react"
 
 interface DateAndTimePickerProps {
-  dateTimePickerShow: boolean;
-  setDateTimePickerShow: (show: boolean) => void;
-  selectedDateTime: Date;
-  setSelectedDateTime: (date: Date) => void;
+  dateTimePickerShow: boolean
+  setDateTimePickerShow: (show: boolean) => void
+  selectedDateTime: Date
+  setSelectedDateTime: (date: Date) => void
 }
 
 const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
@@ -42,7 +42,7 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
         selected={selectedDateTime}
         onChange={(date: Date) => {
           if (date) {
-            setSelectedDateTime(date);
+            setSelectedDateTime(date)
           }
         }}
       />
@@ -60,22 +60,22 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
           })}
           id="time"
           onChange={(e) => {
-            e.preventDefault();
-            const [hours, minutes] = e.target.value.split(":");
+            e.preventDefault()
+            const [hours, minutes] = e.target.value.split(":")
 
-            let date = new Date();
+            let date = new Date()
             if (selectedDateTime) {
-              date = selectedDateTime;
+              date = selectedDateTime
             }
 
-            date.setHours(Number(hours));
-            date.setMinutes(Number(minutes));
-            setSelectedDateTime(date);
+            date.setHours(Number(hours))
+            date.setMinutes(Number(minutes))
+            setSelectedDateTime(date)
           }}
         />
       </label>
     </div>
-  );
-};
+  )
+}
 
-export default DateAndTimePicker;
+export default DateAndTimePicker

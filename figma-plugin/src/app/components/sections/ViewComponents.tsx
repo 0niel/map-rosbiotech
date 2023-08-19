@@ -32,7 +32,7 @@ const ViewComponentsSection = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {mapConfig.objectsComponents.map((object) => (
+        {mapConfig.componentObjects.map((object) => (
           <TableRow key={object.id}>
             <TableCell>{object.id}</TableCell>
             <TableCell>{object.type}</TableCell>

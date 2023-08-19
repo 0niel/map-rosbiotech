@@ -1,1 +1,1 @@
-declare module "tailwind-datepicker-react";
+declare module "tailwind-datepicker-react"

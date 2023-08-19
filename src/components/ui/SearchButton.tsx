@@ -1,8 +1,8 @@
-import React from "react";
-import { HiSearch } from "react-icons/hi";
+import React from "react"
+import { HiSearch } from "react-icons/hi"
 
 interface SearchButtonProps {
-  onClick: () => void;
+  onClick: () => void
 }
 
 const SearchButton: React.FC<SearchButtonProps> = ({ onClick }) => {
@@ -18,7 +18,7 @@ const SearchButton: React.FC<SearchButtonProps> = ({ onClick }) => {
         <p className="text-start text-gray-500">Поиск</p>
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default SearchButton;
+export default SearchButton

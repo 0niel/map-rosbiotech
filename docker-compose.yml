@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   traefik:
@@ -43,7 +43,7 @@ services:
     networks:
       - application
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5

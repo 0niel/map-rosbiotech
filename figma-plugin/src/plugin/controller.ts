@@ -3,8 +3,8 @@ type MapObjectType = 'room' | 'toilet' | 'canteen' | 'atm' | 'stairs';
 
 type Campus = "В-78" | "В-86" | "С-20" | "МП-1"
 
-interface MapObjectComponent {
-  id: string;
+interface MapObject {
+  id: string; // для компонентов это id компонента, для объектов это уникальный id
   type: MapObjectType;
   name?: string;
   description?: string;
@@ -12,11 +12,13 @@ interface MapObjectComponent {
 
 
 interface MapConfig {
-  objectsComponents: MapObjectComponent[];
+  componentObjects: MapObject[];
+  objects: MapObject[];
 }
 
 const mapConfig: MapConfig = {
-  objectsComponents: []
+  componentObjects: [],
+  objects: [],
 };
 
 
@@ -60,7 +62,7 @@ function uint8ArrayToString(fileData: Uint8Array) {
 function getMapObjectByNode(node: SceneNode) {
   const instance = node as InstanceNode;
   const instanceId = instance.mainComponent?.id;
-  const mapObject = mapConfig.objectsComponents.find(object => object.id === instanceId);
+  const mapObject = mapConfig.componentObjects.find(object => object.id === instanceId);
 
   return mapObject;
 }
@@ -125,7 +127,7 @@ function getTextByChildren(node: SceneNode) {
 }
 
 
-function getNewNodeName(node: SceneNode, mapObject: MapObjectComponent, campus: string) {
+function getNewNodeName(node: SceneNode, mapObject: MapObject, campus: string) {
   const typeShortName = getShorNameForMapObectType(mapObject.type);
 
   if (mapObject.name) {
@@ -208,11 +210,11 @@ const updateMapConfigByNewObjectData = (objectData: any) => {
   };
 
   // Обновляем по id или добавляем новый объект
-  const index = mapConfig.objectsComponents.findIndex(object => object.id === id);
+  const index = mapConfig.componentObjects.findIndex(object => object.id === id);
   if (index !== -1) {
-    mapConfig.objectsComponents[index] = mapObject;
+    mapConfig.componentObjects[index] = mapObject;
   } else {
-    mapConfig.objectsComponents.push(mapObject);
+    mapConfig.componentObjects.push(mapObject);
   }
 
 }
@@ -220,7 +222,7 @@ const updateMapConfigByNewObjectData = (objectData: any) => {
 const updateMapConfigFromJson = (json: string) => {
   const config = JSON.parse(json);
 
-  mapConfig.objectsComponents = config.objectsComponents;
+  mapConfig.componentObjects = config.objectsComponents;
 
 }
 

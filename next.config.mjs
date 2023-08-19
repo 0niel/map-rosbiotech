@@ -1,13 +1,9 @@
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
-await import("./src/env.mjs");
+import { env } from "./src/env.mjs"
 
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  output: 'standalone',
+  output: "standalone",
   /**
    * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
    * out.
@@ -26,7 +22,7 @@ const config = {
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((/** @type {{ test: { test: (arg0: string) => any; }; }} */ rule) =>
-      rule.test?.test?.('.svg'),
+      rule.test?.test?.(".svg"),
     )
 
     config.module.rules.push(
@@ -42,7 +38,7 @@ const config = {
         issuer: /\.[jt]sx?$/,
         resourceQuery: { not: /url/ }, // exclude if *.svg?url
         use: {
-          loader: '@svgr/webpack',
+          loader: "@svgr/webpack",
         },
       },
     )
@@ -52,6 +48,16 @@ const config = {
 
     return config
   },
-};
+}
 
-export default config;
+import withPWA from "next-pwa"
+
+const pwa = withPWA({
+  dest: "public",
+  disable: env.DISABLE_PWA,
+  register: true,
+  scope: "/",
+  sw: "service-worker.js",
+})
+
+export default pwa(config)

@@ -1,40 +1,33 @@
-import React, { type FormEvent } from "react";
-import { X } from "lucide-react";
-import { Fragment, useRef, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import SearchInput, { type SearchResult } from "../SearchInput";
+import React, { type FormEvent } from "react"
+import { X } from "lucide-react"
+import { Fragment, useRef, useState } from "react"
+import { Dialog, Transition } from "@headlessui/react"
+import SearchInput, { type SearchResult } from "../SearchInput"
 
 interface RoutesModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (start: string, end: string) => void;
-  aviableRooms: string[];
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (start: string, end: string) => void
+  aviableRooms: string[]
 }
 
-const RoutesModal: React.FC<RoutesModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  aviableRooms,
-}) => {
-  const [start, setStart] = useState("");
-  const [startSearchResults, setStartSearchResults] = useState<SearchResult[]>(
-    [],
-  );
-  const [end, setEnd] = useState("");
-  const [endSearchResults, setEndSearchResults] = useState<SearchResult[]>([]);
+const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, aviableRooms }) => {
+  const [start, setStart] = useState("")
+  const [startSearchResults, setStartSearchResults] = useState<SearchResult[]>([])
+  const [end, setEnd] = useState("")
+  const [endSearchResults, setEndSearchResults] = useState<SearchResult[]>([])
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!start || !end) {
-      return;
+      return
     }
 
-    onSubmit(start, end);
-  };
+    onSubmit(start, end)
+  }
 
-  const cancelButtonRef = useRef(null);
+  const cancelButtonRef = useRef(null)
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -78,10 +71,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({
                 </button>
                 <div className="space-y-6 px-6 py-6 lg:px-8">
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="mb-2 block text-sm font-medium text-gray-900"
-                    >
+                    <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900">
                       Начальная точка
                     </label>
                     <SearchInput
@@ -89,23 +79,15 @@ const RoutesModal: React.FC<RoutesModalProps> = ({
                       showSubmitButton={false}
                       onChange={(data) => {
                         const filtred = aviableRooms.filter((room) =>
-                          room
-                            .toLowerCase()
-                            .trim()
-                            .includes(data.toLowerCase().trim()),
-                        );
-                        setStartSearchResults(
-                          filtred.map((room) => ({ title: room, id: room })),
-                        );
+                          room.toLowerCase().trim().includes(data.toLowerCase().trim()),
+                        )
+                        setStartSearchResults(filtred.map((room) => ({ title: room, id: room })))
                       }}
                       searchResults={startSearchResults}
                     />
                   </div>
                   <div>
-                    <label
-                      htmlFor="password"
-                      className="mb-2 block text-sm font-medium text-gray-900"
-                    >
+                    <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900">
                       Конечная точка
                     </label>
                     <SearchInput
@@ -113,14 +95,9 @@ const RoutesModal: React.FC<RoutesModalProps> = ({
                       showSubmitButton={false}
                       onChange={(data) => {
                         const filtred = aviableRooms.filter((room) =>
-                          room
-                            .toLowerCase()
-                            .trim()
-                            .includes(data.toLowerCase().trim()),
-                        );
-                        setEndSearchResults(
-                          filtred.map((room) => ({ title: room, id: room })),
-                        );
+                          room.toLowerCase().trim().includes(data.toLowerCase().trim()),
+                        )
+                        setEndSearchResults(filtred.map((room) => ({ title: room, id: room })))
                       }}
                       searchResults={endSearchResults}
                     />
@@ -140,7 +117,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({
         </div>
       </Dialog>
     </Transition.Root>
-  );
-};
+  )
+}
 
-export default RoutesModal;
+export default RoutesModal

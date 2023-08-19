@@ -1,42 +1,39 @@
-import { type Graph } from "~/lib/graph";
-import { searchNodesByLabel } from '~/lib/graph';
-import { getMapObjectNameByElement, searchMapObjectsByName } from './roomHelpers';
+import { type Graph } from "~/lib/graph"
+import { searchNodesByLabel } from "~/lib/graph"
+import { getMapObjectNameByElement, searchMapObjectsByName } from "./roomHelpers"
 
-export const searchInMapAndGraph = (
-    data: string,
-    graph: Graph
-): { id: string; title: string }[] => {
-    console.log(`Searching for ${data}`);
-    if (data.length < 3) {
-        return [];
+export const searchInMapAndGraph = (data: string, graph: Graph): { id: string; title: string }[] => {
+  console.log(`Searching for ${data}`)
+  if (data.length < 3) {
+    return []
+  }
+  const roomsInGraph = searchNodesByLabel(graph, data)
+  if (!roomsInGraph) {
+    console.log(`Room ${data} not found in graph`)
+    return []
+  }
+  const rooms = searchMapObjectsByName(data)
+  if (!rooms) {
+    console.log(`Room ${data} not found in map`)
+    return []
+  }
+
+  const found = roomsInGraph.filter((room) => {
+    const name = room.label
+
+    if (rooms.map((room) => getMapObjectNameByElement(room)).includes(name)) {
+      return true
     }
-    const roomsInGraph = searchNodesByLabel(graph, data);
-    if (!roomsInGraph) {
-        console.log(`Room ${data} not found in graph`);
-        return [];
-    }
-    const rooms = searchMapObjectsByName(data);
-    if (!rooms) {
-        console.log(`Room ${data} not found in map`);
-        return [];
-    }
 
-    const found = roomsInGraph.filter((room) => {
-        const name = room.label;
+    return false
+  })
 
-        if (rooms.map((room) => getMapObjectNameByElement(room)).includes(name)) {
-            return true;
-        }
+  const results = Array.from(found, (room, i) => ({
+    id: i.toString(),
+    title: room.label,
+  }))
 
-        return false;
-    });
+  console.log(`Found ${results.length} rooms`)
 
-    const results = Array.from(found, (room, i) => ({
-        id: i.toString(),
-        title: room.label,
-    }));
-
-    console.log(`Found ${results.length} rooms`);
-
-    return results;
-};
+  return results
+}

@@ -1,214 +1,196 @@
-import {useRouter} from "next/router";
-import {type ReactZoomPanPinchRef, TransformComponent, TransformWrapper,} from "react-zoom-pan-pinch";
-import React, {useEffect, useRef, useState} from "react";
-import routesJson from "public/routes.json";
-import {type Graph} from "~/lib/graph";
-import MapRoute, {type MapRouteRef} from "./MapRoute";
-import ScheduleAPI from "~/lib/schedule/api";
-import {useQuery} from "react-query";
-import {Spinner} from "flowbite-react";
-import {MapPin} from "lucide-react";
-import {type RoomOnMap} from "~/lib/map/RoomOnMap";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useRouter } from "next/router"
+import { type ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
+import React, { useEffect, useRef, useState } from "react"
+import routesJson from "public/routes.json"
+import { type Graph } from "~/lib/graph"
+import MapRoute, { type MapRouteRef } from "./MapRoute"
+import ScheduleAPI from "~/lib/schedule/api"
+import { useQuery } from "react-query"
+import { Spinner } from "flowbite-react"
+import { MapPin } from "lucide-react"
+import { type RoomOnMap } from "~/lib/map/RoomOnMap"
 import {
   fillRoom,
   getAllMapObjectsElements,
   getMapObjectNameByElement,
   mapObjectSelector,
   searchMapObjectsByName,
-} from "~/lib/map/roomHelpers";
-import {searchInMapAndGraph} from "~/lib/map/searchInMapInGraph";
-import MapControls from "./MapControls";
-import RoomDrawer from "./RoomDrawer";
-import RoutesModal from "./RoutesModal";
-import {type SearchResult} from "../SearchInput";
-import campuses from "~/lib/campuses";
-import {useMapStore} from "~/lib/stores/map";
+} from "~/lib/map/roomHelpers"
+import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph"
+import MapControls from "./MapControls"
+import RoomDrawer from "./RoomDrawer"
+import RoutesModal from "./RoutesModal"
+import { type SearchResult } from "../SearchInput"
+import campuses from "~/lib/campuses"
+import { useMapStore } from "~/lib/stores/map"
 
-const scheduleAPI = new ScheduleAPI();
+const scheduleAPI = new ScheduleAPI()
 
 const loadJsonToGraph = (routesJson: string) => {
-  return JSON.parse(routesJson) as Graph;
-};
+  return JSON.parse(routesJson) as Graph
+}
 
 const MapContainer = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const { isLoading, error, data } = useQuery(["rooms"], {
     queryFn: async () => {
-      const campuses = await scheduleAPI.getCampuses();
+      const campuses = await scheduleAPI.getCampuses()
 
-      const campusId = campuses.find(
-        (campus) => campus.short_name === mapStore.campus,
-      )?.id;
+      const campusId = campuses.find((campus) => campus.short_name === mapStore.campus)?.id
 
       if (!campusId) {
-        return null;
+        return null
       }
 
-      const rooms = await scheduleAPI.getRooms(campusId);
+      const rooms = await scheduleAPI.getRooms(campusId)
 
-      return rooms;
+      return rooms
     },
     onError: (error) => {
-      console.error(error);
+      console.error(error)
     },
-  });
+  })
 
-  const [graph, setGraph] = useState<Graph>(
-    loadJsonToGraph(JSON.stringify(routesJson)),
-  );
+  const [graph, setGraph] = useState<Graph>(loadJsonToGraph(JSON.stringify(routesJson)))
 
-  const mapRouteRef = useRef<MapRouteRef>(null);
+  const mapRouteRef = useRef<MapRouteRef>(null)
 
-  const [drawerOpened, setDrawerOpened] = useState(false);
+  const [drawerOpened, setDrawerOpened] = useState(false)
 
-  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
-  const [selectedFloor, setSelectedFloor] = useState(3);
-  const mapStore = useMapStore();
+  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null)
+  const [selectedFloor, setSelectedFloor] = useState(3)
+  const mapStore = useMapStore()
 
-  const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
-    null,
-  );
-  const selectedRoomRef = useRef<RoomOnMap | null>(null);
+  const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(null)
+  const selectedRoomRef = useRef<RoomOnMap | null>(null)
 
   useEffect(() => {
     if (!isLoading && transformComponentRef.current) {
       if (!router.query.room) {
-        return;
+        return
       }
 
-      const room = searchMapObjectsByName(
-        router.query.room as string,
-      )[0] as Element;
+      const room = searchMapObjectsByName(router.query.room as string)[0] as Element
       if (room) {
-        selectRoomEl(room);
+        selectRoomEl(room)
       }
     }
-  }, [isLoading, transformComponentRef.current]);
+  }, [isLoading, transformComponentRef.current])
 
   const selectRoomEl = (room: Element) => {
     if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
-      selectedRoomRef.current.element.replaceWith(
-        selectedRoomRef.current.baseElement,
-      );
+      selectedRoomRef.current.element.replaceWith(selectedRoomRef.current.baseElement)
     }
 
     if (room === selectedRoomRef.current?.element) {
-      return;
+      return
     }
 
-    const base = room.cloneNode(true);
-    base.addEventListener("click", handleRoomClick);
-    (room as HTMLElement).style.cursor = "pointer";
-    const baseState = base as Element;
+    const base = room.cloneNode(true)
+    base.addEventListener("click", handleRoomClick)
+    ;(room as HTMLElement).style.cursor = "pointer"
+    const baseState = base as Element
 
-    fillRoom(room, "#2563EB");
+    fillRoom(room, "#2563EB")
 
-    const name = getMapObjectNameByElement(room);
+    const name = getMapObjectNameByElement(room)
     if (!name) {
-      return;
+      return
     }
 
     if (!data) {
-      return;
+      return
     }
 
-    transformComponentRef.current?.zoomToElement(room as HTMLElement);
+    transformComponentRef.current?.zoomToElement(room as HTMLElement)
 
-    const remote = data.find((room) => room.name === name);
+    const remote = data.find((room) => room.name === name)
 
     setSelectedRoomOnMap({
       element: room,
       baseElement: baseState,
       name: name,
       remote: remote || null,
-    });
+    })
 
-    setDrawerOpened(true);
-  };
+    setDrawerOpened(true)
+  }
 
   const unselectRoomEl = () => {
     if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
-      selectedRoomRef.current.element.replaceWith(
-        selectedRoomRef.current.baseElement,
-      );
+      selectedRoomRef.current.element.replaceWith(selectedRoomRef.current.baseElement)
     }
 
-    setSelectedRoomOnMap(null);
-    setDrawerOpened(false);
-  };
+    setSelectedRoomOnMap(null)
+    setDrawerOpened(false)
+  }
 
   const handleRoomClick = (e: Event) => {
-    e.stopPropagation();
-    e.preventDefault();
+    e.stopPropagation()
+    e.preventDefault()
 
-    const target = e.target as HTMLElement;
-    let room = target.closest(mapObjectSelector);
-    if (
-      getMapObjectNameByElement(room?.parentElement as Element) ===
-      getMapObjectNameByElement(room as Element)
-    ) {
-      room = room?.parentElement as Element;
+    const target = e.target as HTMLElement
+    let room = target.closest(mapObjectSelector)
+    if (getMapObjectNameByElement(room?.parentElement as Element) === getMapObjectNameByElement(room as Element)) {
+      room = room?.parentElement as Element
     }
 
     if (!room) {
-      return;
+      return
     }
 
-    selectRoomEl(room);
-  };
+    selectRoomEl(room)
+  }
 
   useEffect(() => {
-    selectedRoomRef.current = selectedRoomOnMap;
-  }, [selectedRoomOnMap]);
+    selectedRoomRef.current = selectedRoomOnMap
+  }, [selectedRoomOnMap])
 
-  const [campusMap, setCampusMap] = useState(
-    campuses.find((campus) => campus.label === "В-78"),
-  );
+  const [campusMap, setCampusMap] = useState(campuses.find((campus) => campus.label === "В-78"))
 
   useEffect(() => {
-    const map = campuses.find((campus) => campus.label === mapStore.campus);
+    const map = campuses.find((campus) => campus.label === mapStore.campus)
 
-    const currentScreenWidth = window.innerWidth;
-    const isSmallScreen = currentScreenWidth < 1024;
+    const currentScreenWidth = window.innerWidth
+    const isSmallScreen = currentScreenWidth < 1024
 
     transformComponentRef.current?.setTransform(
-      isSmallScreen
-        ? map?.initialPositionX ?? 0 * 2
-        : map?.initialPositionX ?? 0,
+      isSmallScreen ? map?.initialPositionX ?? 0 * 2 : map?.initialPositionX ?? 0,
       map?.initialPositionY ?? 0,
       map?.initialScale ?? 1,
       undefined,
-    );
-    setCampusMap(map);
-  }, [mapStore.campus]);
+    )
+    setCampusMap(map)
+  }, [mapStore.campus])
 
   const handleCloseDrawer = () => {
-    setDrawerOpened(false);
-    unselectRoomEl();
-  };
+    setDrawerOpened(false)
+    unselectRoomEl()
+  }
 
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
 
   const handleSearch = (data: string) => {
-    const results = searchInMapAndGraph(data, graph);
-    setSearchResults(results);
-  };
+    const results = searchInMapAndGraph(data, graph)
+    setSearchResults(results)
+  }
 
-  const [selectedDateTime, setSelectedDateTime] = useState<Date>(new Date());
+  const [selectedDateTime, setSelectedDateTime] = useState<Date>(new Date())
 
-  const [routesModalShow, setRoutesModalShow] = useState(false);
+  const [routesModalShow, setRoutesModalShow] = useState(false)
 
-  const mapImageRef = useRef<HTMLImageElement>(null);
+  const mapImageRef = useRef<HTMLImageElement>(null)
 
   const mapCliclableRegions = () => {
-    const roomsElements = getAllMapObjectsElements(document);
+    const roomsElements = getAllMapObjectsElements(document)
 
     roomsElements.forEach((room) => {
-      (room as HTMLElement).style.cursor = "pointer";
-      room.addEventListener("click", handleRoomClick);
-    });
-  };
+      ;(room as HTMLElement).style.cursor = "pointer"
+      room.addEventListener("click", handleRoomClick)
+    })
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -232,13 +214,11 @@ const MapContainer = () => {
               isOpen={routesModalShow}
               onClose={() => setRoutesModalShow(false)}
               onSubmit={(start: string, end: string) => {
-                setRoutesModalShow(false);
+                setRoutesModalShow(false)
 
-                mapRouteRef.current?.renderRoute(start, end);
+                mapRouteRef.current?.renderRoute(start, end)
               }}
-              aviableRooms={graph.vertices
-                .map((v) => v.label ?? "")
-                .filter((v) => v !== "")}
+              aviableRooms={graph.vertices.map((v) => v.label ?? "").filter((v) => v !== "")}
             />
 
             <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
@@ -246,7 +226,7 @@ const MapContainer = () => {
               <button
                 className="pointer-events-auto flex items-center justify-center space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-3 sm:p-4"
                 onClick={() => {
-                  setRoutesModalShow(true);
+                  setRoutesModalShow(true)
                 }}
               >
                 <MapPin className="h-6 w-6" />
@@ -256,10 +236,7 @@ const MapContainer = () => {
                 <MapControls
                   onZoomIn={() => transformComponentRef.current?.zoomIn()}
                   onZoomOut={() => transformComponentRef.current?.zoomOut()}
-                  floors={
-                    campuses.find((c) => c.label === mapStore.campus)?.floors ||
-                    []
-                  }
+                  floors={campuses.find((c) => c.label === mapStore.campus)?.floors || []}
                   selectedFloor={selectedFloor}
                   setSelectedFloor={setSelectedFloor}
                 />
@@ -277,7 +254,7 @@ const MapContainer = () => {
               pinch={{ step: 0.05 }}
               zoomAnimation={{ disabled: true }}
               ref={transformComponentRef}
-              smooth={false}
+              smooth={true}
               alignmentAnimation={{ disabled: true }}
               velocityAnimation={{ disabled: true, sensitivity: 0 }}
               limitToBounds={false}
@@ -296,11 +273,7 @@ const MapContainer = () => {
                   position: "absolute",
                 }}
               >
-                <MapRoute
-                  ref={mapRouteRef}
-                  className="pointer-events-none absolute z-20 h-full w-full"
-                  graph={graph}
-                />
+                <MapRoute ref={mapRouteRef} className="pointer-events-none absolute z-20 h-full w-full" graph={graph} />
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
                   onLoaded: () => mapCliclableRegions(),
@@ -311,7 +284,7 @@ const MapContainer = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MapContainer;
+export default MapContainer

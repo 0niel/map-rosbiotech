@@ -1,22 +1,12 @@
-import { Plus, Minus } from "lucide-react";
-import { type components } from "~/lib/schedule/schema";
-import { useQuery } from "react-query";
-
 interface RoomInfoTabContentProps {
-  purpose: string;
-  workload: number;
-  status: string;
-  eventName: string;
-  teacher: string;
+  purpose: string
+  workload: number
+  status: string
+  eventName: string
+  teacher: string
 }
 
-const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
-  purpose,
-  workload,
-  status,
-  eventName,
-  teacher,
-}) => {
+const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({ purpose, workload, status, eventName, teacher }) => {
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-left text-sm text-gray-500">
@@ -28,46 +18,31 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
 
         <tbody>
           <tr className="border-b bg-white">
-            <th
-              scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
-            >
+            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
               Назначение
             </th>
             <td className="px-6 py-4">{purpose}</td>
           </tr>
           <tr className="border-b bg-white">
-            <th
-              scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
-            >
+            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
               Загруженность
             </th>
             <td className="px-6 py-4">{workload}%</td>
           </tr>
           <tr className="border-b bg-white">
-            <th
-              scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
-            >
+            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
               Статус
             </th>
             <td className="px-6 py-4">{status}</td>
           </tr>
           <tr className="border-b bg-white">
-            <th
-              scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
-            >
+            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
               Мероприятие
             </th>
             <td className="px-6 py-4">{eventName}</td>
           </tr>
           <tr className="border-b bg-white">
-            <th
-              scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
-            >
+            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
               Ответственный
             </th>
             <td className="px-6 py-4">{teacher}</td>
@@ -75,7 +50,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default RoomInfoTabContent;
+export default RoomInfoTabContent

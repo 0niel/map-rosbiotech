@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import React, { useEffect, useState } from "react"
+import { Search } from "lucide-react"
 
 export interface SearchResult {
-  id: string;
-  title: string;
+  id: string
+  title: string
 }
 
 interface SearchInputProps {
-  onSubmit: (data: string) => void;
-  onChange?: (data: string) => void;
-  onSearchResultSelected?: (result: SearchResult) => void;
+  onSubmit: (data: string) => void
+  onChange?: (data: string) => void
+  onSearchResultSelected?: (result: SearchResult) => void
 
-  label?: string;
-  placeholder?: string;
-  showSubmitButton: boolean;
-  submitButton?: string;
+  label?: string
+  placeholder?: string
+  showSubmitButton: boolean
+  submitButton?: string
 
-  searchResults: SearchResult[];
+  searchResults: SearchResult[]
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -29,37 +29,34 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onSearchResultSelected,
   searchResults,
 }) => {
-  const [search, setSearch] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [showResults, setShowResults] = useState(false);
+  const [search, setSearch] = useState("")
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [showResults, setShowResults] = useState(false)
 
   useEffect(() => {
     if (searchResults) {
-      setResults(searchResults);
-      setShowResults(true);
+      setResults(searchResults)
+      setShowResults(true)
     } else {
-      setShowResults(false);
+      setShowResults(false)
     }
-  }, [searchResults]);
+  }, [searchResults])
 
   const handleSelect = (result: SearchResult) => {
-    setSearch(result.title);
-    setShowResults(false);
-    onSubmit(result.title);
-    onSearchResultSelected?.(result);
-  };
+    setSearch(result.title)
+    setShowResults(false)
+    onSubmit(result.title)
+    onSearchResultSelected?.(result)
+  }
 
   const handleSearch = (value: string) => {
-    setSearch(value);
-    onChange?.(value);
-  };
+    setSearch(value)
+    onChange?.(value)
+  }
 
   return (
     <div className="pointer-events-auto relative">
-      <label
-        htmlFor="default-search"
-        className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="default-search" className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white">
         {label ?? "Поиск"}
       </label>
       <div className="relative">
@@ -73,7 +70,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           placeholder={placeholder ?? "Поиск"}
           value={search}
           onChange={(e) => {
-            void handleSearch(e.target.value);
+            void handleSearch(e.target.value)
           }}
           required
         />
@@ -82,8 +79,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
             type="submit"
             className="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
             onClick={(e) => {
-              e.preventDefault();
-              onSubmit(search);
+              e.preventDefault()
+              onSubmit(search)
             }}
           >
             {submitButton ?? "Найти"}
@@ -93,18 +90,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
       {showResults && results.length > 0 && (
         <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {results.map((result) => (
-            <div
-              key={result.id}
-              className="cursor-pointer p-4 hover:bg-gray-200"
-              onClick={() => handleSelect(result)}
-            >
+            <div key={result.id} className="cursor-pointer p-4 hover:bg-gray-200" onClick={() => handleSelect(result)}>
               <p className="text-sm text-gray-900">{result.title}</p>
             </div>
           ))}
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default SearchInput;
+export default SearchInput
