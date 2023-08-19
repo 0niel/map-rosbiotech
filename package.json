@@ -8,7 +8,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "production": "npx prisma migrate deploy && node server.js",
+    "production": "node server.js",
     "format": "prettier --write \"**/*.{js,mjs,cjs,ts,tsx,md,mdx}\""
   },
   "dependencies": {
