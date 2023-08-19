@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { ChevronLeft, ChevronRight, User2, Paperclip } from "lucide-react";
 import { useState } from "react";
 import { getWeekDaysByDate, getWeekByDate } from "~/lib/schedule/utils";
-import { components } from "~/lib/schedule/schema";
+import { type components } from "~/lib/schedule/schema";
 
 interface ScheduleCalendarProps {
   date: Date;

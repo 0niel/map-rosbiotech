@@ -131,18 +131,6 @@ const HeaderNavbar = () => {
                         </svg>
                       </div>
                     </div>
-                    <div className="w-full pl-3">
-                      <div className="mb-1.5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                        New message from{" "}
-                        <span className="font-semibold text-gray-900 dark:text-white">
-                          Bonnie Green
-                        </span>
-                        : "Hey, what's up? All set for the presentation?"
-                      </div>
-                      <div className="text-primary-700 dark:text-primary-400 text-xs font-medium">
-                        a few moments ago
-                      </div>
-                    </div>
                   </a>
                   <a
                     href="#"

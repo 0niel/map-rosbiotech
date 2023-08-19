@@ -1,20 +1,14 @@
-import { useRouter } from "next/router";
-import {
-  TransformWrapper,
-  TransformComponent,
-  type ReactZoomPanPinchRef,
-} from "react-zoom-pan-pinch";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import SearchButton from "../SearchButton";
-import DropdownRadio from "../DropdownRadio";
+import {useRouter} from "next/router";
+import {type ReactZoomPanPinchRef, TransformComponent, TransformWrapper,} from "react-zoom-pan-pinch";
+import React, {useEffect, useRef, useState} from "react";
 import routesJson from "public/routes.json";
-import { type Graph } from "~/lib/graph";
-import MapRoute, { type MapRouteRef } from "./MapRoute";
+import {type Graph} from "~/lib/graph";
+import MapRoute, {type MapRouteRef} from "./MapRoute";
 import ScheduleAPI from "~/lib/schedule/api";
-import { useQuery } from "react-query";
-import { Spinner } from "flowbite-react";
-import { MapPin } from "lucide-react";
-import { type RoomOnMap } from "~/lib/map/RoomOnMap";
+import {useQuery} from "react-query";
+import {Spinner} from "flowbite-react";
+import {MapPin} from "lucide-react";
+import {type RoomOnMap} from "~/lib/map/RoomOnMap";
 import {
   fillRoom,
   getAllMapObjectsElements,
@@ -22,21 +16,18 @@ import {
   mapObjectSelector,
   searchMapObjectsByName,
 } from "~/lib/map/roomHelpers";
-import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph";
+import {searchInMapAndGraph} from "~/lib/map/searchInMapInGraph";
 import MapControls from "./MapControls";
 import RoomDrawer from "./RoomDrawer";
 import RoutesModal from "./RoutesModal";
-import React from "react";
-import { SearchResult } from "../SearchInput";
+import {type SearchResult} from "../SearchInput";
 import campuses from "~/lib/campuses";
-import { useMapStore } from "~/lib/stores/map";
-import { svg } from "d3";
+import {useMapStore} from "~/lib/stores/map";
 
 const scheduleAPI = new ScheduleAPI();
 
 const loadJsonToGraph = (routesJson: string) => {
-  const graph = JSON.parse(routesJson) as Graph;
-  return graph;
+  return JSON.parse(routesJson) as Graph;
 };
 
 const MapContainer = () => {

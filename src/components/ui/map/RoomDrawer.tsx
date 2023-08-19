@@ -1,12 +1,12 @@
 import React from "react";
 import FloorSelectorButtons from "./FloorSelectorButtons";
 import ScaleButtons from "./ScaleButtons";
-import { components } from "~/lib/schedule/schema";
+import { type components } from "~/lib/schedule/schema";
 import Tabs from "../Tabs";
 import { Calendar, Info } from "lucide-react";
 import RoomInfoTabContent from "./RoomInfoTabContent";
 import { useQuery } from "react-query";
-import ScheduleAPI from "~/lib/schedule/api";
+import type ScheduleAPI from "~/lib/schedule/api";
 import { getWeekByDate } from "~/lib/schedule/utils";
 import RightDrawer from "../RightDrawer";
 import Spinner from "../Spinner";
