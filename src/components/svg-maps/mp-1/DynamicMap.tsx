@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic"
 import Spinner from "~/components/ui/Spinner"
+import { memo } from "react"
 
 const DynamicMap = dynamic(() => import("~/components/svg-maps/mp-1/Map"), {
   ssr: false,
@@ -10,4 +11,4 @@ const DynamicMap = dynamic(() => import("~/components/svg-maps/mp-1/Map"), {
   ),
 })
 
-export default DynamicMap
+export default memo(DynamicMap)
