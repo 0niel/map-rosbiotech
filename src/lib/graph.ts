@@ -85,10 +85,10 @@ export const getShortestPath = (data: MapData, startMapObject: MapObject, endMap
   const unpackedGraph = unpackGraph(data)
 
   unpackedGraph.edges.forEach((e) => {
-    if (e.toNextFloor) {
+    if (e.toNextFloor && e.target) {
       const targetId = unpackedGraph.vertices.find((v) => v.mapObjectId === e.target)?.id
-      console.log(`Edge ${e.source} -> ${e.target} is to next floor, targetId = ${targetId}`)
-      e.target = targetId || e.target
+      if (!targetId) return
+      e.target = targetId
     }
   })
 
@@ -181,7 +181,7 @@ export const searchObjectsByName = (
           const postfixName = matchName.groups?.postfix
 
           if (numberName) {
-            if (numberObject !== numberName) {
+            if (!numberObject?.toLowerCase().includes(numberName.toLowerCase())) {
               return false
             }
           }

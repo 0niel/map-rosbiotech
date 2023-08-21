@@ -23,25 +23,24 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
     const floorGraph = mapData.floors[floor.toString()]
     if (!floorGraph) return false
 
-    return floorGraph.vertices.some((vertex) => vertex.mapObjectId === point.mapObjectId)
+    return floorGraph.vertices.includes(point)
   }
 
   useImperativeHandle(ref, () => ({
     renderRoute: (startMapObject, endMapObject, currentFloor) => {
       const path = getShortestPath(mapData, startMapObject, endMapObject)
 
-      setShortestPath(path || [])
+      console.log("Path: ", path)
 
-      console.log(path)
+      if (!path || path.length === 1) return
 
-      if (!path) return
-
-      if (!svgRef.current || path.length === 0) return
+      if (!svgRef.current) return
 
       const svg = d3.select(svgRef.current)
 
-      // Очистить предыдущие маршруты
+      // Очистить предыдущие маршруты и точки
       svg.selectAll(".route").remove()
+      svg.selectAll(".circle-point").remove()
 
       const currentFloorPath = path.filter((point) => isPointInThisFloor(point, currentFloor))
 
@@ -50,7 +49,7 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
         .x((d) => d.x)
         .y((d) => d.y)
 
-      let animationDurationsQueue = []
+      const animationDurationsQueue = []
 
       // Отрисовка маршрутов
       for (let i = 0; i < currentFloorPath.length - 1; i++) {
@@ -105,8 +104,6 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
       if (start === undefined || end === undefined) {
         return
       }
-
-      svg.selectAll(".circle-point").remove()
 
       svg
         .append("circle")

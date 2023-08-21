@@ -27,7 +27,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
       return
     }
 
-    onSubmit(start, end)
+    onSubmit(start.mapObject, end.mapObject)
   }
 
   const cancelButtonRef = useRef(null)
@@ -99,8 +99,8 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                       onSubmit={(searchObject) => {
                         setEnd(searchObject)
                       }}
-                      selected={start}
-                      setSelected={setStart}
+                      selected={end}
+                      setSelected={setEnd}
                       showSubmitButton={false}
                       onChange={(name) => {
                         setEndSearchResults(searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]))
