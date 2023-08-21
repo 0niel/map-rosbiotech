@@ -1,14 +1,17 @@
+import { MapObjectType, type MapObject } from "./map/MapObject"
+
 export interface Vertex {
   id: string
   x: number
   y: number
-  label: string
+  mapObjectId?: string
 }
 
 export interface Edge {
   source: string
   target: string
   weight: number
+  toNextFloor?: boolean
 }
 
 export interface Graph {
@@ -16,15 +19,16 @@ export interface Graph {
   edges: Edge[]
 }
 
+export interface MapData {
+  floors: { [floor: string]: Graph }
+  objects: MapObject[]
+}
+
 export function distance(x1: number, y1: number, x2: number, y2: number): number {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
 }
 
-export const getShortestPath = (graph: Graph, startLabel: string, endLabel: string): Vertex[] | null => {
-  if (graph.vertices.length === 0) {
-    return null
-  }
-
+export const getShortestPath = (data: MapData, startMapObject: MapObject, endMapObject: MapObject) => {
   const dijkstra = (graph: Graph, start: Vertex, end: Vertex) => {
     const dist = new Map<string, number>()
     const prev = new Map<string, Vertex | null>()
@@ -57,6 +61,7 @@ export const getShortestPath = (graph: Graph, startLabel: string, endLabel: stri
           const neighbor = graph.vertices.find((v) => v.id === neighborId)!
 
           if (neighbor) {
+            // Добавьте это условие для проверки существования соседа
             const alt = dist.get(closest.id)! + edge.weight
             if (alt < dist.get(neighbor.id)!) {
               dist.set(neighbor.id, alt)
@@ -77,17 +82,134 @@ export const getShortestPath = (graph: Graph, startLabel: string, endLabel: stri
     return path
   }
 
-  const start = graph.vertices.find((v) => v.label === startLabel)
-  const end = graph.vertices.find((v) => v.label === endLabel)
+  const unpackedGraph = unpackGraph(data)
+
+  unpackedGraph.edges.forEach((e) => {
+    if (e.toNextFloor) {
+      const targetId = unpackedGraph.vertices.find((v) => v.mapObjectId === e.target)?.id
+      console.log(`Edge ${e.source} -> ${e.target} is to next floor, targetId = ${targetId}`)
+      e.target = targetId || e.target
+    }
+  })
+
+  const start = unpackedGraph.vertices.find((v) => v.mapObjectId === startMapObject.id)
+  const end = unpackedGraph.vertices.find((v) => v.mapObjectId === endMapObject.id)
 
   if (!start || !end) return null
 
-  const path = dijkstra(graph, start, end)
+  const path = dijkstra(unpackedGraph, start, end)
 
   return path
 }
 
-export const searchNodesByLabel = (graph: Graph, label: string) => {
-  label = label.toLowerCase().trim()
-  return graph.vertices.filter((v) => v.label && v.label.toLowerCase().trim().includes(label))
+export const getObjectByName = (name: string, data: MapData): MapObject | undefined => {
+  return data.objects.find((o) => o.name === name)
+}
+
+export const isObjectInGraph = (object: MapObject, graph: Graph): boolean => {
+  return graph.vertices.some((v) => v.mapObjectId === object.id)
+}
+
+// Объединяет графы этажей в один граф
+export const unpackGraph = (mapData: MapData): Graph => {
+  return Object.values(mapData.floors).reduce(
+    (acc, g) => {
+      acc.vertices.push(...g.vertices)
+      acc.edges.push(...g.edges)
+      return acc
+    },
+    { vertices: [], edges: [] },
+  )
+}
+
+// Возвращает все объекты, которые есть в графе и в массиве объектов, то есть объекты, которые есть на карте
+export const getAllAvailableObjectsInMap = (data: MapData): MapObject[] => {
+  const unpackedGraph = unpackGraph(data)
+
+  return data.objects.filter((o) => {
+    return isObjectInGraph(o, unpackedGraph)
+  })
+}
+
+export const getObjectFloorByMapObjectId = (mapObjectId: string, data: MapData): number | undefined => {
+  const floor = Object.entries(data.floors).find(([_, graph]) => {
+    return graph.vertices.some((v) => v.mapObjectId === mapObjectId)
+  })?.[0]
+
+  return floor ? parseInt(floor) : undefined
+}
+
+export interface SearchableObject {
+  floor: string
+  mapObject: MapObject
+}
+
+export const getSearchebleStrings = (data: MapData): SearchableObject[] => {
+  return getAllAvailableObjectsInMap(data)
+    .filter((o) => o.type === MapObjectType.ROOM)
+    .map((mapObject) => ({
+      floor: getObjectFloorByMapObjectId(mapObject.id, data)?.toString() || "",
+      mapObject: mapObject,
+    }))
+    .sort()
+    .filter((o) => o.mapObject.name !== "" && o.floor !== "")
+}
+
+const roomNumberPattern = /(?<building>[А-Яа-я]+)?-?(?<number>\d+)(?<letter>[А-Яа-я])?([-.]?(?<postfix>[А-Яа-я0-9]+))?/
+
+export const searchObjectsByName = (
+  name: string,
+  data: MapData,
+  searchObjects: SearchableObject[],
+  mapTypesToSearch: MapObjectType[],
+): SearchableObject[] => {
+  return searchObjects
+    .filter((o) => {
+      if (o.mapObject.type === MapObjectType.ROOM && mapTypesToSearch.includes(MapObjectType.ROOM)) {
+        const matchObject = o.mapObject.name.match(roomNumberPattern)
+        const matchName = name.match(roomNumberPattern)
+
+        if (matchObject && matchName) {
+          const buildingObject = matchObject.groups?.building
+          const numberObject = matchObject.groups?.number
+          const letterObject = matchObject.groups?.letter
+          const postfixObject = matchObject.groups?.postfix
+
+          const buildingName = matchName.groups?.building
+          const numberName = matchName.groups?.number
+          const letterName = matchName.groups?.letter
+          const postfixName = matchName.groups?.postfix
+
+          if (numberName) {
+            if (numberObject !== numberName) {
+              return false
+            }
+          }
+
+          if (buildingName) {
+            if (!buildingObject?.toLowerCase().includes(buildingName.toLowerCase())) {
+              return false
+            }
+          }
+
+          if (letterName) {
+            if (letterObject !== letterName) {
+              return false
+            }
+          }
+
+          if (postfixName) {
+            if (postfixObject !== postfixName) {
+              return false
+            }
+          }
+        }
+      }
+
+      return o.mapObject.name.toLowerCase().includes(name.toLowerCase()) && mapTypesToSearch.includes(o.mapObject.type)
+    })
+    .map((o) => ({
+      floor: getObjectFloorByMapObjectId(o.mapObject.id, data)?.toString() || "",
+      mapObject: o.mapObject,
+    }))
 }

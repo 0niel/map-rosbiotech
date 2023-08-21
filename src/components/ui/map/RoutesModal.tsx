@@ -2,20 +2,23 @@ import React, { type FormEvent } from "react"
 import { X } from "lucide-react"
 import { Fragment, useRef, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import SearchInput, { type SearchResult } from "../SearchInput"
+import MapObjectsSearchInput from "../MapObjectsSearchInput"
+import { type MapData, type SearchableObject, searchObjectsByName } from "~/lib/graph"
+import { MapObject, MapObjectType } from "~/lib/map/MapObject"
 
 interface RoutesModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (start: string, end: string) => void
-  aviableRooms: string[]
+  onSubmit: (mapObjectStart: MapObject, mapObjectEnd: MapObject) => void
+  aviableMapObjects: SearchableObject[]
+  mapData: MapData
 }
 
-const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, aviableRooms }) => {
-  const [start, setStart] = useState("")
-  const [startSearchResults, setStartSearchResults] = useState<SearchResult[]>([])
-  const [end, setEnd] = useState("")
-  const [endSearchResults, setEndSearchResults] = useState<SearchResult[]>([])
+const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, aviableMapObjects, mapData }) => {
+  const [start, setStart] = useState<SearchableObject | null>(null)
+  const [startSearchResults, setStartSearchResults] = useState<SearchableObject[]>([])
+  const [end, setEnd] = useState<SearchableObject | null>(null)
+  const [endSearchResults, setEndSearchResults] = useState<SearchableObject[]>([])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -74,30 +77,33 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                     <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900">
                       Начальная точка
                     </label>
-                    <SearchInput
-                      onSubmit={setStart}
+                    <MapObjectsSearchInput
+                      onSubmit={(searchObject) => {
+                        setStart(searchObject)
+                      }}
                       showSubmitButton={false}
-                      onChange={(data) => {
-                        const filtred = aviableRooms.filter((room) =>
-                          room.toLowerCase().trim().includes(data.toLowerCase().trim()),
+                      onChange={(name) => {
+                        setStartSearchResults(
+                          searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]),
                         )
-                        setStartSearchResults(filtred.map((room) => ({ title: room, id: room })))
                       }}
                       searchResults={startSearchResults}
+                      selected={start}
                     />
                   </div>
                   <div>
                     <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900">
                       Конечная точка
                     </label>
-                    <SearchInput
-                      onSubmit={setEnd}
+                    <MapObjectsSearchInput
+                      onSubmit={(searchObject) => {
+                        setEnd(searchObject)
+                      }}
+                      selected={start}
+                      setSelected={setStart}
                       showSubmitButton={false}
-                      onChange={(data) => {
-                        const filtred = aviableRooms.filter((room) =>
-                          room.toLowerCase().trim().includes(data.toLowerCase().trim()),
-                        )
-                        setEndSearchResults(filtred.map((room) => ({ title: room, id: room })))
+                      onChange={(name) => {
+                        setEndSearchResults(searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]))
                       }}
                       searchResults={endSearchResults}
                     />

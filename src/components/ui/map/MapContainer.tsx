@@ -2,8 +2,8 @@
 import { useRouter } from "next/router"
 import { type ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import React, { useEffect, useRef, useState } from "react"
-import routesJson from "public/routes.json"
-import { type Graph } from "~/lib/graph"
+import mapDataJson from "public/routes.json"
+import { MapData, type Graph, getAllAvailableObjectsInMap, getSearchebleStrings } from "~/lib/graph"
 import MapRoute, { type MapRouteRef } from "./MapRoute"
 import ScheduleAPI from "~/lib/schedule/api"
 import { useQuery } from "react-query"
@@ -17,18 +17,17 @@ import {
   mapObjectSelector,
   searchMapObjectsByName,
 } from "~/lib/map/roomHelpers"
-import { searchInMapAndGraph } from "~/lib/map/searchInMapInGraph"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
 import RoutesModal from "./RoutesModal"
-import { type SearchResult } from "../SearchInput"
 import campuses from "~/lib/campuses"
 import { useMapStore } from "~/lib/stores/map"
+import { MapObject } from "~/lib/map/MapObject"
 
 const scheduleAPI = new ScheduleAPI()
 
 const loadJsonToGraph = (routesJson: string) => {
-  return JSON.parse(routesJson) as Graph
+  return JSON.parse(routesJson) as MapData
 }
 
 const MapContainer = () => {
@@ -53,7 +52,7 @@ const MapContainer = () => {
     },
   })
 
-  const [graph, setGraph] = useState<Graph>(loadJsonToGraph(JSON.stringify(routesJson)))
+  const [mapData, setMapData] = useState<MapData>(loadJsonToGraph(JSON.stringify(mapDataJson)))
 
   const mapRouteRef = useRef<MapRouteRef>(null)
 
@@ -65,6 +64,13 @@ const MapContainer = () => {
 
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(null)
   const selectedRoomRef = useRef<RoomOnMap | null>(null)
+
+  const [isPanning, setIsPanning] = useState(false)
+  const isPanningRef = useRef(false)
+
+  useEffect(() => {
+    isPanningRef.current = isPanning
+  }, [isPanning])
 
   useEffect(() => {
     if (!isLoading && transformComponentRef.current) {
@@ -131,6 +137,12 @@ const MapContainer = () => {
     e.stopPropagation()
     e.preventDefault()
 
+    console.log(isPanningRef.current)
+
+    if (isPanningRef.current) return
+
+    if (e.type === "mouseup") return
+
     const target = e.target as HTMLElement
     let room = target.closest(mapObjectSelector)
     if (getMapObjectNameByElement(room?.parentElement as Element) === getMapObjectNameByElement(room as Element)) {
@@ -170,13 +182,6 @@ const MapContainer = () => {
     unselectRoomEl()
   }
 
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
-
-  const handleSearch = (data: string) => {
-    const results = searchInMapAndGraph(data, graph)
-    setSearchResults(results)
-  }
-
   const [selectedDateTime, setSelectedDateTime] = useState<Date>(new Date())
 
   const [routesModalShow, setRoutesModalShow] = useState(false)
@@ -184,6 +189,7 @@ const MapContainer = () => {
   const mapImageRef = useRef<HTMLImageElement>(null)
 
   const mapCliclableRegions = () => {
+    console.log("mapCliclableRegions")
     const roomsElements = getAllMapObjectsElements(document)
 
     roomsElements.forEach((room) => {
@@ -191,6 +197,22 @@ const MapContainer = () => {
       room.addEventListener("click", handleRoomClick)
     })
   }
+
+  const [routeStartAndEnd, setRouteStartAndEnd] = useState<{ start: MapObject; end: MapObject } | null>(null)
+
+  useEffect(() => {
+    if (!routeStartAndEnd) {
+      return
+    }
+
+    const { start, end } = routeStartAndEnd
+
+    if (!start || !end) {
+      return
+    }
+
+    mapRouteRef.current?.renderRoute(start, end, selectedFloor)
+  }, [routeStartAndEnd, selectedFloor])
 
   return (
     <div className="flex h-full flex-col">
@@ -213,12 +235,15 @@ const MapContainer = () => {
             <RoutesModal
               isOpen={routesModalShow}
               onClose={() => setRoutesModalShow(false)}
-              onSubmit={(start: string, end: string) => {
+              onSubmit={(start: MapObject, end: MapObject) => {
                 setRoutesModalShow(false)
 
-                mapRouteRef.current?.renderRoute(start, end)
+                setRouteStartAndEnd({ start, end })
+
+                mapRouteRef.current?.renderRoute(start, end, selectedFloor)
               }}
-              aviableRooms={graph.vertices.map((v) => v.label ?? "").filter((v) => v !== "")}
+              aviableMapObjects={getSearchebleStrings(mapData)}
+              mapData={mapData}
             />
 
             <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
@@ -261,10 +286,14 @@ const MapContainer = () => {
               centerZoomedOut={false}
               // centerOnInit={true}
               disablePadding={false}
-
-              // onTransformed={(ref, event) => {
-              //   console.log(ref.state);
-              // }}
+              onPanningStart={() => {
+                document.body.style.cursor = "grabbing"
+                setIsPanning(true)
+              }}
+              onPanningStop={() => {
+                document.body.style.cursor = "grab"
+                setIsPanning(false)
+              }}
             >
               <TransformComponent
                 wrapperStyle={{
@@ -273,7 +302,11 @@ const MapContainer = () => {
                   position: "absolute",
                 }}
               >
-                <MapRoute ref={mapRouteRef} className="pointer-events-none absolute z-20 h-full w-full" graph={graph} />
+                <MapRoute
+                  ref={mapRouteRef}
+                  className="pointer-events-none absolute z-20 h-full w-full"
+                  mapData={mapData}
+                />
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
                   onLoaded: () => mapCliclableRegions(),

@@ -1,52 +1,61 @@
 import React, { useEffect, useState } from "react"
 import { Search } from "lucide-react"
+import { type SearchableObject } from "~/lib/graph"
 
-export interface SearchResult {
-  id: string
-  title: string
-}
-
-interface SearchInputProps {
-  onSubmit: (data: string) => void
+interface MapObjectsSearchInputProps {
+  onSubmit: (searchableObject: SearchableObject) => void
   onChange?: (data: string) => void
-  onSearchResultSelected?: (result: SearchResult) => void
 
   label?: string
   placeholder?: string
   showSubmitButton: boolean
   submitButton?: string
 
-  searchResults: SearchResult[]
+  searchResults: SearchableObject[]
+
+  selected: SearchableObject | null
+  setSelected?: (result: SearchableObject) => void
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({
+const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   label,
   placeholder,
   submitButton,
   showSubmitButton,
   onSubmit,
   onChange,
-  onSearchResultSelected,
+  selected,
+  setSelected,
   searchResults,
 }) => {
-  const [search, setSearch] = useState("")
-  const [results, setResults] = useState<SearchResult[]>([])
+  const [search, setSearch] = useState(selected?.mapObject.name ?? "")
+  const [results, setResults] = useState<Record<string, SearchableObject[]>>({})
   const [showResults, setShowResults] = useState(false)
 
   useEffect(() => {
     if (searchResults) {
-      setResults(searchResults)
+      const groupedResults = searchResults.reduce(
+        (acc, result) => {
+          if (!acc[result.floor]) {
+            acc[result.floor] = []
+          }
+          acc[result.floor]?.push(result)
+          return acc
+        },
+        {} as Record<string, SearchableObject[]>,
+      )
+      setResults(groupedResults)
       setShowResults(true)
     } else {
       setShowResults(false)
     }
   }, [searchResults])
 
-  const handleSelect = (result: SearchResult) => {
-    setSearch(result.title)
+  const handleSelect = (result: SearchableObject) => {
+    setSearch(result.mapObject.name)
     setShowResults(false)
-    onSubmit(result.title)
-    onSearchResultSelected?.(result)
+    onSubmit(result)
+    setSelected?.(result)
   }
 
   const handleSearch = (value: string) => {
@@ -72,6 +81,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           onChange={(e) => {
             void handleSearch(e.target.value)
           }}
+          autoComplete="off"
           required
         />
         {showSubmitButton && (
@@ -80,18 +90,26 @@ const SearchInput: React.FC<SearchInputProps> = ({
             className="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
             onClick={(e) => {
               e.preventDefault()
-              onSubmit(search)
             }}
           >
             {submitButton ?? "Найти"}
           </button>
         )}
       </div>
-      {showResults && results.length > 0 && (
+      {showResults && Object.keys(results).length > 0 && (
         <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
-          {results.map((result) => (
-            <div key={result.id} className="cursor-pointer p-4 hover:bg-gray-200" onClick={() => handleSelect(result)}>
-              <p className="text-sm text-gray-900">{result.title}</p>
+          {Object.entries(results).map(([floor, objects]) => (
+            <div key={floor}>
+              <h2 className="text-lg font-medium text-gray-700 dark:text-gray-200 p-4">{`Этаж ${floor}`}</h2>
+              {objects.map((result) => (
+                <div
+                  key={result.mapObject.id}
+                  className="cursor-pointer p-4 hover:bg-gray-200"
+                  onClick={() => handleSelect(result)}
+                >
+                  <p className="text-sm text-gray-900">{result.mapObject.name}</p>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -100,4 +118,4 @@ const SearchInput: React.FC<SearchInputProps> = ({
   )
 }
 
-export default SearchInput
+export default MapObjectsSearchInput
