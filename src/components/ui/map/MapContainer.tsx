@@ -96,7 +96,7 @@ const MapContainer = () => {
 
     const base = room.cloneNode(true)
     base.addEventListener("click", handleRoomClick)
-    ;(room as HTMLElement).style.cursor = "pointer"
+
     const baseState = base as Element
 
     fillRoom(room, "#2563EB")
@@ -193,7 +193,6 @@ const MapContainer = () => {
     const roomsElements = getAllMapObjectsElements(document)
 
     roomsElements.forEach((room) => {
-      ;(room as HTMLElement).style.cursor = "pointer"
       room.addEventListener("click", handleRoomClick)
     })
   }
@@ -291,7 +290,7 @@ const MapContainer = () => {
                 setIsPanning(true)
               }}
               onPanningStop={() => {
-                document.body.style.cursor = "grab"
+                document.body.style.cursor = "default"
                 setIsPanning(false)
               }}
             >
