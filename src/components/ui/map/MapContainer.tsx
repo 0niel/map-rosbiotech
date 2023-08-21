@@ -273,17 +273,17 @@ const MapContainer = () => {
               initialPositionX={campusMap?.initialPositionX ?? 0}
               initialPositionY={campusMap?.initialPositionY ?? 0}
               maxScale={1}
-              panning={{ disabled: false, velocityDisabled: true }}
-              wheel={{ disabled: false, step: 0.05 }}
-              pinch={{ step: 0.05 }}
-              zoomAnimation={{ disabled: true }}
+              panning={{ disabled: false, velocityDisabled: false }}
+              velocityAnimation={{
+                sensitivity: 1,
+                animationTime: 400,
+                animationType: "easeOut",
+                equalToMove: true,
+              }}
               ref={transformComponentRef}
               smooth={true}
-              alignmentAnimation={{ disabled: true }}
-              velocityAnimation={{ disabled: true, sensitivity: 0 }}
               limitToBounds={false}
               centerZoomedOut={false}
-              // centerOnInit={true}
               disablePadding={false}
               onPanningStart={() => {
                 document.body.style.cursor = "grabbing"
