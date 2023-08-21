@@ -292,7 +292,9 @@ const MapContainer = () => {
               }}
               onPanningStop={() => {
                 document.body.style.cursor = "grab"
-                setIsPanning(false)
+                setTimeout(() => {
+                  setIsPanning(false)
+                }, 100)
               }}
             >
               <TransformComponent
