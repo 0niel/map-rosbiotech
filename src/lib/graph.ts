@@ -155,7 +155,8 @@ export const getSearchebleObjects = (data: MapData): SearchableObject[] => {
     .filter((o) => o.mapObject.name !== "" && o.floor !== "")
 }
 
-const roomNumberPattern = /(?<building>[А-Яа-я]+)?-?(?<number>\d+)(?<letter>[А-Яа-я])?([-.]?(?<postfix>[А-Яа-я0-9]+))?/
+const roomNumberPattern =
+  /(?<building>[А-Яа-я]+)?-? ?(?<number>\d+)(?<letter>[А-Яа-я])?([-.]?(?<postfix>[А-Яа-я0-9]+))?/
 
 export const searchObjectsByName = (
   name: string,
@@ -206,7 +207,13 @@ export const searchObjectsByName = (
         }
       }
 
-      return o.mapObject.name.toLowerCase().includes(name.toLowerCase()) && mapTypesToSearch.includes(o.mapObject.type)
+      return (
+        o.mapObject.name
+          .toLowerCase()
+          .replace("-", "")
+          .replace(" ", "")
+          .includes(name.toLowerCase().replace("-", "").replace(" ", "")) && mapTypesToSearch.includes(o.mapObject.type)
+      )
     })
     .map((o) => ({
       floor: getObjectFloorByMapObjectId(o.mapObject.id, data)?.toString() || "",
