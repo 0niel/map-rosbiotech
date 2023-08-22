@@ -230,3 +230,7 @@ export const searchObjectsByName = (
       return 0
     })
 }
+
+export const getMapObjectById = (id: string, data: MapData): MapObject | undefined => {
+  return data.objects.find((o) => o.id === id)
+}

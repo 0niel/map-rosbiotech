@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from "react"
 import * as d3 from "d3"
-import { getShortestPath, type MapData, type Graph, type Vertex } from "~/lib/graph"
-import { type MapObject } from "~/lib/map/MapObject"
+import { getShortestPath, type MapData, type Graph, type Vertex, getMapObjectById } from "~/lib/graph"
+import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
 
 interface MapRouteProps {
   mapData: MapData
@@ -50,60 +50,61 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
       svg.selectAll(".route").remove()
       svg.selectAll(".circle-point").remove()
 
-      const currentFloorPath = path.filter((point) => isPointInThisFloor(point, currentFloor))
+      let currentFloorPath = path.filter((point) => isPointInThisFloor(point, currentFloor))
+
+      console.log(currentFloorPath)
+
+      // Если две лестницы на одном этаже, то текущий путь заканчивается на второй лестнице
+      // Такое бывает, когда две части карты являются фактически разными корпусами, но на одном этаже
+      // Например, когда Киберзона -> ивц
+      let lastPointIndex = currentFloorPath.length - 1
+      for (let i = 1; i < currentFloorPath.length; i++) {
+        const vert = currentFloorPath[i] as Vertex
+        const prevVert = currentFloorPath[i - 1] as Vertex
+
+        if (!vert.mapObjectId || !prevVert.mapObjectId) continue
+
+        const mapObj = getMapObjectById(vert.mapObjectId, mapData)
+        const prevMapObj = getMapObjectById(prevVert.mapObjectId, mapData)
+
+        if (!mapObj || !prevMapObj) continue
+
+        console.log(mapObj, prevMapObj)
+        if (mapObj.type === MapObjectType.STAIRS && prevMapObj.type === MapObjectType.STAIRS) {
+          lastPointIndex = i - 1
+          break
+        }
+      }
+
+      currentFloorPath = currentFloorPath.slice(0, lastPointIndex + 1)
 
       const lineFunction = d3
         .line<Vertex>()
         .x((d) => d.x)
         .y((d) => d.y)
+        .curve(d3.curveLinear)
 
       const animationDurationsQueue = []
 
-      // Отрисовка маршрутов
-      for (let i = 0; i < currentFloorPath.length - 1; i++) {
-        const startPoint = currentFloorPath[i]
-        const endPoint = currentFloorPath[i + 1]
+      const line = svg
+        .append("path")
+        .attr("class", "route")
+        .attr("d", lineFunction(currentFloorPath))
+        .attr("stroke", "#e74694")
+        .attr("stroke-width", 6)
+        .attr("fill", "none")
+        .attr("stroke-dasharray", "0,0") // чтобы не было видно линии при первом рендере
 
-        if (startPoint === undefined || endPoint === undefined) {
-          continue
-        }
-
-        const line = svg
-          .append("path")
-          .data([[startPoint, endPoint]])
-          .attr("class", "route")
-          .attr("d", lineFunction)
-          .attr("stroke", "#e74694")
-          .attr("stroke-width", 8)
-          .attr("stroke-linecap", "round")
-          .attr("stroke-linejoin", "round")
-          .attr("fill", "none")
-          .attr("stroke-dasharray", function () {
-            return this.getTotalLength() + " " + this.getTotalLength()
-          })
-          .attr("stroke-dashoffset", function () {
-            return this.getTotalLength()
-          })
-
-        const getAnimationDuration = () => {
-          // чем меньше длина линии, тем быстрее анимация
-          const lineLegth = line.node()?.getTotalLength() || 0
-
-          return lineLegth / 1000
-        }
-
-        line
-          .transition()
-          .ease(d3.easeLinear)
-          .duration(getAnimationDuration() * 1000)
-          .delay(animationDurationsQueue.reduce((acc, cur) => acc + cur, 0) * 1000)
-          .attr("stroke-dashoffset", 0)
-          .on("end", () => {
-            line.attr("stroke-dasharray", "none")
-          })
-
-        animationDurationsQueue.push(getAnimationDuration())
-      }
+      line
+        .transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attrTween("stroke-dasharray", function (this) {
+          const len = this.getTotalLength()
+          return function (t) {
+            return `${len * t}, ${len * (1 - t)}`
+          }
+        })
 
       const drawCirclePoint = (point: Vertex, text: string) => {
         const circlePoints = svg
