@@ -1,33 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRouter } from "next/router"
 import {
   type ReactZoomPanPinchRef,
   TransformComponent,
   TransformWrapper,
-  ReactZoomPanPinchState,
+  type ReactZoomPanPinchState,
 } from "react-zoom-pan-pinch"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import mapDataJson from "public/routes.json"
-import { MapData, type Graph, getAllAvailableObjectsInMap, getSearchebleStrings } from "~/lib/graph"
+import { getSearchebleObjects, type MapData } from "~/lib/graph"
 import MapRoute, { type MapRouteRef } from "./MapRoute"
 import ScheduleAPI from "~/lib/schedule/api"
 import { useQuery } from "react-query"
 import { Spinner } from "flowbite-react"
-import { MapPin } from "lucide-react"
+import { RiRouteLine } from "react-icons/ri"
 import { type RoomOnMap } from "~/lib/map/RoomOnMap"
 import {
   fillRoom,
   getAllMapObjectsElements,
   getMapObjectNameByElement,
+  getMapObjectTypeByElemet,
   mapObjectSelector,
   searchMapObjectsByName,
-} from "~/lib/map/roomHelpers"
+} from "~/lib/map/mapObjectsDOM"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
 import RoutesModal from "./RoutesModal"
 import campuses from "~/lib/campuses"
 import { useMapStore } from "~/lib/stores/map"
-import { MapObject } from "~/lib/map/MapObject"
+import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
+import Image from "next/image"
 
 const scheduleAPI = new ScheduleAPI()
 
@@ -68,7 +69,10 @@ const MapContainer = () => {
   const mapStore = useMapStore()
 
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(null)
-  const selectedRoomRef = useRef<RoomOnMap | null>(null)
+  const selectedRoomOnMapRef = useRef<RoomOnMap | null>(null)
+  useEffect(() => {
+    selectedRoomOnMapRef.current = selectedRoomOnMap
+  }, [selectedRoomOnMap])
 
   const [isPanning, setIsPanning] = useState<{ isPanning: boolean; prevEvent: MouseEvent | null }>({
     isPanning: false,
@@ -94,12 +98,12 @@ const MapContainer = () => {
   }, [isLoading, transformComponentRef.current])
 
   const selectRoomEl = (room: Element) => {
-    if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
-      selectedRoomRef.current.element.replaceWith(selectedRoomRef.current.baseElement)
-    }
+    // Если это элемент уже выбран
+    if (room === selectedRoomOnMapRef.current?.element) return
 
-    if (room === selectedRoomRef.current?.element) {
-      return
+    // Если выбран другой объект, то возвращаем старый в исходное состояние
+    if (selectedRoomOnMapRef.current && selectedRoomOnMapRef.current.baseElement) {
+      selectedRoomOnMapRef.current.element.replaceWith(selectedRoomOnMapRef.current.baseElement)
     }
 
     const base = room.cloneNode(true)
@@ -135,12 +139,11 @@ const MapContainer = () => {
   }
 
   const unselectRoomEl = () => {
-    if (selectedRoomRef.current && selectedRoomRef.current.baseElement) {
-      selectedRoomRef.current.element.replaceWith(selectedRoomRef.current.baseElement)
+    if (selectedRoomOnMapRef.current && selectedRoomOnMapRef.current.baseElement) {
+      selectedRoomOnMapRef.current.element.replaceWith(selectedRoomOnMapRef.current.baseElement)
     }
 
     setSelectedRoomOnMap(null)
-    setDrawerOpened(false)
   }
 
   const handleRoomClick = (e: Event) => {
@@ -159,10 +162,6 @@ const MapContainer = () => {
 
     selectRoomEl(room)
   }
-
-  useEffect(() => {
-    selectedRoomRef.current = selectedRoomOnMap
-  }, [selectedRoomOnMap])
 
   const [campusMap, setCampusMap] = useState(campuses.find((campus) => campus.label === "В-78"))
 
@@ -252,7 +251,7 @@ const MapContainer = () => {
 
                 mapRouteRef.current?.renderRoute(start, end, selectedFloor)
               }}
-              aviableMapObjects={getSearchebleStrings(mapData)}
+              aviableMapObjects={getSearchebleObjects(mapData)}
               mapData={mapData}
             />
 
@@ -264,7 +263,7 @@ const MapContainer = () => {
                   setRoutesModalShow(true)
                 }}
               >
-                <MapPin className="h-6 w-6" />
+                <Image className="h-6 w-6" src="/icons/route.svg" alt="Маршрут" width={24} height={24} />
               </button>
 
               <div className="z-30 md:fixed md:right-10">
@@ -314,8 +313,10 @@ const MapContainer = () => {
                     const mapObjectElement = aviableToSelectMapObjectElements.find((el) => el === elementWithMapObject)
 
                     if (mapObjectElement) {
-                      console.log(mapObjectElement, "mapObjectElement")
-                      handleRoomClick(isPanningRef.current.prevEvent)
+                      const isCliclableType = getMapObjectTypeByElemet(mapObjectElement) === MapObjectType.ROOM
+                      if (isCliclableType) {
+                        handleRoomClick(isPanningRef.current.prevEvent)
+                      }
                     }
                   }
                 }

@@ -1,3 +1,5 @@
+import { MapObject, MapObjectType } from "./MapObject"
+
 export const fillRoom = (room: Element, color: string) => {
   const rect = room.querySelectorAll("rect")
   if (rect) {
@@ -33,24 +35,22 @@ export const fillRoom = (room: Element, color: string) => {
   }
 }
 
-// type MapObjectType = "room" | "toilet" | "canteen" | "atm" | "stairs";
-
-// const getTypeByShortName = (shortName: string): MapObjectType => {
-//     switch (shortName) {
-//         case "r":
-//             return "room";
-//         case "t":
-//             return "toilet";
-//         case "c":
-//             return "canteen";
-//         case "a":
-//             return "atm";
-//         case "s":
-//             return "stairs";
-//         default:
-//             return "room";
-//     }
-// };
+const getTypeByShortName = (shortName: string): MapObjectType => {
+  switch (shortName) {
+    case "r":
+      return MapObjectType.ROOM
+    case "t":
+      return MapObjectType.TOILET
+    case "c":
+      return MapObjectType.CANTEEN
+    case "a":
+      return MapObjectType.ATM
+    case "s":
+      return MapObjectType.STAIRS
+    default:
+      return MapObjectType.ROOM
+  }
+}
 
 export const encodeRoomName = (roomName: string) => {
   const roomNameEncoded = roomName.replace(/\\u([0-9A-F]{4})/gi, (_, p1: string) =>
@@ -64,7 +64,7 @@ const isMapObject = (el: Element) => {
 }
 
 export const getMapObjectNameByElement = (el: Element) => {
-  // Формат: "{mapObjectIdentifier}__В-78__r__А-101", где "В-78" - название корпуса, "r" - тип объекта, "А-101" - название объекта
+  // Формат: "В-78__r__А-101", где "В-78" - название корпуса, "r" - тип объекта, "А-101" - название объекта
   try {
     if (!isMapObject(el)) return null
 
@@ -113,4 +113,15 @@ export const searchMapObjectsByName = (name: string) => {
   }
 
   return foundRooms
+}
+
+export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
+  const name = el.getAttribute("data-object")
+  if (!name) return null
+
+  const shortType = name.split("__")[1]
+
+  if (!shortType) return null
+
+  return getTypeByShortName(shortType)
 }

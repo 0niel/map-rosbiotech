@@ -144,7 +144,7 @@ export interface SearchableObject {
   mapObject: MapObject
 }
 
-export const getSearchebleStrings = (data: MapData): SearchableObject[] => {
+export const getSearchebleObjects = (data: MapData): SearchableObject[] => {
   return getAllAvailableObjectsInMap(data)
     .filter((o) => o.type === MapObjectType.ROOM)
     .map((mapObject) => ({
