@@ -193,13 +193,13 @@ export const searchObjectsByName = (
           }
 
           if (letterName) {
-            if (letterObject !== letterName) {
+            if (letterObject?.toLowerCase() !== letterName.toLowerCase()) {
               return false
             }
           }
 
           if (postfixName) {
-            if (postfixObject !== postfixName) {
+            if (postfixObject?.toLowerCase() !== postfixName.toLowerCase()) {
               return false
             }
           }
@@ -212,4 +212,14 @@ export const searchObjectsByName = (
       floor: getObjectFloorByMapObjectId(o.mapObject.id, data)?.toString() || "",
       mapObject: o.mapObject,
     }))
+    .sort((a, b) => {
+      // сначала полное совпадение, потом частичное
+      if (a.mapObject.name === name) return -1
+      if (b.mapObject.name === name) return 1
+
+      if (a.mapObject.name < b.mapObject.name) return -1
+      if (a.mapObject.name > b.mapObject.name) return 1
+
+      return 0
+    })
 }

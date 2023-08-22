@@ -29,27 +29,29 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   searchResults,
 }) => {
   const [search, setSearch] = useState(selected?.mapObject.name ?? "")
-  const [results, setResults] = useState<Record<string, SearchableObject[]>>({})
+  const [results, setResults] = useState<Record<string, SearchableObject[]>[]>([])
   const [showResults, setShowResults] = useState(false)
 
   useEffect(() => {
     if (searchResults) {
-      const groupedResults = searchResults.reduce(
-        (acc, result) => {
-          if (!acc[result.floor]) {
-            acc[result.floor] = []
-          }
-          acc[result.floor]?.push(result)
-          return acc
-        },
-        {} as Record<string, SearchableObject[]>,
-      )
-      setResults(groupedResults)
-      setShowResults(true)
+      const newRes = []
+      const visitedFloors = new Set()
+      for (const res of searchResults) {
+        if (!visitedFloors.has(res.floor)) {
+          const elementsForThisFloor = searchResults.filter((result) => result.floor === res.floor)
+          visitedFloors.add(res.floor)
+          newRes.push({ [res.floor]: elementsForThisFloor })
+        }
+      }
+
+      if (newRes !== results) {
+        setResults(newRes)
+        setShowResults(true)
+      }
     } else {
       setShowResults(false)
     }
-  }, [searchResults])
+  }, [search, searchResults])
 
   const handleSelect = (result: SearchableObject) => {
     setSearch(result.mapObject.name)
@@ -96,26 +98,27 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           </button>
         )}
       </div>
-      {showResults && Object.keys(results).length > 0 && (
+      {showResults && results.length && (
         <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
-          {Object.entries(results).map(([floor, objects]) => (
-            <div key={floor}>
-              <h2 className="text-lg font-medium text-gray-700 dark:text-gray-200 p-4">{`Этаж ${floor}`}</h2>
-              {objects.map((result) => (
-                <div
-                  key={result.mapObject.id}
-                  className="cursor-pointer p-4 hover:bg-gray-200"
-                  onClick={() => handleSelect(result)}
-                >
-                  <p className="text-sm text-gray-900">{result.mapObject.name}</p>
-                </div>
-              ))}
-            </div>
-          ))}
+          {results.map((result) =>
+            Object.entries(result).map(([floor, objects]) => (
+              <div key={floor}>
+                <h2 className="text-lg font-medium text-gray-700 dark:text-gray-200 p-4">{`Этаж ${floor}`}</h2>
+                {objects.map((obj: SearchableObject) => (
+                  <div
+                    key={obj.mapObject.id}
+                    className="cursor-pointer p-4 hover:bg-gray-200"
+                    onClick={() => handleSelect(obj)}
+                  >
+                    <p className="text-sm text-gray-900">{obj.mapObject.name}</p>
+                  </div>
+                ))}
+              </div>
+            )),
+          )}
         </div>
       )}
     </div>
   )
 }
-
 export default MapObjectsSearchInput

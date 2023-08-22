@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from "react"
 import * as d3 from "d3"
-import { getShortestPath, MapData, type Graph, type Vertex } from "~/lib/graph"
-import { MapObject } from "~/lib/map/MapObject"
+import { getShortestPath, type MapData, type Graph, type Vertex } from "~/lib/graph"
+import { type MapObject } from "~/lib/map/MapObject"
 
 interface MapRouteProps {
   mapData: MapData
@@ -94,7 +94,6 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
         animationDurationsQueue.push(getAnimationDuration())
       }
 
-      // Добавить жирные точки на начало и конец маршрута
       const start = currentFloorPath[0]
       const end = currentFloorPath[path.length - 1]
 
@@ -102,21 +101,29 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
         return
       }
 
-      svg
-        .append("circle")
-        .attr("cx", start.x)
-        .attr("cy", start.y)
-        .attr("r", 12)
-        .attr("fill", "#e74694")
+      const circlePoints = svg
+        .append("g")
         .attr("class", "circle-point")
+        .selectAll(".circle-point")
+        .data([start, end])
+        .enter()
 
-      svg
+      circlePoints
         .append("circle")
-        .attr("cx", end.x)
-        .attr("cy", end.y)
-        .attr("r", 12)
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 18)
         .attr("fill", "#e74694")
-        .attr("class", "circle-point")
+
+      circlePoints
+        .append("text")
+        .attr("x", (d) => d.x)
+        .attr("y", (d) => d.y)
+        .attr("fill", "#fff")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("font-size", "18px")
+        .text((d, i) => (i === 0 ? "A" : "Б"))
     },
   }))
 
