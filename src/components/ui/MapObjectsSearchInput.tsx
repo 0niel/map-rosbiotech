@@ -14,7 +14,6 @@ interface MapObjectsSearchInputProps {
   searchResults: SearchableObject[]
 
   selected: SearchableObject | null
-  setSelected?: (result: SearchableObject) => void
 }
 
 const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
@@ -25,7 +24,6 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   onSubmit,
   onChange,
   selected,
-  setSelected,
   searchResults,
 }) => {
   const [search, setSearch] = useState(selected?.mapObject.name ?? "")
@@ -46,7 +44,6 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
 
       if (newRes !== results) {
         setResults(newRes)
-        setShowResults(true)
       }
     } else {
       setShowResults(false)
@@ -54,10 +51,9 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   }, [search, searchResults])
 
   const handleSelect = (result: SearchableObject) => {
-    setSearch(result.mapObject.name)
-    setShowResults(false)
     onSubmit(result)
-    setSelected?.(result)
+    setShowResults(false)
+    setSearch(result.mapObject.name)
   }
 
   const handleSearch = (value: string) => {
@@ -81,6 +77,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           placeholder={placeholder ?? "Поиск"}
           value={search}
           onChange={(e) => {
+            setShowResults(true)
             void handleSearch(e.target.value)
           }}
           autoComplete="off"
@@ -98,7 +95,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           </button>
         )}
       </div>
-      {showResults && results.length && (
+      {showResults && results.length > 0 && (
         <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {results.map((result) =>
             Object.entries(result).map(([floor, objects]) => (

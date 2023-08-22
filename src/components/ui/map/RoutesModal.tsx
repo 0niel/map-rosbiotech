@@ -100,7 +100,6 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                         setEnd(searchObject)
                       }}
                       selected={end}
-                      setSelected={setEnd}
                       showSubmitButton={false}
                       onChange={(name) => {
                         setEndSearchResults(searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]))

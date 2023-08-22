@@ -167,6 +167,12 @@ const MapContainer = () => {
 
   useEffect(() => {
     setSelectedFloor(campusMap?.initialFloor ?? 2)
+
+    // Сбрасываем выбранный объект
+    unselectRoomEl()
+
+    // Сбрасываем маршрут
+    mapRouteRef?.current?.clearRoute()
   }, [campusMap])
 
   useEffect(() => {

@@ -11,6 +11,7 @@ interface MapRouteProps {
 
 export interface MapRouteRef {
   renderRoute: (startMapObject: MapObject, endMapObject: MapObject, currentFloor: number) => void
+  clearRoute: () => void
 }
 
 const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
@@ -24,6 +25,16 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
     if (!floorGraph) return false
 
     return floorGraph.vertices.includes(point)
+  }
+
+  const getFloorByPoint = (point: Vertex) => {
+    for (const floor in mapData.floors) {
+      if (mapData.floors[floor]?.vertices.includes(point)) {
+        return parseInt(floor)
+      }
+    }
+
+    return 0
   }
 
   useImperativeHandle(ref, () => ({
@@ -94,36 +105,69 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
         animationDurationsQueue.push(getAnimationDuration())
       }
 
-      const start = currentFloorPath[0]
-      const end = currentFloorPath[path.length - 1]
+      const drawCirclePoint = (point: Vertex, text: string) => {
+        const circlePoints = svg
+          .append("g")
+          .attr("class", "circle-point")
+          .selectAll(".circle-point")
+          .data([point])
+          .enter()
 
-      if (start === undefined || end === undefined) {
+        circlePoints
+          .append("circle")
+          .attr("cx", (d) => d.x)
+          .attr("cy", (d) => d.y)
+          .attr("r", 18)
+          .attr("fill", "#e74694")
+
+        circlePoints
+          .append("text")
+          .attr("x", (d) => d.x)
+          .attr("y", (d) => d.y)
+          .attr("fill", "#fff")
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("font-size", "18px")
+          .attr("font-weight", "bold")
+          .text(text)
+      }
+
+      const startPoint = path[0] || ({ x: 0, y: 0 } as Vertex)
+      const endPoint = path[path.length - 1] || ({ x: 0, y: 0 } as Vertex)
+
+      const startFloor = getFloorByPoint(startPoint)
+      const endFloor = getFloorByPoint(endPoint)
+
+      const firstCurrentFloorPoint = currentFloorPath[0] || ({ x: 0, y: 0 } as Vertex)
+      const lastCurrentFloorPoint = currentFloorPath[currentFloorPath.length - 1] || ({ x: 0, y: 0 } as Vertex)
+
+      if (startFloor === currentFloor) {
+        drawCirclePoint(startPoint, "A")
+      }
+
+      if (endFloor === currentFloor) {
+        drawCirclePoint(endPoint, "B")
+      }
+
+      if (startFloor === currentFloor && endFloor === currentFloor) {
         return
       }
 
-      const circlePoints = svg
-        .append("g")
-        .attr("class", "circle-point")
-        .selectAll(".circle-point")
-        .data([start, end])
-        .enter()
+      if (endFloor < currentFloor) {
+        drawCirclePoint(lastCurrentFloorPoint, "↓")
+      } else if (endFloor > currentFloor) {
+        drawCirclePoint(lastCurrentFloorPoint, "↑")
+      }
 
-      circlePoints
-        .append("circle")
-        .attr("cx", (d) => d.x)
-        .attr("cy", (d) => d.y)
-        .attr("r", 18)
-        .attr("fill", "#e74694")
+      drawCirclePoint(firstCurrentFloorPoint, "")
+    },
+    clearRoute: () => {
+      if (!svgRef.current) return
 
-      circlePoints
-        .append("text")
-        .attr("x", (d) => d.x)
-        .attr("y", (d) => d.y)
-        .attr("fill", "#fff")
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .attr("font-size", "18px")
-        .text((d, i) => (i === 0 ? "A" : "Б"))
+      const svg = d3.select(svgRef.current)
+
+      svg.selectAll(".route").remove()
+      svg.selectAll(".circle-point").remove()
     },
   }))
 
