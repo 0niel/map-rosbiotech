@@ -64,7 +64,7 @@ const MapContainer = () => {
   const [drawerOpened, setDrawerOpened] = useState(false)
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null)
-  const [selectedFloor, setSelectedFloor] = useState(3)
+  const [selectedFloor, setSelectedFloor] = useState(2)
   const mapStore = useMapStore()
 
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(null)
@@ -165,6 +165,10 @@ const MapContainer = () => {
   }, [selectedRoomOnMap])
 
   const [campusMap, setCampusMap] = useState(campuses.find((campus) => campus.label === "В-78"))
+
+  useEffect(() => {
+    setSelectedFloor(campusMap?.initialFloor ?? 2)
+  }, [campusMap])
 
   useEffect(() => {
     const map = campuses.find((campus) => campus.label === mapStore.campus)

@@ -14,7 +14,7 @@ const HeaderNavbar = () => {
   return (
     <>
       <header>
-        <nav className="border-gray-200 bg-white px-4 py-2.5 dark:bg-gray-800 lg:px-6">
+        <nav className="border-gray-200 bg-white px-4 py-2.5 dark:bg-gray-800 lg:px-6 select-none">
           <div className="flex flex-wrap items-center justify-between">
             <div className="flex items-center justify-start">
               {/* <button

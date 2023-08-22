@@ -12,7 +12,7 @@ interface MapControlsProps {
 
 const MapControls: React.FC<MapControlsProps> = ({ selectedFloor, setSelectedFloor, floors, onZoomIn, onZoomOut }) => {
   return (
-    <div>
+    <div className="select-none">
       <FloorSelectorButtons
         floors={floors}
         selectedFloor={selectedFloor}

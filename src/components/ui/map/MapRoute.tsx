@@ -29,9 +29,6 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
   useImperativeHandle(ref, () => ({
     renderRoute: (startMapObject, endMapObject, currentFloor) => {
       const path = getShortestPath(mapData, startMapObject, endMapObject)
-
-      console.log("Path: ", path)
-
       if (!path || path.length === 1) return
 
       if (!svgRef.current) return
