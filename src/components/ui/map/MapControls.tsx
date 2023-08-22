@@ -8,9 +8,17 @@ interface MapControlsProps {
   floors: number[]
   onZoomIn: () => void
   onZoomOut: () => void
+  onReset: () => void
 }
 
-const MapControls: React.FC<MapControlsProps> = ({ selectedFloor, setSelectedFloor, floors, onZoomIn, onZoomOut }) => {
+const MapControls: React.FC<MapControlsProps> = ({
+  selectedFloor,
+  setSelectedFloor,
+  floors,
+  onZoomIn,
+  onZoomOut,
+  onReset,
+}) => {
   return (
     <div>
       <FloorSelectorButtons
@@ -19,7 +27,7 @@ const MapControls: React.FC<MapControlsProps> = ({ selectedFloor, setSelectedFlo
         onFloorSelect={(floor) => setSelectedFloor(floor)}
       />
       <div className="mt-4">
-        <ScaleButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} />
+        <ScaleButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} onReset={onReset} />
       </div>
     </div>
   )

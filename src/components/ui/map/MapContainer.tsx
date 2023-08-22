@@ -260,6 +260,7 @@ const MapContainer = () => {
                 <MapControls
                   onZoomIn={() => transformComponentRef.current?.zoomIn()}
                   onZoomOut={() => transformComponentRef.current?.zoomOut()}
+                  onReset={() => transformComponentRef.current?.resetTransform()}
                   floors={campuses.find((c) => c.label === mapStore.campus)?.floors || []}
                   selectedFloor={selectedFloor}
                   setSelectedFloor={setSelectedFloor}
