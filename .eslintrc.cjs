@@ -39,7 +39,13 @@ const config = {
     "react/prop-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-unused-vars": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+      },
+    ],
   },
-}
+};
 
-module.exports = config
+module.exports = config;
