@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRouter } from "next/router"
-import { type ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
-import React, { useEffect, useRef, useState } from "react"
+import {
+  type ReactZoomPanPinchRef,
+  TransformComponent,
+  TransformWrapper,
+  ReactZoomPanPinchState,
+} from "react-zoom-pan-pinch"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import mapDataJson from "public/routes.json"
 import { MapData, type Graph, getAllAvailableObjectsInMap, getSearchebleStrings } from "~/lib/graph"
 import MapRoute, { type MapRouteRef } from "./MapRoute"
@@ -65,8 +70,11 @@ const MapContainer = () => {
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(null)
   const selectedRoomRef = useRef<RoomOnMap | null>(null)
 
-  const [isPanning, setIsPanning] = useState(false)
-  const isPanningRef = useRef(false)
+  const [isPanning, setIsPanning] = useState<{ isPanning: boolean; prevEvent: MouseEvent | null }>({
+    isPanning: false,
+    prevEvent: null,
+  })
+  const isPanningRef = useRef(isPanning)
 
   useEffect(() => {
     isPanningRef.current = isPanning
@@ -95,7 +103,9 @@ const MapContainer = () => {
     }
 
     const base = room.cloneNode(true)
-    base.addEventListener("click", handleRoomClick)
+    base.addEventListener("click", (e: Event) => {
+      handleRoomClick(e)
+    })
 
     const baseState = base as Element
 
@@ -134,14 +144,8 @@ const MapContainer = () => {
   }
 
   const handleRoomClick = (e: Event) => {
-    e.stopPropagation()
     e.preventDefault()
-
-    console.log(isPanningRef.current)
-
-    if (isPanningRef.current) return
-
-    if (e.type === "mouseup") return
+    e.stopPropagation()
 
     const target = e.target as HTMLElement
     let room = target.closest(mapObjectSelector)
@@ -186,17 +190,6 @@ const MapContainer = () => {
 
   const [routesModalShow, setRoutesModalShow] = useState(false)
 
-  const mapImageRef = useRef<HTMLImageElement>(null)
-
-  const mapCliclableRegions = () => {
-    console.log("mapCliclableRegions")
-    const roomsElements = getAllMapObjectsElements(document)
-
-    roomsElements.forEach((room) => {
-      room.addEventListener("click", handleRoomClick)
-    })
-  }
-
   const [routeStartAndEnd, setRouteStartAndEnd] = useState<{ start: MapObject; end: MapObject } | null>(null)
 
   useEffect(() => {
@@ -212,6 +205,20 @@ const MapContainer = () => {
 
     mapRouteRef.current?.renderRoute(start, end, selectedFloor)
   }, [routeStartAndEnd, selectedFloor])
+
+  const [prevPanZoomState, setPrevPanZoomState] = useState<ReactZoomPanPinchState | null>(null)
+  const prevPanZoomStateRef = useRef<ReactZoomPanPinchState | null>(null)
+  useEffect(() => {
+    prevPanZoomStateRef.current = prevPanZoomState
+  }, [prevPanZoomState])
+
+  useEffect(() => {
+    if (isPanning.isPanning) {
+      document.body.style.cursor = "grabbing"
+    } else {
+      document.body.style.cursor = "default"
+    }
+  }, [isPanning])
 
   return (
     <div className="flex h-full flex-col">
@@ -276,8 +283,8 @@ const MapContainer = () => {
               panning={{ disabled: false, velocityDisabled: false }}
               velocityAnimation={{
                 sensitivity: 1,
-                animationTime: 400,
-                animationType: "easeOut",
+                animationTime: 100,
+                animationType: "linear",
                 equalToMove: true,
               }}
               ref={transformComponentRef}
@@ -285,13 +292,31 @@ const MapContainer = () => {
               limitToBounds={false}
               centerZoomedOut={false}
               disablePadding={false}
-              onPanningStart={() => {
-                document.body.style.cursor = "grabbing"
-                setIsPanning(true)
+              onPanningStart={(ref, event) => {
+                setIsPanning({ isPanning: true, prevEvent: event as MouseEvent })
               }}
-              onPanningStop={() => {
-                document.body.style.cursor = "default"
-                setIsPanning(false)
+              onPanningStop={(ref, event) => {
+                // Нужно, чтобы при перетаскивании не срабатывал клик
+                if (isPanningRef.current.prevEvent) {
+                  const timeDiff = event?.timeStamp - isPanningRef.current.prevEvent?.timeStamp
+                  if (timeDiff < 200) {
+                    const { clientX, clientY } = isPanningRef.current.prevEvent
+
+                    const element = document.elementFromPoint(clientX, clientY)
+                    const elementWithMapObject = element?.closest(mapObjectSelector)
+
+                    const aviableToSelectMapObjectElements = getAllMapObjectsElements(document)
+
+                    const mapObjectElement = aviableToSelectMapObjectElements.find((el) => el === elementWithMapObject)
+
+                    if (mapObjectElement) {
+                      console.log(mapObjectElement, "mapObjectElement")
+                      handleRoomClick(isPanningRef.current.prevEvent)
+                    }
+                  }
+                }
+
+                setIsPanning({ isPanning: false, prevEvent: null })
               }}
             >
               <TransformComponent
@@ -308,7 +333,7 @@ const MapContainer = () => {
                 />
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
-                  onLoaded: () => mapCliclableRegions(),
+                  onLoaded: () => {},
                 })}
               </TransformComponent>
             </TransformWrapper>
