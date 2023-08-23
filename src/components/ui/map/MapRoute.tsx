@@ -84,8 +84,6 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
         .y((d) => d.y)
         .curve(d3.curveLinear)
 
-      const animationDurationsQueue = []
-
       const line = svg
         .append("path")
         .attr("class", "route")
