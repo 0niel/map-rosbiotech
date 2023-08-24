@@ -16,7 +16,6 @@ export interface MapRouteRef {
 }
 
 const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
-  const [shortestPath, setShortestPath] = useState<Vertex[]>([])
   const svgRef = useRef<SVGSVGElement | null>(null)
 
   const [mapData, setMapData] = useState<MapData>(props.mapData)
@@ -40,8 +39,12 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     renderRoute: (startMapObject, endMapObject, currentFloor) => {
-      const path = mapData.getShortestPath(startMapObject, endMapObject)
-      if (!path || path.length === 1) return
+      //  Пути, разделенные на сегменты (по этажам, разделенным лестницами)
+      const path = mapData.getShortestPathBySegments(startMapObject, endMapObject)
+
+      if (!path || path.length === 0) {
+        return
+      }
 
       if (!svgRef.current) return
 
@@ -51,48 +54,20 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
       svg.selectAll(".route").remove()
       svg.selectAll(".circle-point").remove()
 
-      const currentFloorPath = path.filter((point) => isPointInThisFloor(point, currentFloor))
+      // Все точки, которые находятся на всех этажах
+      const allPoints = path.reduce((acc, points) => [...acc, ...points], [])
 
-      // Список сегментов пути, разделенных лестницами
-      const pathsByStairs = [] as Vertex[][]
+      const startPoint = allPoints[0] || ({ x: 0, y: 0 } as Vertex)
+      const endPoint = allPoints[allPoints.length - 1] || ({ x: 0, y: 0 } as Vertex)
 
-      if (currentFloorPath.length === 0) return
+      const startFloor = getFloorByPoint(startPoint)
+      const endFloor = getFloorByPoint(endPoint)
 
-      // Первый сегмент пути всегда начинается с начальной точки
-      pathsByStairs.push([currentFloorPath[0] as Vertex])
-
-      for (let i = 1; i < currentFloorPath.length; i++) {
-        const vert = currentFloorPath[i] as Vertex
-        const prevVert = currentFloorPath[i - 1] as Vertex
-
-        if (!vert.mapObjectId && !prevVert.mapObjectId) {
-          ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+      for (const pathSegment of path) {
+        if (!pathSegment || !pathSegment[0] || !isPointInThisFloor(pathSegment[0], currentFloor)) {
           continue
         }
 
-        const mapObj = mapData.getMapObjectById(vert.mapObjectId as string)
-        const prevMapObj = mapData.getMapObjectById(prevVert.mapObjectId as string)
-
-        if (mapObj && prevMapObj) {
-          if (mapObj.type === MapObjectType.STAIRS && prevMapObj.type === MapObjectType.STAIRS) {
-            // Если оба объекта лестницы, то добавить новый сегмент пути
-            pathsByStairs.push([vert])
-          } else if (mapObj.type === MapObjectType.STAIRS && prevMapObj.type !== MapObjectType.STAIRS) {
-            // Если текущий объект лестница, а предыдущий нет, то добавить текущий объект в последний сегмент пути
-            ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
-          } else if (mapObj.type !== MapObjectType.STAIRS && prevMapObj.type === MapObjectType.STAIRS) {
-            // Если текущий объект не лестница, а предыдущий объект лестница, то добавить текущий объект в новый сегмент пути
-            pathsByStairs.push([vert])
-          } else if (mapObj.type !== MapObjectType.STAIRS && prevMapObj.type !== MapObjectType.STAIRS) {
-            // Если оба объекта не лестницы, то добавить текущий объект в последний сегмент пути
-            ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
-          }
-        } else {
-          ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
-        }
-      }
-
-      for (const floorPath of pathsByStairs) {
         const lineFunction = d3
           .line<Vertex>()
           .x((d) => d.x)
@@ -101,8 +76,8 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
 
         const line = svg
           .append("path")
-          .attr("class", "route")
-          .attr("d", lineFunction(floorPath))
+          .attr("class", "route absolute z-10")
+          .attr("d", lineFunction(pathSegment))
           .attr("stroke", "#e74694")
           .attr("stroke-width", 6)
           .attr("fill", "none")
@@ -133,9 +108,12 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
             .attr("cy", (d) => d.y)
             .attr("r", 18)
             .attr("fill", "#e74694")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 3)
 
           circlePoints
             .append("text")
+
             .attr("x", (d) => d.x)
             .attr("y", (d) => d.y)
             .attr("fill", "#fff")
@@ -146,21 +124,15 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
             .text(text)
         }
 
-        const startPoint = path[0] || ({ x: 0, y: 0 } as Vertex)
-        const endPoint = path[path.length - 1] || ({ x: 0, y: 0 } as Vertex)
+        const firstCurrentFloorPoint = pathSegment[0] || ({ x: 0, y: 0 } as Vertex)
+        const lastCurrentFloorPoint = pathSegment[pathSegment.length - 1] || ({ x: 0, y: 0 } as Vertex)
 
-        const startFloor = getFloorByPoint(startPoint)
-        const endFloor = getFloorByPoint(endPoint)
+        if (isPointInThisFloor(startPoint, currentFloor)) {
+          drawCirclePoint(startPoint, "А")
+        } else drawCirclePoint(firstCurrentFloorPoint, "")
 
-        const firstCurrentFloorPoint = floorPath[0] || ({ x: 0, y: 0 } as Vertex)
-        const lastCurrentFloorPoint = floorPath[floorPath.length - 1] || ({ x: 0, y: 0 } as Vertex)
-
-        if (startFloor === currentFloor) {
-          drawCirclePoint(startPoint, "A")
-        }
-
-        if (endFloor === currentFloor) {
-          drawCirclePoint(endPoint, "B")
+        if (isPointInThisFloor(endPoint, currentFloor)) {
+          drawCirclePoint(endPoint, "Б")
         }
 
         if (endFloor < currentFloor) {
@@ -170,9 +142,10 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
         } else if (startFloor === endFloor) {
           // Если начальная точка и кочная точка находятся на одном этаже, но, на пример, в разных корпусах.
           // И чтобы до них дойти, нужно подниматься или спускаться по лестницам
-          const pointAfterLastCurrentFloorPoint = path[path.indexOf(lastCurrentFloorPoint) + 1]
-          if (pointAfterLastCurrentFloorPoint) {
-            const pointFloor = getFloorByPoint(pointAfterLastCurrentFloorPoint)
+          const currentSegmentLastPoint = pathSegment[pathSegment.length - 1] || ({ x: 0, y: 0 } as Vertex)
+          const pointAfterCurrentSegment = allPoints[allPoints.indexOf(currentSegmentLastPoint) + 1]
+          if (pointAfterCurrentSegment) {
+            const pointFloor = getFloorByPoint(pointAfterCurrentSegment)
             if (pointFloor < currentFloor) {
               drawCirclePoint(lastCurrentFloorPoint, "↓")
             } else if (pointFloor > currentFloor) {
@@ -180,8 +153,6 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
             }
           }
         }
-
-        drawCirclePoint(firstCurrentFloorPoint, "")
       }
     },
     clearRoute: () => {
