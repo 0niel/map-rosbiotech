@@ -1,67 +1,93 @@
 import axios, { type AxiosInstance, type AxiosError } from "axios"
-import { type components } from "./schema"
+import createClient from "openapi-fetch"
+import { type paths, type components } from "./schema"
 
-const API_URL = "https://timetable.mirea.ninja/api"
+const API_URL = "https://timetable.mirea.ninja"
 
 class ScheduleAPI {
-  private apiClient: AxiosInstance
+  private GET
+  private POST
 
   constructor() {
-    this.apiClient = axios.create({
-      baseURL: API_URL,
-      headers: {
-        "Content-Type": "application/json",
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const { GET, POST } = createClient<paths>({ baseUrl: API_URL })
+
+    this.GET = GET
+    this.POST = POST
+  }
+
+  async getCampuses() {
+    const { data, error } = await this.GET("/api/campuses", {
+      params: {
+        query: {
+          limit: 10,
+        },
       },
-      withCredentials: false,
     })
+
+    return { data, error }
   }
 
-  private handleError(error: AxiosError) {
-    console.error("API Error:", error.response)
-    throw error
+  async getRooms(campusId: number) {
+    const { data, error } = await this.GET("/api/rooms", {
+      params: {
+        query: {
+          limit: 10,
+          campus_id: campusId,
+        },
+      },
+    })
+
+    return { data, error }
   }
 
-  async getCampuses(): Promise<components["schemas"]["Campus"][]> {
-    const response = await this.apiClient.get("/campuses")
+  async getRoomInfo(room_id: number) {
+    const { data, error } = await this.GET(`/api/rooms/info/{id}`, {
+      params: {
+        path: {
+          id: room_id,
+        },
+      },
+    })
 
-    return response.data as components["schemas"]["Campus"][]
+    return { data, error }
   }
 
-  async getRooms(campus_id: number): Promise<components["schemas"]["Room"][]> {
-    const response = await this.apiClient.get(`/rooms?campus_id=${campus_id}&limit=500&offset=0`)
+  async getRoomLessons(roomId: number) {
+    const { data, error } = await this.GET("/api/lessons/rooms/{id}", {
+      params: {
+        path: {
+          id: roomId,
+        },
+      },
+    })
 
-    return response.data as components["schemas"]["Room"][]
+    return { data, error }
   }
 
-  async getRoomInfo(room_id: number): Promise<components["schemas"]["RoomInfo"]> {
-    const response = await this.apiClient.get(`/rooms/info/${room_id}`)
+  async getRoomsStatuses(dateTime: Date, campusId: number) {
+    const { data, error } = await this.GET("/api/rooms/statuses", {
+      params: {
+        query: {
+          date_time: dateTime.toISOString(),
+          campus_id: campusId,
+        },
+      },
+    })
 
-    return response.data as components["schemas"]["RoomInfo"]
+    return { data, error }
   }
 
-  async getRoomSchedule(room_id: number): Promise<components["schemas"]["Lesson"][]> {
-    const response = await this.apiClient.get(`/lessons/rooms/${room_id}`)
+  async getRoomsWorkload(campusId: number) {
+    const { data, error } = await this.GET("/api/rooms/workload", {
+      params: {
+        query: {
+          campus_id: campusId,
+        },
+      },
+    })
 
-    return response.data as components["schemas"]["Lesson"][]
-  }
-
-  async getRoomsStatuses(
-    dateTime: Date,
-    room_ids: number[],
-  ): Promise<
-    {
-      name: string
-      status: string
-    }[]
-  > {
-    const response = await this.apiClient.get(
-      `/rooms/statuses?date_time=${dateTime.toISOString()}&ids=${room_ids.join("&ids=")}`,
-    )
-
-    return response.data as {
-      name: string
-      status: string
-    }[]
+    return { data, error }
   }
 }
 

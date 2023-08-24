@@ -77,7 +77,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({ isOpen, onClose, dateTime, room
       if (!room) {
         return
       }
-      const roomLessons = await scheduleAPI.getRoomSchedule(room.id)
+      const roomLessons = await scheduleAPI.getRoomLessons(room.id)
       const roomInfo = await scheduleAPI.getRoomInfo(room.id)
       const roomStatus = await scheduleAPI.getRoomsStatuses(dateTime, [room.id])
 

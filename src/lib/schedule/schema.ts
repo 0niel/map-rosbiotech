@@ -11,19 +11,19 @@ export interface paths {
      */
     get: operations["get_campuses_api_campuses_get"]
   }
-  "/api/campus/{id}": {
+  "/api/campuses/{id}": {
     /**
      * Получение кампуса по id
      * @description Получить кампус по id и вернуть его
      */
-    get: operations["get_campus_api_campus__id__get"]
+    get: operations["get_campus_api_campuses__id__get"]
   }
-  "/api/campus/{id}/rooms": {
+  "/api/campuses/{id}/rooms": {
     /**
      * Получение всех аудитории по кампусу
      * @description Получить все аудитории по кампусу
      */
-    get: operations["get_rooms_api_campus__id__rooms_get"]
+    get: operations["get_rooms_api_campuses__id__rooms_get"]
   }
   "/api/groups": {
     /**
@@ -32,19 +32,19 @@ export interface paths {
      */
     get: operations["get_groups_api_groups_get"]
   }
-  "/api/group/{id}": {
+  "/api/groups/{id}": {
     /**
      * Получение группы по id
      * @description Получить группу по id и вернуть её
      */
-    get: operations["get_group_api_group__id__get"]
+    get: operations["get_group_api_groups__id__get"]
   }
-  "/api/group/name/{name}": {
+  "/api/groups/name/{name}": {
     /**
      * Получение группы и её расписания по названию
      * @description Получить группу и её расписание по названию
      */
-    get: operations["get_group_schedule_api_group_name__name__get"]
+    get: operations["get_group_schedule_api_groups_name__name__get"]
   }
   "/api/lessons": {
     /**
@@ -214,12 +214,12 @@ export interface paths {
      */
     get: operations["get_degrees_api_degrees_get"]
   }
-  "/api/degree/{id}": {
+  "/api/degrees/{id}": {
     /**
      * Получение степени по id
      * @description Получить степень по id и вернуть его
      */
-    get: operations["get_degree_api_degree__id__get"]
+    get: operations["get_degree_api_degrees__id__get"]
   }
   "/api/parse-schedule/": {
     /** Parse Schedule */
@@ -231,6 +231,25 @@ export interface paths {
      * @description Получить системную информацию
      */
     get: operations["get_system_info_api_versions_get"]
+  }
+  "/api/max-week": {
+    /**
+     * Получить максимальное кол-во недель в семестре
+     * @description Получить максимальное кол-во недель в семестре
+     */
+    get: operations["get_max_week_count_api_max_week_get"]
+    /**
+     * Установить максимальное кол-во недель в семестре
+     * @description Установить максимальное кол-во недель в семестре
+     */
+    put: operations["update_max_week_count_api_max_week_put"]
+  }
+  "/api/current-week": {
+    /**
+     * Получить текущую неделю
+     * @description Получить текущую неделю
+     */
+    get: operations["get_current_week_api_current_week_get"]
   }
   "/api/lks/{group_name}": {
     /**
@@ -253,6 +272,11 @@ export interface components {
       short_name: string
       /** Id */
       id: number
+    }
+    /** CurrentWeek */
+    CurrentWeek: {
+      /** Week */
+      week: number
     }
     /** Degree */
     Degree: {
@@ -361,7 +385,7 @@ export interface components {
     LksDay: {
       /** Days */
       DAYS: {
-        [key: string]: components["schemas"]["LksLessons"] | undefined
+        [key: string]: components["schemas"]["LksLessons"]
       }
     }
     /** LksLesson */
@@ -381,7 +405,7 @@ export interface components {
     LksLessons: {
       /** Lessons */
       LESSONS: {
-        [key: string]: components["schemas"]["LksLesson"][] | undefined
+        [key: string]: components["schemas"]["LksLesson"][]
       }
     }
     /** LksSchedule */
@@ -392,13 +416,8 @@ export interface components {
     LksWeeks: {
       /** Weeks */
       WEEKS: {
-        [key: string]: components["schemas"]["LksDay"] | undefined
+        [key: string]: components["schemas"]["LksDay"]
       }
-    }
-    /** Msg */
-    Msg: {
-      /** Msg */
-      msg: string
     }
     /** Period */
     Period: {
@@ -428,6 +447,18 @@ export interface components {
       purpose: string
       /** Workload */
       workload: number
+    }
+    /** SettingsCreate */
+    SettingsCreate: {
+      /** Max Week */
+      max_week: number
+    }
+    /** SettingsGet */
+    SettingsGet: {
+      /** Max Week */
+      max_week: number
+      /** Id */
+      id: number
     }
     /** Teacher */
     Teacher: {
@@ -491,6 +522,8 @@ export interface components {
   pathItems: never
 }
 
+export type $defs = Record<string, never>
+
 export type external = Record<string, never>
 
 export interface operations {
@@ -526,7 +559,7 @@ export interface operations {
    * Получение кампуса по id
    * @description Получить кампус по id и вернуть его
    */
-  get_campus_api_campus__id__get: {
+  get_campus_api_campuses__id__get: {
     parameters: {
       path: {
         /** @description Id кампуса */
@@ -552,7 +585,7 @@ export interface operations {
    * Получение всех аудитории по кампусу
    * @description Получить все аудитории по кампусу
    */
-  get_rooms_api_campus__id__rooms_get: {
+  get_rooms_api_campuses__id__rooms_get: {
     parameters: {
       path: {
         /** @description Id кампуса */
@@ -606,7 +639,7 @@ export interface operations {
    * Получение группы по id
    * @description Получить группу по id и вернуть её
    */
-  get_group_api_group__id__get: {
+  get_group_api_groups__id__get: {
     parameters: {
       path: {
         /** @description Id института */
@@ -632,7 +665,7 @@ export interface operations {
    * Получение группы и её расписания по названию
    * @description Получить группу и её расписание по названию
    */
-  get_group_schedule_api_group_name__name__get: {
+  get_group_schedule_api_groups_name__name__get: {
     parameters: {
       path: {
         /** @description Имя группы */
@@ -934,11 +967,11 @@ export interface operations {
    */
   get_statuses_api_rooms_statuses_get: {
     parameters: {
-      query?: {
+      query: {
         /** @description Дата и время в ISO формате. Пример: 2021-09-01T00:00:00+03:00 */
         date_time?: string
-        /** @description Id аудиторий */
-        ids?: number[]
+        /** @description Id кампуса */
+        campus_id: number
       }
     }
     responses: {
@@ -962,9 +995,9 @@ export interface operations {
    */
   get_rooms_workload_api_rooms_workload_get: {
     parameters: {
-      query?: {
-        /** @description Id аудиторий */
-        ids?: number[]
+      query: {
+        /** @description Id кампуса */
+        campus_id: number
       }
     }
     responses: {
@@ -1310,7 +1343,7 @@ export interface operations {
    * Получение степени по id
    * @description Получить степень по id и вернуть его
    */
-  get_degree_api_degree__id__get: {
+  get_degree_api_degrees__id__get: {
     parameters: {
       path: {
         /** @description Id степени */
@@ -1342,10 +1375,8 @@ export interface operations {
     }
     responses: {
       /** @description Successful Response */
-      201: {
-        content: {
-          "application/json": components["schemas"]["Msg"]
-        }
+      204: {
+        content: never
       }
       /** @description Validation Error */
       422: {
@@ -1365,6 +1396,77 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["VersionBase"]
+        }
+      }
+    }
+  }
+  /**
+   * Получить максимальное кол-во недель в семестре
+   * @description Получить максимальное кол-во недель в семестре
+   */
+  get_max_week_count_api_max_week_get: {
+    parameters: {
+      query: {
+        /** @description Ключ доступа */
+        secret_key: string
+      }
+    }
+    responses: {
+      /** @description Максимальное кол-во недель получено */
+      200: {
+        content: {
+          "application/json": components["schemas"]["SettingsGet"]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"]
+        }
+      }
+    }
+  }
+  /**
+   * Установить максимальное кол-во недель в семестре
+   * @description Установить максимальное кол-во недель в семестре
+   */
+  update_max_week_count_api_max_week_put: {
+    parameters: {
+      query: {
+        /** @description Ключ доступа */
+        secret_key: string
+      }
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SettingsCreate"]
+      }
+    }
+    responses: {
+      /** @description Максимальное кол-во недель установлено и возвращено */
+      200: {
+        content: {
+          "application/json": components["schemas"]["SettingsGet"]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"]
+        }
+      }
+    }
+  }
+  /**
+   * Получить текущую неделю
+   * @description Получить текущую неделю
+   */
+  get_current_week_api_current_week_get: {
+    responses: {
+      /** @description Текущая неделя успешно получена */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CurrentWeek"]
         }
       }
     }

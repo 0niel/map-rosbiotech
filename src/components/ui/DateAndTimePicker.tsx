@@ -18,6 +18,7 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
     <div className="flex w-full max-w-xl flex-row space-x-4">
       <Datepicker
         options={{
+          datepickerClassNames: "z-50 ",
           theme: {
             background: "",
             todayBtn: "",
@@ -29,6 +30,8 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
             inputIcon: "cursor-pointer",
             selected: "",
           },
+
+          weekDays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
 
           language: "ru",
           dateFormat: "dd.mm.yyyy",

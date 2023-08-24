@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Search } from "lucide-react"
 import { type SearchableObject } from "~/lib/graph"
+import DisplayModeSettingsDialog from "./DisplayModeSettingsDialog"
 
 interface MapObjectsSearchInputProps {
   onSubmit: (searchableObject: SearchableObject) => void
@@ -10,6 +11,7 @@ interface MapObjectsSearchInputProps {
   placeholder?: string
   showSubmitButton: boolean
   submitButton?: string
+  inputRef?: React.Ref<HTMLInputElement>
 
   searchResults: SearchableObject[]
 
@@ -25,6 +27,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   onChange,
   selected,
   searchResults,
+  inputRef,
 }) => {
   const [search, setSearch] = useState(selected?.mapObject.name ?? "")
   const [results, setResults] = useState<Record<string, SearchableObject[]>[]>([])
@@ -71,6 +74,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           <Search className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </div>
         <input
+          ref={inputRef}
           type="search"
           id="default-search"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"

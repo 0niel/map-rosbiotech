@@ -63,7 +63,7 @@ const isMapObject = (el: Element) => {
   return el.getAttribute("data-object") != null
 }
 
-export const getMapObjectNameByElement = (el: Element) => {
+export const getMapObjectIdByElement = (el: Element) => {
   // Формат: "В-78__r__А-101", где "В-78" - название корпуса, "r" - тип объекта, "А-101" - название объекта
   try {
     if (!isMapObject(el)) return null
@@ -81,7 +81,7 @@ export const getMapObjectNameByElement = (el: Element) => {
 
 export const mapObjectSelector = `[data-object]`
 
-export const getAllMapObjectsElements = (document: Document = window.document) => {
+export const getAllMapObjectsElements = (document: Document | Element = window.document) => {
   const rooms = document.querySelectorAll(mapObjectSelector)
 
   const roomsEls = Array.from(rooms).map((room) => {
@@ -90,7 +90,7 @@ export const getAllMapObjectsElements = (document: Document = window.document) =
       return room
     }
 
-    if (getMapObjectNameByElement(parent) == getMapObjectNameByElement(room)) {
+    if (getMapObjectIdByElement(parent) == getMapObjectIdByElement(room)) {
       return parent
     }
 
@@ -100,19 +100,17 @@ export const getAllMapObjectsElements = (document: Document = window.document) =
   return roomsEls
 }
 
-export const searchMapObjectsByName = (name: string) => {
-  const roomsEls = getAllMapObjectsElements()
-
-  const foundRooms = []
+export const getMapObjectById = (name: string, document: Document | Element = window.document) => {
+  const roomsEls = getAllMapObjectsElements(document)
 
   for (const room of roomsEls) {
-    const roomName = getMapObjectNameByElement(room)
+    const roomName = getMapObjectIdByElement(room)
     if (roomName?.trim().toLowerCase() == name.trim().toLowerCase()) {
-      foundRooms.push(room)
+      return room
     }
   }
 
-  return foundRooms
+  return null
 }
 
 export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
@@ -125,3 +123,4 @@ export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
 
   return getTypeByShortName(shortType)
 }
+

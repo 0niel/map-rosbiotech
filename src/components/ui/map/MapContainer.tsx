@@ -17,14 +17,14 @@ import { type RoomOnMap } from "~/lib/map/RoomOnMap"
 import {
   fillRoom,
   getAllMapObjectsElements,
-  getMapObjectNameByElement,
+  getMapObjectIdByElement,
   getMapObjectTypeByElemet,
   mapObjectSelector,
-  searchMapObjectsByName,
+  getMapObjectById,
 } from "~/lib/map/mapObjectsDOM"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
-import RoutesModal from "./RoutesModal"
+import RoutesModal from "./NavigationDialog"
 import campuses from "~/lib/campuses"
 import { useMapStore } from "~/lib/stores/map"
 import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
@@ -41,15 +41,16 @@ const MapContainer = () => {
 
   const { isLoading, error, data } = useQuery(["rooms"], {
     queryFn: async () => {
-      const campuses = await scheduleAPI.getCampuses()
+      const { data: campuses, error } = await scheduleAPI.getCampuses()
+      if (error || !campuses) throw error
 
       const campusId = campuses.find((campus) => campus.short_name === mapStore.campus)?.id
-
       if (!campusId) {
-        return null
+        return []
       }
 
-      const rooms = await scheduleAPI.getRooms(campusId)
+      const { data: rooms, error: roomsError } = await scheduleAPI.getRooms(campusId)
+      if (roomsError || !rooms) throw roomsError
 
       return rooms
     },
@@ -90,7 +91,7 @@ const MapContainer = () => {
         return
       }
 
-      const room = searchMapObjectsByName(router.query.room as string)[0] as Element
+      const room = getMapObjectById(router.query.room as string)[0] as Element
       if (room) {
         selectRoomEl(room)
       }
@@ -115,7 +116,7 @@ const MapContainer = () => {
 
     fillRoom(room, "#2563EB")
 
-    const name = getMapObjectNameByElement(room)
+    const name = getMapObjectIdByElement(room)
     if (!name) {
       return
     }
@@ -152,7 +153,7 @@ const MapContainer = () => {
 
     const target = e.target as HTMLElement
     let room = target.closest(mapObjectSelector)
-    if (getMapObjectNameByElement(room?.parentElement as Element) === getMapObjectNameByElement(room as Element)) {
+    if (getMapObjectIdByElement(room?.parentElement as Element) === getMapObjectIdByElement(room as Element)) {
       room = room?.parentElement as Element
     }
 
@@ -344,7 +345,7 @@ const MapContainer = () => {
                 />
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
-                  onLoaded: () => {},
+                  mapData: mapData,
                 })}
               </TransformComponent>
             </TransformWrapper>

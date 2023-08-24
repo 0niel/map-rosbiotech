@@ -7,6 +7,7 @@ import Floor1 from "./floor_1.svg?url"
 import Floor2 from "./floor_2.svg?url"
 import Floor3 from "./floor_3.svg?url"
 import Floor4 from "./floor_4.svg?url"
+import { MapData } from "~/lib/graph"
 
 const maps = [
   { floor: 0, svgUrl: Floor0.src },
@@ -16,9 +17,9 @@ const maps = [
   { floor: 4, svgUrl: Floor4.src },
 ]
 
-const MapWrapper = ({ floor }: { floor: number }) => {
+const MapWrapper = ({ floor, mapData }: { floor: number; mapData: MapData }) => {
   const currentMap = maps.find((map) => map.floor === floor) as MapProps
-  return <Map {...currentMap} />
+  return <Map {...currentMap} mapData={mapData} />
 }
 
 export default memo(MapWrapper)

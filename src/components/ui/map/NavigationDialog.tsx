@@ -1,6 +1,6 @@
-import React, { type FormEvent } from "react"
+import React, { type FormEvent, useRef, useEffect } from "react"
 import { X } from "lucide-react"
-import { Fragment, useRef, useState } from "react"
+import { Fragment, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import MapObjectsSearchInput from "../MapObjectsSearchInput"
 import { type MapData, type SearchableObject, searchObjectsByName } from "~/lib/graph"
@@ -19,6 +19,20 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
   const [startSearchResults, setStartSearchResults] = useState<SearchableObject[]>([])
   const [end, setEnd] = useState<SearchableObject | null>(null)
   const [endSearchResults, setEndSearchResults] = useState<SearchableObject[]>([])
+  const startInputRef = useRef<HTMLInputElement>(null)
+  const endInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isOpen && startInputRef.current) {
+      startInputRef.current.focus()
+    }
+  }, [isOpen, startInputRef])
+
+  useEffect(() => {
+    if (isOpen && endInputRef.current) {
+      endInputRef.current.focus()
+    }
+  }, [isOpen, endInputRef])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -53,7 +67,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
         </Transition.Child>
 
         <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -89,6 +103,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                       }}
                       searchResults={startSearchResults}
                       selected={start}
+                      inputRef={startInputRef}
                     />
                   </div>
                   <div>
@@ -105,6 +120,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                         setEndSearchResults(searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]))
                       }}
                       searchResults={endSearchResults}
+                      inputRef={endInputRef}
                     />
                   </div>
 
