@@ -346,6 +346,7 @@ const MapContainer = () => {
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
                   mapData: mapData,
+
                 })}
               </TransformComponent>
             </TransformWrapper>
