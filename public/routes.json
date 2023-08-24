@@ -17838,13 +17838,13 @@
       "description": null
     },
     {
-      "id": "2318:4271",
-      "type": "stairs",
-      "name": "Лестница",
+      "id": "2318:4259",
+      "type": "toilet",
+      "name": "Туалет Ж",
       "description": null
     },
     {
-      "id": "2426:14835",
+      "id": "2318:4271",
       "type": "stairs",
       "name": "Лестница",
       "description": null
@@ -17892,7 +17892,13 @@
       "description": null
     },
     {
-      "id": "2318:4297",
+      "id": "2426:14842",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2426:14846",
       "type": "stairs",
       "name": "Лестница",
       "description": null
@@ -17934,1219 +17940,19 @@
       "description": null
     },
     {
+      "id": "2318:4343",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4344",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
       "id": "2318:4349",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4398",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4399",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4400",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4401",
-      "type": "room",
-      "name": "А-301",
-      "description": null
-    },
-    {
-      "id": "2318:4402",
-      "type": "room",
-      "name": "А-302",
-      "description": null
-    },
-    {
-      "id": "2318:4403",
-      "type": "room",
-      "name": "А-300",
-      "description": null
-    },
-    {
-      "id": "2318:4404",
-      "type": "room",
-      "name": "А-303",
-      "description": null
-    },
-    {
-      "id": "2318:4405",
-      "type": "room",
-      "name": "А-304",
-      "description": null
-    },
-    {
-      "id": "2318:4406",
-      "type": "room",
-      "name": "А-306",
-      "description": null
-    },
-    {
-      "id": "2318:4408",
-      "type": "room",
-      "name": "А-308",
-      "description": null
-    },
-    {
-      "id": "2318:4409",
-      "type": "room",
-      "name": "А-310",
-      "description": null
-    },
-    {
-      "id": "2318:4410",
-      "type": "room",
-      "name": "А-312",
-      "description": null
-    },
-    {
-      "id": "2318:4411",
-      "type": "room",
-      "name": "А-311",
-      "description": null
-    },
-    {
-      "id": "2318:4412",
-      "type": "room",
-      "name": "А-305",
-      "description": null
-    },
-    {
-      "id": "2318:4413",
-      "type": "room",
-      "name": "А-307",
-      "description": null
-    },
-    {
-      "id": "2318:4414",
-      "type": "room",
-      "name": "А-309",
-      "description": null
-    },
-    {
-      "id": "2318:4415",
-      "type": "room",
-      "name": "А-317",
-      "description": null
-    },
-    {
-      "id": "2318:4416",
-      "type": "room",
-      "name": "А-316",
-      "description": null
-    },
-    {
-      "id": "2318:4417",
-      "type": "room",
-      "name": "А-315",
-      "description": null
-    },
-    {
-      "id": "2318:4418",
-      "type": "room",
-      "name": "А-314",
-      "description": null
-    },
-    {
-      "id": "2318:4419",
-      "type": "room",
-      "name": "А-313",
-      "description": null
-    },
-    {
-      "id": "2318:4420",
-      "type": "room",
-      "name": "А-312-1",
-      "description": null
-    },
-    {
-      "id": "2318:4421",
-      "type": "room",
-      "name": "А-318",
-      "description": null
-    },
-    {
-      "id": "2318:4422",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4423",
-      "type": "room",
-      "name": "А-13",
-      "description": null
-    },
-    {
-      "id": "2318:4424",
-      "type": "room",
-      "name": "А-11",
-      "description": null
-    },
-    {
-      "id": "2318:4425",
-      "type": "room",
-      "name": "А-12",
-      "description": null
-    },
-    {
-      "id": "2318:4426",
-      "type": "room",
-      "name": "А-9",
-      "description": null
-    },
-    {
-      "id": "2318:4427",
-      "type": "room",
-      "name": "А-10",
-      "description": null
-    },
-    {
-      "id": "2318:4429",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4431",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4459",
-      "type": "room",
-      "name": "А-330-1",
-      "description": null
-    },
-    {
-      "id": "2318:4460",
-      "type": "room",
-      "name": "А-333",
-      "description": null
-    },
-    {
-      "id": "2318:4461",
-      "type": "room",
-      "name": "А-330",
-      "description": null
-    },
-    {
-      "id": "2318:4462",
-      "type": "room",
-      "name": "А-334",
-      "description": null
-    },
-    {
-      "id": "2318:4463",
-      "type": "room",
-      "name": "А-335",
-      "description": null
-    },
-    {
-      "id": "2318:4464",
-      "type": "room",
-      "name": "А-336",
-      "description": null
-    },
-    {
-      "id": "2318:4465",
-      "type": "room",
-      "name": "А-331",
-      "description": null
-    },
-    {
-      "id": "2318:4466",
-      "type": "room",
-      "name": "А-332",
-      "description": null
-    },
-    {
-      "id": "2318:4467",
-      "type": "room",
-      "name": "А-329",
-      "description": null
-    },
-    {
-      "id": "2318:4468",
-      "type": "room",
-      "name": "А-326",
-      "description": null
-    },
-    {
-      "id": "2318:4469",
-      "type": "room",
-      "name": "А-325",
-      "description": null
-    },
-    {
-      "id": "2318:4470",
-      "type": "room",
-      "name": "А-328",
-      "description": null
-    },
-    {
-      "id": "2318:4471",
-      "type": "room",
-      "name": "А-325-1",
-      "description": null
-    },
-    {
-      "id": "2318:4472",
-      "type": "room",
-      "name": "А-327",
-      "description": null
-    },
-    {
-      "id": "2318:4473",
-      "type": "room",
-      "name": "А-320",
-      "description": null
-    },
-    {
-      "id": "2318:4474",
-      "type": "room",
-      "name": "А-321",
-      "description": null
-    },
-    {
-      "id": "2318:4479",
-      "type": "room",
-      "name": "А-322",
-      "description": null
-    },
-    {
-      "id": "2318:4480",
-      "type": "room",
-      "name": "А-323",
-      "description": null
-    },
-    {
-      "id": "2318:4481",
-      "type": "room",
-      "name": "А-324",
-      "description": null
-    },
-    {
-      "id": "2318:4482",
-      "type": "room",
-      "name": "А-319",
-      "description": null
-    },
-    {
-      "id": "2318:4483",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4484",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4485",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4486",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4487",
-      "type": "room",
-      "name": "А-14",
-      "description": null
-    },
-    {
-      "id": "2318:4488",
-      "type": "room",
-      "name": "А-15",
-      "description": null
-    },
-    {
-      "id": "2318:4489",
-      "type": "room",
-      "name": "А-16",
-      "description": null
-    },
-    {
-      "id": "2318:4490",
-      "type": "room",
-      "name": "А-17",
-      "description": null
-    },
-    {
-      "id": "2318:4491",
-      "type": "room",
-      "name": "А-18",
-      "description": null
-    },
-    {
-      "id": "2318:4493",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4504",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4528",
-      "type": "room",
-      "name": "Г-423-1",
-      "description": null
-    },
-    {
-      "id": "2318:4529",
-      "type": "room",
-      "name": "Г-424-2",
-      "description": null
-    },
-    {
-      "id": "2318:4530",
-      "type": "room",
-      "name": "Г-424-3",
-      "description": null
-    },
-    {
-      "id": "2318:4531",
-      "type": "room",
-      "name": "Г-424-4",
-      "description": null
-    },
-    {
-      "id": "2318:4532",
-      "type": "room",
-      "name": "Г-424-5",
-      "description": null
-    },
-    {
-      "id": "2318:4533",
-      "type": "room",
-      "name": "Г-430",
-      "description": null
-    },
-    {
-      "id": "2318:4534",
-      "type": "room",
-      "name": "Г-430-1",
-      "description": null
-    },
-    {
-      "id": "2318:4535",
-      "type": "room",
-      "name": "Г-428",
-      "description": null
-    },
-    {
-      "id": "2318:4536",
-      "type": "room",
-      "name": "Г-427",
-      "description": null
-    },
-    {
-      "id": "2318:4537",
-      "type": "room",
-      "name": "Г-426",
-      "description": null
-    },
-    {
-      "id": "2318:4538",
-      "type": "room",
-      "name": "Г-425",
-      "description": null
-    },
-    {
-      "id": "2318:4539",
-      "type": "room",
-      "name": "Г-416",
-      "description": null
-    },
-    {
-      "id": "2318:4540",
-      "type": "room",
-      "name": "Г-415-2",
-      "description": null
-    },
-    {
-      "id": "2318:4541",
-      "type": "room",
-      "name": "Г-411",
-      "description": null
-    },
-    {
-      "id": "2318:4542",
-      "type": "room",
-      "name": "Г-412",
-      "description": null
-    },
-    {
-      "id": "2318:4543",
-      "type": "room",
-      "name": "Г-423",
-      "description": null
-    },
-    {
-      "id": "2318:4544",
-      "type": "room",
-      "name": "Г-402",
-      "description": null
-    },
-    {
-      "id": "2318:4545",
-      "type": "room",
-      "name": "Г-424-1",
-      "description": null
-    },
-    {
-      "id": "2318:4546",
-      "type": "room",
-      "name": "Г-401",
-      "description": null
-    },
-    {
-      "id": "2318:4547",
-      "type": "room",
-      "name": "Г-414",
-      "description": null
-    },
-    {
-      "id": "2318:4548",
-      "type": "room",
-      "name": "Г-413",
-      "description": null
-    },
-    {
-      "id": "2318:4549",
-      "type": "room",
-      "name": "Г-415",
-      "description": null
-    },
-    {
-      "id": "2318:4550",
-      "type": "room",
-      "name": "Г-429",
-      "description": null
-    },
-    {
-      "id": "2318:4553",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4555",
-      "type": "room",
-      "name": "Г-417",
-      "description": null
-    },
-    {
-      "id": "2318:4556",
-      "type": "room",
-      "name": "Г-418",
-      "description": null
-    },
-    {
-      "id": "2318:4557",
-      "type": "room",
-      "name": "Г-419",
-      "description": null
-    },
-    {
-      "id": "2318:4558",
-      "type": "room",
-      "name": "Г-420",
-      "description": null
-    },
-    {
-      "id": "2318:4559",
-      "type": "room",
-      "name": "Г-421",
-      "description": null
-    },
-    {
-      "id": "2318:4560",
-      "type": "room",
-      "name": "Г-422",
-      "description": null
-    },
-    {
-      "id": "2318:4561",
-      "type": "room",
-      "name": "Г-420-1",
-      "description": null
-    },
-    {
-      "id": "2318:4562",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4563",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4564",
-      "type": "room",
-      "name": "Г-408",
-      "description": null
-    },
-    {
-      "id": "2318:4565",
-      "type": "room",
-      "name": "Г-407",
-      "description": null
-    },
-    {
-      "id": "2318:4566",
-      "type": "room",
-      "name": "Г-407-1",
-      "description": null
-    },
-    {
-      "id": "2318:4567",
-      "type": "room",
-      "name": "Г-406",
-      "description": null
-    },
-    {
-      "id": "2318:4568",
-      "type": "room",
-      "name": "Г-405",
-      "description": null
-    },
-    {
-      "id": "2318:4569",
-      "type": "room",
-      "name": "Г-404",
-      "description": null
-    },
-    {
-      "id": "2318:4570",
-      "type": "room",
-      "name": "Г-403",
-      "description": null
-    },
-    {
-      "id": "2318:4571",
-      "type": "room",
-      "name": "Г-409",
-      "description": null
-    },
-    {
-      "id": "2318:4583",
-      "type": "room",
-      "name": "Г-410",
-      "description": null
-    },
-    {
-      "id": "2318:4597",
-      "type": "room",
-      "name": "Г-401-1",
-      "description": null
-    },
-    {
-      "id": "2318:4606",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4607",
-      "type": "room",
-      "name": "B-411",
-      "description": null
-    },
-    {
-      "id": "2318:4608",
-      "type": "room",
-      "name": "B-410",
-      "description": null
-    },
-    {
-      "id": "2318:4609",
-      "type": "room",
-      "name": "B-409",
-      "description": null
-    },
-    {
-      "id": "2318:4610",
-      "type": "room",
-      "name": "B-408",
-      "description": null
-    },
-    {
-      "id": "2318:4611",
-      "type": "room",
-      "name": "B-419-1",
-      "description": null
-    },
-    {
-      "id": "2318:4612",
-      "type": "room",
-      "name": "B-402-3",
-      "description": null
-    },
-    {
-      "id": "2318:4613",
-      "type": "room",
-      "name": "B-401",
-      "description": null
-    },
-    {
-      "id": "2318:4614",
-      "type": "room",
-      "name": "B-420-1",
-      "description": null
-    },
-    {
-      "id": "2318:4615",
-      "type": "room",
-      "name": "B-420",
-      "description": null
-    },
-    {
-      "id": "2318:4628",
-      "type": "room",
-      "name": "B-421",
-      "description": null
-    },
-    {
-      "id": "2318:4629",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4630",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4631",
-      "type": "room",
-      "name": "B-412",
-      "description": null
-    },
-    {
-      "id": "2318:4632",
-      "type": "room",
-      "name": "B-412",
-      "description": null
-    },
-    {
-      "id": "2318:4633",
-      "type": "room",
-      "name": "B-413",
-      "description": null
-    },
-    {
-      "id": "2318:4634",
-      "type": "room",
-      "name": "B-414",
-      "description": null
-    },
-    {
-      "id": "2318:4635",
-      "type": "room",
-      "name": "B-415",
-      "description": null
-    },
-    {
-      "id": "2318:4636",
-      "type": "room",
-      "name": "B-417",
-      "description": null
-    },
-    {
-      "id": "2318:4637",
-      "type": "room",
-      "name": "B-407",
-      "description": null
-    },
-    {
-      "id": "2318:4638",
-      "type": "room",
-      "name": "B-406",
-      "description": null
-    },
-    {
-      "id": "2318:4639",
-      "type": "room",
-      "name": "B-425",
-      "description": null
-    },
-    {
-      "id": "2318:4640",
-      "type": "room",
-      "name": "B-423",
-      "description": null
-    },
-    {
-      "id": "2318:4641",
-      "type": "room",
-      "name": "B-413-1",
-      "description": null
-    },
-    {
-      "id": "2318:4642",
-      "type": "room",
-      "name": "B-422",
-      "description": null
-    },
-    {
-      "id": "2318:4643",
-      "type": "room",
-      "name": "B-405-2",
-      "description": null
-    },
-    {
-      "id": "2318:4644",
-      "type": "room",
-      "name": "B-405-1",
-      "description": null
-    },
-    {
-      "id": "2318:4645",
-      "type": "room",
-      "name": "B-404-2",
-      "description": null
-    },
-    {
-      "id": "2318:4646",
-      "type": "room",
-      "name": "B-404-1",
-      "description": null
-    },
-    {
-      "id": "2318:4647",
-      "type": "room",
-      "name": "B-418",
-      "description": null
-    },
-    {
-      "id": "2318:4648",
-      "type": "room",
-      "name": "B-402-2",
-      "description": null
-    },
-    {
-      "id": "2318:4649",
-      "type": "room",
-      "name": "B-403",
-      "description": null
-    },
-    {
-      "id": "2318:4650",
-      "type": "room",
-      "name": "B-402-1",
-      "description": null
-    },
-    {
-      "id": "2318:4651",
-      "type": "room",
-      "name": "B-401-2",
-      "description": null
-    },
-    {
-      "id": "2318:4652",
-      "type": "room",
-      "name": "B-401-1",
-      "description": null
-    },
-    {
-      "id": "2318:4653",
-      "type": "room",
-      "name": "B-419",
-      "description": null
-    },
-    {
-      "id": "2318:4700",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4701",
-      "type": "room",
-      "name": "Б-413-1",
-      "description": null
-    },
-    {
-      "id": "2318:4702",
-      "type": "room",
-      "name": "Б-411",
-      "description": null
-    },
-    {
-      "id": "2318:4703",
-      "type": "room",
-      "name": "Б-403",
-      "description": null
-    },
-    {
-      "id": "2318:4704",
-      "type": "room",
-      "name": "Б-410",
-      "description": null
-    },
-    {
-      "id": "2318:4705",
-      "type": "room",
-      "name": "Б-413-2",
-      "description": null
-    },
-    {
-      "id": "2318:4706",
-      "type": "room",
-      "name": "Б-420",
-      "description": null
-    },
-    {
-      "id": "2318:4707",
-      "type": "room",
-      "name": "Б-414",
-      "description": null
-    },
-    {
-      "id": "2318:4708",
-      "type": "room",
-      "name": "Б-415",
-      "description": null
-    },
-    {
-      "id": "2318:4709",
-      "type": "room",
-      "name": "Б-416",
-      "description": null
-    },
-    {
-      "id": "2318:4710",
-      "type": "room",
-      "name": "Б-424",
-      "description": null
-    },
-    {
-      "id": "2318:4711",
-      "type": "room",
-      "name": "Б-422",
-      "description": null
-    },
-    {
-      "id": "2318:4712",
-      "type": "room",
-      "name": "Б-401-7",
-      "description": null
-    },
-    {
-      "id": "2318:4713",
-      "type": "room",
-      "name": "Б-423",
-      "description": null
-    },
-    {
-      "id": "2318:4714",
-      "type": "room",
-      "name": "Б-421",
-      "description": null
-    },
-    {
-      "id": "2318:4715",
-      "type": "room",
-      "name": "Б-425",
-      "description": null
-    },
-    {
-      "id": "2318:4716",
-      "type": "room",
-      "name": "Б-402",
-      "description": null
-    },
-    {
-      "id": "2318:4717",
-      "type": "room",
-      "name": "Б-417",
-      "description": null
-    },
-    {
-      "id": "2318:4718",
-      "type": "room",
-      "name": "Б-418",
-      "description": null
-    },
-    {
-      "id": "2318:4719",
-      "type": "room",
-      "name": "Б-414",
-      "description": null
-    },
-    {
-      "id": "2318:4720",
-      "type": "room",
-      "name": "Б-419",
-      "description": null
-    },
-    {
-      "id": "2318:4721",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4723",
-      "type": "room",
-      "name": "Б-409",
-      "description": null
-    },
-    {
-      "id": "2318:4732",
-      "type": "room",
-      "name": "Б-408",
-      "description": null
-    },
-    {
-      "id": "2318:4733",
-      "type": "room",
-      "name": "Б-407",
-      "description": null
-    },
-    {
-      "id": "2318:4734",
-      "type": "room",
-      "name": "Б-406",
-      "description": null
-    },
-    {
-      "id": "2318:4735",
-      "type": "room",
-      "name": "Б-405",
-      "description": null
-    },
-    {
-      "id": "2318:4736",
-      "type": "room",
-      "name": "Б-404",
-      "description": null
-    },
-    {
-      "id": "2318:4737",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4747",
-      "type": "room",
-      "name": "Д-409",
-      "description": null
-    },
-    {
-      "id": "2318:4748",
-      "type": "room",
-      "name": "Д-408",
-      "description": null
-    },
-    {
-      "id": "2318:4749",
-      "type": "room",
-      "name": "Д-410",
-      "description": null
-    },
-    {
-      "id": "2318:4750",
-      "type": "room",
-      "name": "Д-403б",
-      "description": null
-    },
-    {
-      "id": "2318:4751",
-      "type": "room",
-      "name": "Д-403а",
-      "description": null
-    },
-    {
-      "id": "2318:4752",
-      "type": "room",
-      "name": "Д-401б",
-      "description": null
-    },
-    {
-      "id": "2318:4753",
-      "type": "room",
-      "name": "Д-401а",
-      "description": null
-    },
-    {
-      "id": "2318:4754",
-      "type": "room",
-      "name": "Д-418в",
-      "description": null
-    },
-    {
-      "id": "2318:4755",
-      "type": "room",
-      "name": "Д-418б",
-      "description": null
-    },
-    {
-      "id": "2318:4756",
-      "type": "room",
-      "name": "Д-418а",
-      "description": null
-    },
-    {
-      "id": "2318:4757",
-      "type": "room",
-      "name": "Д-411",
-      "description": null
-    },
-    {
-      "id": "2318:4758",
-      "type": "room",
-      "name": "Д-412",
-      "description": null
-    },
-    {
-      "id": "2318:4759",
-      "type": "room",
-      "name": "Д-414",
-      "description": null
-    },
-    {
-      "id": "2318:4760",
-      "type": "room",
-      "name": "Д-413",
-      "description": null
-    },
-    {
-      "id": "2318:4761",
-      "type": "room",
-      "name": "Д-415",
-      "description": null
-    },
-    {
-      "id": "2318:4762",
-      "type": "room",
-      "name": "Д-417",
-      "description": null
-    },
-    {
-      "id": "2318:4763",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4764",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4765",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4766",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4767",
-      "type": "room",
-      "name": "Д-409",
-      "description": null
-    },
-    {
-      "id": "2318:4768",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4769",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4770",
-      "type": "room",
-      "name": "Прием.",
-      "description": null
-    },
-    {
-      "id": "2318:4771",
-      "type": "room",
-      "name": "Д-404а",
-      "description": null
-    },
-    {
-      "id": "2318:4772",
-      "type": "room",
-      "name": "Д-407а",
-      "description": null
-    },
-    {
-      "id": "2318:4773",
-      "type": "room",
-      "name": "Д-407б",
-      "description": null
-    },
-    {
-      "id": "2318:4815",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4818",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4819",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4828",
-      "type": "stairs",
-      "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2318:4829",
       "type": "stairs",
       "name": "Лестница",
       "description": null
@@ -19154,13 +17960,13 @@
     {
       "id": "2318:4838",
       "type": "room",
-      "name": "B-317",
+      "name": "В-317",
       "description": null
     },
     {
       "id": "2318:4839",
       "type": "room",
-      "name": "B-316",
+      "name": "В-316",
       "description": null
     },
     {
@@ -19172,19 +17978,19 @@
     {
       "id": "2318:4888",
       "type": "room",
-      "name": "B-318",
+      "name": "В-318",
       "description": null
     },
     {
       "id": "2318:4889",
       "type": "room",
-      "name": "B-325",
+      "name": "В-325",
       "description": null
     },
     {
       "id": "2318:4890",
       "type": "room",
-      "name": "B-332",
+      "name": "В-332",
       "description": null
     },
     {
@@ -19196,31 +18002,43 @@
     {
       "id": "2318:4892",
       "type": "room",
-      "name": "B-319",
+      "name": "В-319",
       "description": null
     },
     {
       "id": "2318:4893",
       "type": "room",
-      "name": "B-320",
+      "name": "В-320",
       "description": null
     },
     {
       "id": "2318:4894",
       "type": "room",
-      "name": "B-301",
+      "name": "В-301",
       "description": null
     },
     {
       "id": "2318:4895",
       "type": "room",
-      "name": "B-302",
+      "name": "В-302",
       "description": null
     },
     {
       "id": "2318:4896",
       "type": "room",
-      "name": "B-302-1",
+      "name": "В-302-1",
+      "description": null
+    },
+    {
+      "id": "2318:4897",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4898",
+      "type": "toilet",
+      "name": "Туалет М",
       "description": null
     },
     {
@@ -19232,49 +18050,49 @@
     {
       "id": "2318:4900",
       "type": "room",
-      "name": "B-321",
+      "name": "В-321",
       "description": null
     },
     {
       "id": "2318:4901",
       "type": "room",
-      "name": "B-327",
+      "name": "В-327",
       "description": null
     },
     {
       "id": "2318:4902",
       "type": "room",
-      "name": "B-326",
+      "name": "В-326",
       "description": null
     },
     {
       "id": "2318:4903",
       "type": "room",
-      "name": "B-328",
+      "name": "В-328",
       "description": null
     },
     {
       "id": "2318:4906",
       "type": "room",
-      "name": "B-331",
+      "name": "В-331",
       "description": null
     },
     {
       "id": "2318:4907",
       "type": "room",
-      "name": "B-330",
+      "name": "В-330",
       "description": null
     },
     {
       "id": "2318:4908",
       "type": "room",
-      "name": "B-329",
+      "name": "В-329",
       "description": null
     },
     {
       "id": "2318:4909",
       "type": "room",
-      "name": "B-322",
+      "name": "В-322",
       "description": null
     },
     {
@@ -19292,13 +18110,13 @@
     {
       "id": "2318:4912",
       "type": "room",
-      "name": "B-323",
+      "name": "В-323",
       "description": null
     },
     {
       "id": "2318:4913",
       "type": "room",
-      "name": "B-324",
+      "name": "В-324",
       "description": null
     },
     {
@@ -19526,13 +18344,37 @@
     {
       "id": "2318:4988",
       "type": "room",
-      "name": "B-327",
+      "name": "В-327",
+      "description": null
+    },
+    {
+      "id": "2318:4989",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4990",
+      "type": "toilet",
+      "name": "Туалет М",
       "description": null
     },
     {
       "id": "2318:4991",
       "type": "stairs",
       "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:5015",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:5016",
+      "type": "toilet",
+      "name": "Туалет М",
       "description": null
     },
     {
@@ -19755,6 +18597,12 @@
       "id": "2318:5078",
       "type": "room",
       "name": "Д-322",
+      "description": null
+    },
+    {
+      "id": "2367:8883",
+      "type": "room",
+      "name": "Д-316",
       "description": null
     },
     {
@@ -20001,6 +18849,12 @@
       "id": "2318:5192",
       "type": "room",
       "name": "И-309",
+      "description": null
+    },
+    {
+      "id": "2318:5196",
+      "type": "toilet",
+      "name": "Туалет МЖ",
       "description": null
     },
     {
@@ -20262,6 +19116,36 @@
       "description": null
     },
     {
+      "id": "2318:5295",
+      "type": "toilet",
+      "name": "Туалет МЖ",
+      "description": null
+    },
+    {
+      "id": "2318:5296",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:5297",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:5298",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:5299",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
       "id": "2318:5300",
       "type": "canteen",
       "name": "Буфет",
@@ -20331,12 +19215,6 @@
       "id": "2318:5311",
       "type": "stairs",
       "name": "Лестница",
-      "description": null
-    },
-    {
-      "id": "2367:8883",
-      "type": "room",
-      "name": "Д-316",
       "description": null
     },
     {
@@ -20604,6 +19482,18 @@
       "description": null
     },
     {
+      "id": "2318:5442",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:5443",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
       "id": "2318:5444",
       "type": "room",
       "name": "Г-323",
@@ -20802,6 +19692,12 @@
       "description": null
     },
     {
+      "id": "2318:5591",
+      "type": "toilet",
+      "name": "Туалет МЖ",
+      "description": null
+    },
+    {
       "id": "2318:5605",
       "type": "room",
       "name": "Г-213",
@@ -20918,7 +19814,7 @@
     {
       "id": "2318:5624",
       "type": "room",
-      "name": "B-320",
+      "name": "В-320",
       "description": null
     },
     {
@@ -20964,7 +19860,7 @@
       "description": null
     },
     {
-      "id": "2611:8691",
+      "id": "2318:5633",
       "type": "room",
       "name": "Г-212",
       "description": null
@@ -20985,6 +19881,18 @@
       "id": "2318:5637",
       "type": "stairs",
       "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:5687",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:5688",
+      "type": "toilet",
+      "name": "Туалет Ж",
       "description": null
     },
     {
@@ -21110,43 +20018,43 @@
     {
       "id": "2318:5718",
       "type": "room",
-      "name": "B-214",
+      "name": "В-214",
       "description": null
     },
     {
       "id": "2318:5719",
       "type": "room",
-      "name": "B-222",
+      "name": "В-222",
       "description": null
     },
     {
       "id": "2318:5721",
       "type": "room",
-      "name": "B-213",
+      "name": "В-213",
       "description": null
     },
     {
       "id": "2318:5722",
       "type": "room",
-      "name": "B-211",
+      "name": "В-211",
       "description": null
     },
     {
       "id": "2318:5724",
       "type": "room",
-      "name": "B-201-3",
+      "name": "В-201-3",
       "description": null
     },
     {
       "id": "2318:5725",
       "type": "room",
-      "name": "B-212",
+      "name": "В-212",
       "description": null
     },
     {
       "id": "2318:5726",
       "type": "room",
-      "name": "B-223",
+      "name": "В-223",
       "description": null
     },
     {
@@ -21158,7 +20066,7 @@
     {
       "id": "2318:5728",
       "type": "room",
-      "name": "B-204-1",
+      "name": "В-204-1",
       "description": null
     },
     {
@@ -21170,13 +20078,25 @@
     {
       "id": "2345:14180",
       "type": "room",
-      "name": "B-204",
+      "name": "В-204",
       "description": null
     },
     {
       "id": "2380:14662",
       "type": "room",
-      "name": "B-201",
+      "name": "В-201",
+      "description": null
+    },
+    {
+      "id": "2318:5732",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:5733",
+      "type": "toilet",
+      "name": "Туалет Ж",
       "description": null
     },
     {
@@ -21188,67 +20108,67 @@
     {
       "id": "2318:5735",
       "type": "room",
-      "name": "B-215",
+      "name": "В-215",
       "description": null
     },
     {
       "id": "2318:5736",
       "type": "room",
-      "name": "B-216",
+      "name": "В-216",
       "description": null
     },
     {
       "id": "2318:5737",
       "type": "room",
-      "name": "B-220",
+      "name": "В-220",
       "description": null
     },
     {
       "id": "2318:5738",
       "type": "room",
-      "name": "B-221",
+      "name": "В-221",
       "description": null
     },
     {
       "id": "2318:5739",
       "type": "room",
-      "name": "B-217",
+      "name": "В-217",
       "description": null
     },
     {
       "id": "2318:5740",
       "type": "room",
-      "name": "B-219",
+      "name": "В-219",
       "description": null
     },
     {
       "id": "2318:5741",
       "type": "room",
-      "name": "B-222-1",
+      "name": "В-222-1",
       "description": null
     },
     {
       "id": "2318:5742",
       "type": "room",
-      "name": "B-201-2",
+      "name": "В-201-2",
       "description": null
     },
     {
       "id": "2318:5743",
       "type": "room",
-      "name": "B-201-1",
+      "name": "В-201-1",
       "description": null
     },
     {
       "id": "2318:5744",
       "type": "room",
-      "name": "B-202",
+      "name": "В-202",
       "description": null
     },
     {
       "id": "2318:5745",
       "type": "room",
-      "name": "B-203",
+      "name": "В-203",
       "description": null
     },
     {
@@ -21266,43 +20186,43 @@
     {
       "id": "2318:5748",
       "type": "room",
-      "name": "B-210",
+      "name": "В-210",
       "description": null
     },
     {
       "id": "2318:5749",
       "type": "room",
-      "name": "B-209",
+      "name": "В-209",
       "description": null
     },
     {
       "id": "2318:5750",
       "type": "room",
-      "name": "B-208",
+      "name": "В-208",
       "description": null
     },
     {
       "id": "2318:5751",
       "type": "room",
-      "name": "B-207-1",
+      "name": "В-207-1",
       "description": null
     },
     {
       "id": "2318:5752",
       "type": "room",
-      "name": "B-207",
+      "name": "В-207",
       "description": null
     },
     {
       "id": "2318:5753",
       "type": "room",
-      "name": "B-206",
+      "name": "В-206",
       "description": null
     },
     {
       "id": "2318:5754",
       "type": "room",
-      "name": "B-205",
+      "name": "В-205",
       "description": null
     },
     {
@@ -21333,6 +20253,18 @@
       "id": "2318:5825",
       "type": "stairs",
       "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:5826",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:5827",
+      "type": "toilet",
+      "name": "Туалет М",
       "description": null
     },
     {
@@ -21477,6 +20409,18 @@
       "id": "2318:5899",
       "type": "stairs",
       "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:5900",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:5901",
+      "type": "toilet",
+      "name": "Туалет М",
       "description": null
     },
     {
@@ -21846,6 +20790,12 @@
       "description": null
     },
     {
+      "id": "2318:6030",
+      "type": "toilet",
+      "name": "Туалет МЖ",
+      "description": null
+    },
+    {
       "id": "2318:6036",
       "type": "stairs",
       "name": "Лестница",
@@ -21933,6 +20883,12 @@
       "id": "2318:6050",
       "type": "room",
       "name": "А-138",
+      "description": null
+    },
+    {
+      "id": "2318:6051",
+      "type": "toilet",
+      "name": "Туалет МЖ",
       "description": null
     },
     {
@@ -22188,6 +21144,18 @@
       "description": null
     },
     {
+      "id": "2318:6181",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:6182",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
       "id": "2318:6184",
       "type": "room",
       "name": "А-160",
@@ -22245,6 +21213,18 @@
       "id": "2318:6193",
       "type": "stairs",
       "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:6194",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:6197",
+      "type": "toilet",
+      "name": "Туалет Ж",
       "description": null
     },
     {
@@ -22350,6 +21330,12 @@
       "description": null
     },
     {
+      "id": "2426:14835",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
       "id": "2318:6300",
       "type": "room",
       "name": "10",
@@ -22416,6 +21402,24 @@
       "description": null
     },
     {
+      "id": "2318:6311",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:6312",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:6330",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
       "id": "2318:6331",
       "type": "room",
       "name": "Г-102-1",
@@ -22442,7 +21446,7 @@
     {
       "id": "2318:6335",
       "type": "room",
-      "name": "B-320",
+      "name": "В-320",
       "description": null
     },
     {
@@ -22544,7 +21548,7 @@
     {
       "id": "2318:6386",
       "type": "room",
-      "name": "B-112-5",
+      "name": "В-112-5",
       "description": null
     },
     {
@@ -22598,7 +21602,7 @@
     {
       "id": "2318:6427",
       "type": "room",
-      "name": "B-108",
+      "name": "В-108",
       "description": null
     },
     {
@@ -22682,7 +21686,13 @@
     {
       "id": "2318:6442",
       "type": "room",
-      "name": "B-109",
+      "name": "В-109",
+      "description": null
+    },
+    {
+      "id": "2318:6443",
+      "type": "toilet",
+      "name": "Туалет МЖ",
       "description": null
     },
     {
@@ -22830,6 +21840,12 @@
       "description": null
     },
     {
+      "id": "2426:14832",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
       "id": "2318:6482",
       "type": "room",
       "name": "Б-115",
@@ -22839,6 +21855,18 @@
       "id": "2318:6530",
       "type": "stairs",
       "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:6531",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:6532",
+      "type": "toilet",
+      "name": "Туалет Ж",
       "description": null
     },
     {
@@ -22923,6 +21951,1266 @@
       "id": "2367:8874",
       "type": "room",
       "name": "Ситуационный центр",
+      "description": null
+    },
+    {
+      "id": "2318:4398",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4399",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4400",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4401",
+      "type": "room",
+      "name": "А-301",
+      "description": null
+    },
+    {
+      "id": "2318:4402",
+      "type": "room",
+      "name": "А-302",
+      "description": null
+    },
+    {
+      "id": "2318:4403",
+      "type": "room",
+      "name": "А-300",
+      "description": null
+    },
+    {
+      "id": "2318:4404",
+      "type": "room",
+      "name": "А-303",
+      "description": null
+    },
+    {
+      "id": "2318:4405",
+      "type": "room",
+      "name": "А-304",
+      "description": null
+    },
+    {
+      "id": "2318:4406",
+      "type": "room",
+      "name": "А-306",
+      "description": null
+    },
+    {
+      "id": "2318:4408",
+      "type": "room",
+      "name": "А-308",
+      "description": null
+    },
+    {
+      "id": "2318:4409",
+      "type": "room",
+      "name": "А-310",
+      "description": null
+    },
+    {
+      "id": "2318:4410",
+      "type": "room",
+      "name": "А-312",
+      "description": null
+    },
+    {
+      "id": "2318:4411",
+      "type": "room",
+      "name": "А-311",
+      "description": null
+    },
+    {
+      "id": "2318:4412",
+      "type": "room",
+      "name": "А-305",
+      "description": null
+    },
+    {
+      "id": "2318:4413",
+      "type": "room",
+      "name": "А-307",
+      "description": null
+    },
+    {
+      "id": "2318:4414",
+      "type": "room",
+      "name": "А-309",
+      "description": null
+    },
+    {
+      "id": "2318:4415",
+      "type": "room",
+      "name": "А-317",
+      "description": null
+    },
+    {
+      "id": "2318:4416",
+      "type": "room",
+      "name": "А-316",
+      "description": null
+    },
+    {
+      "id": "2318:4417",
+      "type": "room",
+      "name": "А-315",
+      "description": null
+    },
+    {
+      "id": "2318:4418",
+      "type": "room",
+      "name": "А-314",
+      "description": null
+    },
+    {
+      "id": "2318:4419",
+      "type": "room",
+      "name": "А-313",
+      "description": null
+    },
+    {
+      "id": "2318:4420",
+      "type": "room",
+      "name": "А-312-1",
+      "description": null
+    },
+    {
+      "id": "2318:4421",
+      "type": "room",
+      "name": "А-318",
+      "description": null
+    },
+    {
+      "id": "2318:4422",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4423",
+      "type": "room",
+      "name": "А-13",
+      "description": null
+    },
+    {
+      "id": "2318:4424",
+      "type": "room",
+      "name": "А-11",
+      "description": null
+    },
+    {
+      "id": "2318:4425",
+      "type": "room",
+      "name": "А-12",
+      "description": null
+    },
+    {
+      "id": "2318:4426",
+      "type": "room",
+      "name": "А-9",
+      "description": null
+    },
+    {
+      "id": "2318:4427",
+      "type": "room",
+      "name": "А-10",
+      "description": null
+    },
+    {
+      "id": "2318:4429",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4430",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4431",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4459",
+      "type": "room",
+      "name": "А-330-1",
+      "description": null
+    },
+    {
+      "id": "2318:4460",
+      "type": "room",
+      "name": "А-333",
+      "description": null
+    },
+    {
+      "id": "2318:4461",
+      "type": "room",
+      "name": "А-330",
+      "description": null
+    },
+    {
+      "id": "2318:4462",
+      "type": "room",
+      "name": "А-334",
+      "description": null
+    },
+    {
+      "id": "2318:4463",
+      "type": "room",
+      "name": "А-335",
+      "description": null
+    },
+    {
+      "id": "2318:4464",
+      "type": "room",
+      "name": "А-336",
+      "description": null
+    },
+    {
+      "id": "2318:4465",
+      "type": "room",
+      "name": "А-331",
+      "description": null
+    },
+    {
+      "id": "2318:4466",
+      "type": "room",
+      "name": "А-332",
+      "description": null
+    },
+    {
+      "id": "2318:4467",
+      "type": "room",
+      "name": "А-329",
+      "description": null
+    },
+    {
+      "id": "2318:4468",
+      "type": "room",
+      "name": "А-326",
+      "description": null
+    },
+    {
+      "id": "2318:4469",
+      "type": "room",
+      "name": "А-325",
+      "description": null
+    },
+    {
+      "id": "2318:4470",
+      "type": "room",
+      "name": "А-328",
+      "description": null
+    },
+    {
+      "id": "2318:4471",
+      "type": "room",
+      "name": "А-325-1",
+      "description": null
+    },
+    {
+      "id": "2318:4472",
+      "type": "room",
+      "name": "А-327",
+      "description": null
+    },
+    {
+      "id": "2318:4473",
+      "type": "room",
+      "name": "А-320",
+      "description": null
+    },
+    {
+      "id": "2318:4474",
+      "type": "room",
+      "name": "А-321",
+      "description": null
+    },
+    {
+      "id": "2318:4479",
+      "type": "room",
+      "name": "А-322",
+      "description": null
+    },
+    {
+      "id": "2318:4480",
+      "type": "room",
+      "name": "А-323",
+      "description": null
+    },
+    {
+      "id": "2318:4481",
+      "type": "room",
+      "name": "А-324",
+      "description": null
+    },
+    {
+      "id": "2318:4482",
+      "type": "room",
+      "name": "А-319",
+      "description": null
+    },
+    {
+      "id": "2318:4483",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4484",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4485",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4486",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4487",
+      "type": "room",
+      "name": "А-14",
+      "description": null
+    },
+    {
+      "id": "2318:4488",
+      "type": "room",
+      "name": "А-15",
+      "description": null
+    },
+    {
+      "id": "2318:4489",
+      "type": "room",
+      "name": "А-16",
+      "description": null
+    },
+    {
+      "id": "2318:4490",
+      "type": "room",
+      "name": "А-17",
+      "description": null
+    },
+    {
+      "id": "2318:4491",
+      "type": "room",
+      "name": "А-18",
+      "description": null
+    },
+    {
+      "id": "2318:4492",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4493",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4504",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4528",
+      "type": "room",
+      "name": "Г-423-1",
+      "description": null
+    },
+    {
+      "id": "2318:4529",
+      "type": "room",
+      "name": "Г-424-2",
+      "description": null
+    },
+    {
+      "id": "2318:4530",
+      "type": "room",
+      "name": "Г-424-3",
+      "description": null
+    },
+    {
+      "id": "2318:4531",
+      "type": "room",
+      "name": "Г-424-4",
+      "description": null
+    },
+    {
+      "id": "2318:4532",
+      "type": "room",
+      "name": "Г-424-5",
+      "description": null
+    },
+    {
+      "id": "2318:4533",
+      "type": "room",
+      "name": "Г-430",
+      "description": null
+    },
+    {
+      "id": "2318:4534",
+      "type": "room",
+      "name": "Г-430-1",
+      "description": null
+    },
+    {
+      "id": "2318:4535",
+      "type": "room",
+      "name": "Г-428",
+      "description": null
+    },
+    {
+      "id": "2318:4536",
+      "type": "room",
+      "name": "Г-427",
+      "description": null
+    },
+    {
+      "id": "2318:4537",
+      "type": "room",
+      "name": "Г-426",
+      "description": null
+    },
+    {
+      "id": "2318:4538",
+      "type": "room",
+      "name": "Г-425",
+      "description": null
+    },
+    {
+      "id": "2318:4539",
+      "type": "room",
+      "name": "Г-416",
+      "description": null
+    },
+    {
+      "id": "2318:4540",
+      "type": "room",
+      "name": "Г-415-2",
+      "description": null
+    },
+    {
+      "id": "2318:4541",
+      "type": "room",
+      "name": "Г-411",
+      "description": null
+    },
+    {
+      "id": "2318:4542",
+      "type": "room",
+      "name": "Г-412",
+      "description": null
+    },
+    {
+      "id": "2318:4543",
+      "type": "room",
+      "name": "Г-423",
+      "description": null
+    },
+    {
+      "id": "2318:4544",
+      "type": "room",
+      "name": "Г-402",
+      "description": null
+    },
+    {
+      "id": "2318:4545",
+      "type": "room",
+      "name": "Г-424-1",
+      "description": null
+    },
+    {
+      "id": "2318:4546",
+      "type": "room",
+      "name": "Г-401",
+      "description": null
+    },
+    {
+      "id": "2318:4547",
+      "type": "room",
+      "name": "Г-414",
+      "description": null
+    },
+    {
+      "id": "2318:4548",
+      "type": "room",
+      "name": "Г-413",
+      "description": null
+    },
+    {
+      "id": "2318:4549",
+      "type": "room",
+      "name": "Г-415",
+      "description": null
+    },
+    {
+      "id": "2318:4550",
+      "type": "room",
+      "name": "Г-429",
+      "description": null
+    },
+    {
+      "id": "2318:4553",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4555",
+      "type": "room",
+      "name": "Г-417",
+      "description": null
+    },
+    {
+      "id": "2318:4556",
+      "type": "room",
+      "name": "Г-418",
+      "description": null
+    },
+    {
+      "id": "2318:4557",
+      "type": "room",
+      "name": "Г-419",
+      "description": null
+    },
+    {
+      "id": "2318:4558",
+      "type": "room",
+      "name": "Г-420",
+      "description": null
+    },
+    {
+      "id": "2318:4559",
+      "type": "room",
+      "name": "Г-421",
+      "description": null
+    },
+    {
+      "id": "2318:4560",
+      "type": "room",
+      "name": "Г-422",
+      "description": null
+    },
+    {
+      "id": "2318:4561",
+      "type": "room",
+      "name": "Г-420-1",
+      "description": null
+    },
+    {
+      "id": "2318:4562",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4563",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4564",
+      "type": "room",
+      "name": "Г-408",
+      "description": null
+    },
+    {
+      "id": "2318:4565",
+      "type": "room",
+      "name": "Г-407",
+      "description": null
+    },
+    {
+      "id": "2318:4566",
+      "type": "room",
+      "name": "Г-407-1",
+      "description": null
+    },
+    {
+      "id": "2318:4567",
+      "type": "room",
+      "name": "Г-406",
+      "description": null
+    },
+    {
+      "id": "2318:4568",
+      "type": "room",
+      "name": "Г-405",
+      "description": null
+    },
+    {
+      "id": "2318:4569",
+      "type": "room",
+      "name": "Г-404",
+      "description": null
+    },
+    {
+      "id": "2318:4570",
+      "type": "room",
+      "name": "Г-403",
+      "description": null
+    },
+    {
+      "id": "2318:4571",
+      "type": "room",
+      "name": "Г-409",
+      "description": null
+    },
+    {
+      "id": "2318:4583",
+      "type": "room",
+      "name": "Г-410",
+      "description": null
+    },
+    {
+      "id": "2318:4597",
+      "type": "room",
+      "name": "Г-401-1",
+      "description": null
+    },
+    {
+      "id": "2318:4606",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4607",
+      "type": "room",
+      "name": "В-411",
+      "description": null
+    },
+    {
+      "id": "2318:4608",
+      "type": "room",
+      "name": "В-410",
+      "description": null
+    },
+    {
+      "id": "2318:4609",
+      "type": "room",
+      "name": "В-409",
+      "description": null
+    },
+    {
+      "id": "2318:4610",
+      "type": "room",
+      "name": "В-408",
+      "description": null
+    },
+    {
+      "id": "2318:4611",
+      "type": "room",
+      "name": "В-419-1",
+      "description": null
+    },
+    {
+      "id": "2318:4612",
+      "type": "room",
+      "name": "В-402-3",
+      "description": null
+    },
+    {
+      "id": "2318:4613",
+      "type": "room",
+      "name": "В-401",
+      "description": null
+    },
+    {
+      "id": "2318:4614",
+      "type": "room",
+      "name": "В-420-1",
+      "description": null
+    },
+    {
+      "id": "2318:4615",
+      "type": "room",
+      "name": "В-420",
+      "description": null
+    },
+    {
+      "id": "2318:4628",
+      "type": "room",
+      "name": "В-421",
+      "description": null
+    },
+    {
+      "id": "2318:4629",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4630",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4631",
+      "type": "room",
+      "name": "В-412",
+      "description": null
+    },
+    {
+      "id": "2318:4632",
+      "type": "room",
+      "name": "В-412",
+      "description": null
+    },
+    {
+      "id": "2318:4633",
+      "type": "room",
+      "name": "В-413",
+      "description": null
+    },
+    {
+      "id": "2318:4634",
+      "type": "room",
+      "name": "В-414",
+      "description": null
+    },
+    {
+      "id": "2318:4635",
+      "type": "room",
+      "name": "В-415",
+      "description": null
+    },
+    {
+      "id": "2318:4636",
+      "type": "room",
+      "name": "В-417",
+      "description": null
+    },
+    {
+      "id": "2318:4637",
+      "type": "room",
+      "name": "В-407",
+      "description": null
+    },
+    {
+      "id": "2318:4638",
+      "type": "room",
+      "name": "В-406",
+      "description": null
+    },
+    {
+      "id": "2318:4639",
+      "type": "room",
+      "name": "В-425",
+      "description": null
+    },
+    {
+      "id": "2318:4640",
+      "type": "room",
+      "name": "В-423",
+      "description": null
+    },
+    {
+      "id": "2318:4641",
+      "type": "room",
+      "name": "В-413-1",
+      "description": null
+    },
+    {
+      "id": "2318:4642",
+      "type": "room",
+      "name": "В-422",
+      "description": null
+    },
+    {
+      "id": "2318:4643",
+      "type": "room",
+      "name": "В-405-2",
+      "description": null
+    },
+    {
+      "id": "2318:4644",
+      "type": "room",
+      "name": "В-405-1",
+      "description": null
+    },
+    {
+      "id": "2318:4645",
+      "type": "room",
+      "name": "В-404-2",
+      "description": null
+    },
+    {
+      "id": "2318:4646",
+      "type": "room",
+      "name": "В-404-1",
+      "description": null
+    },
+    {
+      "id": "2318:4647",
+      "type": "room",
+      "name": "В-418",
+      "description": null
+    },
+    {
+      "id": "2318:4648",
+      "type": "room",
+      "name": "В-402-2",
+      "description": null
+    },
+    {
+      "id": "2318:4649",
+      "type": "room",
+      "name": "В-403",
+      "description": null
+    },
+    {
+      "id": "2318:4650",
+      "type": "room",
+      "name": "В-402-1",
+      "description": null
+    },
+    {
+      "id": "2318:4651",
+      "type": "room",
+      "name": "В-401-2",
+      "description": null
+    },
+    {
+      "id": "2318:4652",
+      "type": "room",
+      "name": "В-401-1",
+      "description": null
+    },
+    {
+      "id": "2318:4653",
+      "type": "room",
+      "name": "В-419",
+      "description": null
+    },
+    {
+      "id": "2318:4700",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4701",
+      "type": "room",
+      "name": "Б-413-1",
+      "description": null
+    },
+    {
+      "id": "2318:4702",
+      "type": "room",
+      "name": "Б-411",
+      "description": null
+    },
+    {
+      "id": "2318:4703",
+      "type": "room",
+      "name": "Б-403",
+      "description": null
+    },
+    {
+      "id": "2318:4704",
+      "type": "room",
+      "name": "Б-410",
+      "description": null
+    },
+    {
+      "id": "2318:4705",
+      "type": "room",
+      "name": "Б-413-2",
+      "description": null
+    },
+    {
+      "id": "2318:4706",
+      "type": "room",
+      "name": "Б-420",
+      "description": null
+    },
+    {
+      "id": "2318:4707",
+      "type": "room",
+      "name": "Б-414",
+      "description": null
+    },
+    {
+      "id": "2318:4708",
+      "type": "room",
+      "name": "Б-415",
+      "description": null
+    },
+    {
+      "id": "2318:4709",
+      "type": "room",
+      "name": "Б-416",
+      "description": null
+    },
+    {
+      "id": "2318:4710",
+      "type": "room",
+      "name": "Б-424",
+      "description": null
+    },
+    {
+      "id": "2318:4711",
+      "type": "room",
+      "name": "Б-422",
+      "description": null
+    },
+    {
+      "id": "2318:4712",
+      "type": "room",
+      "name": "Б-401-7",
+      "description": null
+    },
+    {
+      "id": "2318:4713",
+      "type": "room",
+      "name": "Б-423",
+      "description": null
+    },
+    {
+      "id": "2318:4714",
+      "type": "room",
+      "name": "Б-421",
+      "description": null
+    },
+    {
+      "id": "2318:4715",
+      "type": "room",
+      "name": "Б-425",
+      "description": null
+    },
+    {
+      "id": "2318:4716",
+      "type": "room",
+      "name": "Б-402",
+      "description": null
+    },
+    {
+      "id": "2318:4717",
+      "type": "room",
+      "name": "Б-417",
+      "description": null
+    },
+    {
+      "id": "2318:4718",
+      "type": "room",
+      "name": "Б-418",
+      "description": null
+    },
+    {
+      "id": "2318:4719",
+      "type": "room",
+      "name": "Б-414",
+      "description": null
+    },
+    {
+      "id": "2318:4720",
+      "type": "room",
+      "name": "Б-419",
+      "description": null
+    },
+    {
+      "id": "2318:4721",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4723",
+      "type": "room",
+      "name": "Б-409",
+      "description": null
+    },
+    {
+      "id": "2318:4732",
+      "type": "room",
+      "name": "Б-408",
+      "description": null
+    },
+    {
+      "id": "2318:4733",
+      "type": "room",
+      "name": "Б-407",
+      "description": null
+    },
+    {
+      "id": "2318:4734",
+      "type": "room",
+      "name": "Б-406",
+      "description": null
+    },
+    {
+      "id": "2318:4735",
+      "type": "room",
+      "name": "Б-405",
+      "description": null
+    },
+    {
+      "id": "2318:4736",
+      "type": "room",
+      "name": "Б-404",
+      "description": null
+    },
+    {
+      "id": "2318:4737",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4738",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4739",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:4747",
+      "type": "room",
+      "name": "Д-409",
+      "description": null
+    },
+    {
+      "id": "2318:4748",
+      "type": "room",
+      "name": "Д-408",
+      "description": null
+    },
+    {
+      "id": "2318:4749",
+      "type": "room",
+      "name": "Д-410",
+      "description": null
+    },
+    {
+      "id": "2318:4750",
+      "type": "room",
+      "name": "Д-403б",
+      "description": null
+    },
+    {
+      "id": "2318:4751",
+      "type": "room",
+      "name": "Д-403а",
+      "description": null
+    },
+    {
+      "id": "2318:4752",
+      "type": "room",
+      "name": "Д-401б",
+      "description": null
+    },
+    {
+      "id": "2318:4753",
+      "type": "room",
+      "name": "Д-401а",
+      "description": null
+    },
+    {
+      "id": "2318:4754",
+      "type": "room",
+      "name": "Д-418в",
+      "description": null
+    },
+    {
+      "id": "2318:4755",
+      "type": "room",
+      "name": "Д-418б",
+      "description": null
+    },
+    {
+      "id": "2318:4756",
+      "type": "room",
+      "name": "Д-418а",
+      "description": null
+    },
+    {
+      "id": "2318:4757",
+      "type": "room",
+      "name": "Д-411",
+      "description": null
+    },
+    {
+      "id": "2318:4758",
+      "type": "room",
+      "name": "Д-412",
+      "description": null
+    },
+    {
+      "id": "2318:4759",
+      "type": "room",
+      "name": "Д-414",
+      "description": null
+    },
+    {
+      "id": "2318:4760",
+      "type": "room",
+      "name": "Д-413",
+      "description": null
+    },
+    {
+      "id": "2318:4761",
+      "type": "room",
+      "name": "Д-415",
+      "description": null
+    },
+    {
+      "id": "2318:4762",
+      "type": "room",
+      "name": "Д-417",
+      "description": null
+    },
+    {
+      "id": "2318:4763",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4764",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4765",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4766",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4767",
+      "type": "room",
+      "name": "Д-409",
+      "description": null
+    },
+    {
+      "id": "2318:4768",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4769",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4770",
+      "type": "room",
+      "name": "Прием.",
+      "description": null
+    },
+    {
+      "id": "2318:4771",
+      "type": "room",
+      "name": "Д-404а",
+      "description": null
+    },
+    {
+      "id": "2318:4772",
+      "type": "room",
+      "name": "Д-407а",
+      "description": null
+    },
+    {
+      "id": "2318:4773",
+      "type": "room",
+      "name": "Д-407б",
+      "description": null
+    },
+    {
+      "id": "2318:4815",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4816",
+      "type": "toilet",
+      "name": "Туалет Ж",
+      "description": null
+    },
+    {
+      "id": "2318:4817",
+      "type": "toilet",
+      "name": "Туалет М",
+      "description": null
+    },
+    {
+      "id": "2318:4818",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4819",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4828",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2426:14839",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2426:14849",
+      "type": "stairs",
+      "name": "Лестница",
+      "description": null
+    },
+    {
+      "id": "2318:4829",
+      "type": "stairs",
+      "name": "Лестница",
       "description": null
     }
   ]

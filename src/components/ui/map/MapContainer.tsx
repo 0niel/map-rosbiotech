@@ -253,6 +253,20 @@ const MapContainer = () => {
               setRouteStartAndEnd({ start: routeStartAndEnd.start, end: mapObject, render: false })
               setRoutesModalShow(true)
             }}
+            findNearestObject={(mapObjectType: MapObjectType, mapObjectNames: string[]) => {
+              if (!selectedRoomOnMap.mapObject) return
+
+              const mapObject = mapData.getNearestMapObjectByType(
+                selectedRoomOnMap.mapObject,
+                mapObjectType,
+                mapObjectNames,
+              )
+
+              if (!mapObject) return
+
+              // Маршрут
+              mapRouteRef.current?.renderRoute(selectedRoomOnMap.mapObject, mapObject, selectedFloor)
+            }}
           />
         )}
 

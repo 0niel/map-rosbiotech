@@ -21,8 +21,21 @@ export class MapData {
     return new MapData(data.floors, data.objects)
   }
 
+  private heuristic(a: Vertex, b: Vertex) {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+  }
+
+  private reconstructPath(cameFrom: Map<Vertex, Vertex | null>, currentVertex: Vertex): Vertex[] {
+    const path: Vertex[] = []
+    while (currentVertex) {
+      path.unshift(currentVertex)
+      currentVertex = cameFrom.get(currentVertex)!
+    }
+    return path
+  }
+
   getShortestPath(startMapObject: MapObject, endMapObject: MapObject): Vertex[] | null {
-    const dijkstra = (graph: Graph, start: Vertex, end: Vertex) => {
+    const aStar = (graph: Graph, start: Vertex, end: Vertex) => {
       const dist = new Map<string, number>()
       const prev = new Map<string, Vertex | null>()
 
@@ -35,35 +48,39 @@ export class MapData {
 
       const unvisited = new Set(graph.vertices)
 
-      while (unvisited.size) {
-        let closest: Vertex | null = null
+      do {
+        let current: Vertex | null = null
 
         for (const vertex of unvisited) {
-          if (!closest || dist.get(vertex.id)! < dist.get(closest.id)!) {
-            closest = vertex
+          if (
+            !current ||
+            dist.get(vertex.id)! + this.heuristic(vertex, end) < dist.get(current.id)! + this.heuristic(current, end)
+          ) {
+            current = vertex
           }
         }
 
-        unvisited.delete(closest!)
+        if (!current) break
 
-        if (closest === end) break
+        unvisited.delete(current)
+
+        if (current === end) break
 
         for (const edge of graph.edges) {
-          if (edge.source === closest?.id || edge.target === closest?.id) {
-            const neighborId = edge.source === closest.id ? edge.target : edge.source
+          if (edge.source === current.id || edge.target === current.id) {
+            const neighborId = edge.source === current.id ? edge.target : edge.source
             const neighbor = graph.vertices.find((v) => v.id === neighborId)!
 
             if (neighbor) {
-              // Добавьте это условие для проверки существования соседа
-              const alt = dist.get(closest.id)! + edge.weight
+              const alt = dist.get(current.id)! + edge.weight
               if (alt < dist.get(neighbor.id)!) {
                 dist.set(neighbor.id, alt)
-                prev.set(neighbor.id, closest)
+                prev.set(neighbor.id, current)
               }
             }
           }
         }
-      }
+      } while (unvisited.size)
 
       const path = []
       let u = end
@@ -75,7 +92,7 @@ export class MapData {
       return path
     }
 
-    const unpackedGraph = this.unpackGraph()
+    const unpackedGraph = this.unpackedGraph
 
     unpackedGraph.edges.forEach((e) => {
       if (e.toNextFloor && e.target) {
@@ -90,7 +107,7 @@ export class MapData {
 
     if (!start || !end) return null
 
-    const path = dijkstra(unpackedGraph, start, end)
+    const path = aStar(unpackedGraph, start, end)
 
     return path
   }
@@ -140,6 +157,48 @@ export class MapData {
     return pathsByStairs
   }
 
+  getNearestMapObjectByType(startMapObject: MapObject, mapObjectType: MapObjectType, mapObjectNames: string[]) {
+    const mapObjectsWithTargetType = this.getAllAvailableObjectsInMap().filter((o) => {
+      return o.type === mapObjectType && mapObjectNames.includes(o.name)
+    })
+
+    let minDistance = Infinity
+    let nearestObject = null
+
+    for (const object of mapObjectsWithTargetType) {
+      if (object.id === startMapObject.id) continue
+
+      const path = this.getShortestPath(startMapObject, object)
+      if (!path || path.length === 1) continue
+
+      let distance = 0
+      for (let i = 0; i < path.length - 1; i++) {
+        const currentVertex = path[i]
+        const nextVertex = path[i + 1]
+
+        if (!currentVertex || !nextVertex) continue
+
+        const edge = this.unpackedGraph.edges.find((e) => {
+          return (
+            (e.source === currentVertex.id && e.target === nextVertex.id) ||
+            (e.target === currentVertex.id && e.source === nextVertex.id)
+          )
+        })
+
+        if (!edge) continue
+
+        distance += edge.weight
+      }
+
+      if (distance < minDistance) {
+        minDistance = distance
+        nearestObject = object
+      }
+    }
+
+    return nearestObject
+  }
+
   getObjectByName(name: string): MapObject | undefined {
     return this.objects.find((o) => o.name === name)
   }
@@ -148,9 +207,13 @@ export class MapData {
     return graph.vertices.some((v) => v.mapObjectId === object.id)
   }
 
+  private lazyUnpackedGraph: Graph | null = null
+
   // Объединяет графы этажей в один граф
-  unpackGraph(): Graph {
-    return Object.values(this.floors).reduce(
+  get unpackedGraph(): Graph {
+    if (this.lazyUnpackedGraph) return this.lazyUnpackedGraph
+
+    this.lazyUnpackedGraph = Object.values(this.floors).reduce(
       (acc, g) => {
         acc.vertices.push(...g.vertices)
         acc.edges.push(...g.edges)
@@ -158,11 +221,13 @@ export class MapData {
       },
       { vertices: [], edges: [] },
     )
+
+    return this.lazyUnpackedGraph
   }
 
   // Возвращает все объекты, которые есть в графе и в массиве объектов, то есть объекты, которые есть на карте
   getAllAvailableObjectsInMap(): MapObject[] {
-    const unpackedGraph = this.unpackGraph()
+    const unpackedGraph = this.unpackedGraph
 
     return this.objects.filter((o) => {
       return this.isObjectInGraph(o, unpackedGraph)

@@ -12,7 +12,7 @@ import Spinner from "../Spinner"
 import ScheduleCalendar from "./ScheduleCalendar"
 import Image from "next/image"
 import { Button } from "flowbite-react"
-import { MapObject } from "~/lib/map/MapObject"
+import { MapObject, MapObjectType } from "~/lib/map/MapObject"
 
 interface RoomDrawerProps {
   isOpen: boolean
@@ -24,6 +24,8 @@ interface RoomDrawerProps {
 
   onClickNavigateFromHere: (mapObject: MapObject) => void
   onClickNavigateToHere: (mapObject: MapObject) => void
+
+  findNearestObject: (mapObjectType: MapObjectType, mapObjectNames: string[]) => void
 }
 
 const getCurrentEvent = (lessons: components["schemas"]["Lesson"][], dateTime: Date) => {
@@ -78,6 +80,18 @@ const getCurrentEvent = (lessons: components["schemas"]["Lesson"][], dateTime: D
   return { discipline, teachers }
 }
 
+const FastNavigateButton: React.FC<{ onClick: () => void; title: string }> = ({ onClick, title }) => {
+  return (
+    <button
+      type="button"
+      className="text-xs font-medium text-center text-blue-700 bg-blue-200 rounded-lg px-2 py-1.5 hover:bg-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-300 w-full sm:whitespace-nowrap sm:w-auto"
+      onClick={onClick}
+    >
+      {title}
+    </button>
+  )
+}
+
 const RoomDrawer: React.FC<RoomDrawerProps> = ({
   isOpen,
   onClose,
@@ -87,6 +101,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
   roomMapObject,
   onClickNavigateFromHere,
   onClickNavigateToHere,
+  findNearestObject,
 }) => {
   const { isLoading, error, data } = useQuery(["room", room, dateTime], {
     queryFn: async () => {
@@ -147,7 +162,20 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   Сюда
                 </button>
               </div>
-              <div className="flex mb-4 p-2">{/* TODO: кнопки с ближайшими объектами */}</div>
+              <div className="flex mb-4 p-2 flex-col">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-400 mb-2">Найти ближайшие</p>
+                <div className="sm:flex sm:flex-wrap sm:gap-2 sm:space-y-0 w-full overflow-x-auto flex flex-row flex-nowrap space-x-2 sm:space-x-1">
+                  <FastNavigateButton
+                    onClick={() => findNearestObject(MapObjectType.TOILET, ["Туалет М", "Туалет МЖ"])}
+                    title="Туалет М"
+                  />
+                  <FastNavigateButton
+                    onClick={() => findNearestObject(MapObjectType.TOILET, ["Туалет Ж", "Туалет МЖ"])}
+                    title="Туалет Ж"
+                  />
+                  <FastNavigateButton onClick={() => findNearestObject(MapObjectType.CANTEEN, [])} title="Буфет" />
+                </div>
+              </div>
               {isLoading && (
                 <div className="flex h-full items-center justify-center">
                   <Spinner />
