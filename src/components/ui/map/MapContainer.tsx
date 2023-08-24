@@ -23,7 +23,7 @@ import {
 } from "~/lib/map/domUtils"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
-import RoutesModal from "./NavigationDialog"
+import NavigationDialog from "./NavigationDialog"
 import campuses from "~/lib/campuses"
 import { useMapStore } from "~/lib/stores/map"
 import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
@@ -131,6 +131,7 @@ const MapContainer = () => {
       baseElement: baseState,
       name: mapObject.name,
       remote: remote || null,
+      mapObject: mapObject,
     })
 
     setDrawerOpened(true)
@@ -197,7 +198,15 @@ const MapContainer = () => {
 
   const [routesModalShow, setRoutesModalShow] = useState(false)
 
-  const [routeStartAndEnd, setRouteStartAndEnd] = useState<{ start: MapObject; end: MapObject } | null>(null)
+  const [routeStartAndEnd, setRouteStartAndEnd] = useState<{
+    start: MapObject | null
+    end: MapObject | null
+    render: boolean
+  }>(() => ({
+    start: null,
+    end: null,
+    render: false,
+  }))
 
   useEffect(() => {
     if (!routeStartAndEnd) {
@@ -210,7 +219,9 @@ const MapContainer = () => {
       return
     }
 
-    mapRouteRef.current?.renderRoute(start, end, selectedFloor)
+    if (routeStartAndEnd.render) {
+      mapRouteRef.current?.renderRoute(start, end, selectedFloor)
+    }
   }, [routeStartAndEnd, selectedFloor])
 
   const [prevPanZoomState, setPrevPanZoomState] = useState<ReactZoomPanPinchState | null>(null)
@@ -230,13 +241,24 @@ const MapContainer = () => {
   return (
     <div className="flex h-full flex-col">
       <div className="h-full rounded-lg dark:border-gray-700">
-        <RoomDrawer
-          isOpen={drawerOpened}
-          onClose={handleCloseDrawer}
-          room={selectedRoomOnMap?.remote || null}
-          dateTime={selectedDateTime}
-          scheduleAPI={scheduleAPI}
-        />
+        {selectedRoomOnMap && selectedRoomOnMap.mapObject && (
+          <RoomDrawer
+            isOpen={drawerOpened}
+            onClose={handleCloseDrawer}
+            room={selectedRoomOnMap?.remote || null}
+            dateTime={selectedDateTime}
+            scheduleAPI={scheduleAPI}
+            roomMapObject={selectedRoomOnMap.mapObject}
+            onClickNavigateFromHere={(mapObject) => {
+              setRouteStartAndEnd({ start: mapObject, end: routeStartAndEnd.end, render: false })
+              setRoutesModalShow(true)
+            }}
+            onClickNavigateToHere={(mapObject) => {
+              setRouteStartAndEnd({ start: routeStartAndEnd.start, end: mapObject, render: false })
+              setRoutesModalShow(true)
+            }}
+          />
+        )}
 
         {isLoading && (
           <div className="flex h-full items-center justify-center">
@@ -245,17 +267,19 @@ const MapContainer = () => {
         )}
         {!isLoading && data && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
-            <RoutesModal
+            <NavigationDialog
               isOpen={routesModalShow}
               onClose={() => setRoutesModalShow(false)}
               onSubmit={(start: MapObject, end: MapObject) => {
                 setRoutesModalShow(false)
 
-                setRouteStartAndEnd({ start, end })
+                setRouteStartAndEnd({ start, end, render: true })
 
                 mapRouteRef.current?.renderRoute(start, end, selectedFloor)
               }}
               mapData={mapData}
+              startMapObject={routeStartAndEnd.start}
+              endMapObject={routeStartAndEnd.end}
             />
 
             <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">

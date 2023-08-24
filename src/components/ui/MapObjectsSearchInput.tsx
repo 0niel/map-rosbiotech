@@ -16,6 +16,8 @@ interface MapObjectsSearchInputProps {
   searchResults: SearchableObject[]
 
   selected: SearchableObject | null
+
+  initialSearch?: string
 }
 
 const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
@@ -28,6 +30,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   selected,
   searchResults,
   inputRef,
+  initialSearch,
 }) => {
   const [search, setSearch] = useState(selected?.mapObject.name ?? "")
   const [results, setResults] = useState<Record<string, SearchableObject[]>[]>([])
@@ -64,6 +67,12 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
     onChange?.(value)
   }
 
+  useEffect(() => {
+    if (initialSearch) {
+      setSearch(initialSearch)
+    }
+  }, [initialSearch])
+
   return (
     <div className="pointer-events-auto relative">
       <label htmlFor="default-search" className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -77,7 +86,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           ref={inputRef}
           type="search"
           id="default-search"
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder={placeholder ?? "Поиск"}
           value={search}
           onChange={(e) => {
@@ -99,7 +108,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           </button>
         )}
       </div>
-      {showResults && results.length > 0 && (
+      {showResults && results.length > 0 && search.length > 0 && (
         <div className="mt-2 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {results.map((result) =>
             Object.entries(result).map(([floor, objects]) => (

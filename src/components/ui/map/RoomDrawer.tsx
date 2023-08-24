@@ -2,6 +2,7 @@ import React from "react"
 import { type components } from "~/lib/schedule/schema"
 import Tabs from "../Tabs"
 import { Calendar, Info } from "lucide-react"
+import { RiRouteLine } from "react-icons/ri"
 import RoomInfoTabContent from "./RoomInfoTabContent"
 import { useQuery } from "react-query"
 import type ScheduleAPI from "~/lib/schedule/api"
@@ -10,6 +11,8 @@ import RightDrawer from "../RightDrawer"
 import Spinner from "../Spinner"
 import ScheduleCalendar from "./ScheduleCalendar"
 import Image from "next/image"
+import { Button } from "flowbite-react"
+import { MapObject } from "~/lib/map/MapObject"
 
 interface RoomDrawerProps {
   isOpen: boolean
@@ -17,6 +20,10 @@ interface RoomDrawerProps {
   scheduleAPI: ScheduleAPI
   dateTime: Date
   room: components["schemas"]["Room"] | null
+  roomMapObject: MapObject
+
+  onClickNavigateFromHere: (mapObject: MapObject) => void
+  onClickNavigateToHere: (mapObject: MapObject) => void
 }
 
 const getCurrentEvent = (lessons: components["schemas"]["Lesson"][], dateTime: Date) => {
@@ -71,7 +78,16 @@ const getCurrentEvent = (lessons: components["schemas"]["Lesson"][], dateTime: D
   return { discipline, teachers }
 }
 
-const RoomDrawer: React.FC<RoomDrawerProps> = ({ isOpen, onClose, dateTime, room, scheduleAPI }) => {
+const RoomDrawer: React.FC<RoomDrawerProps> = ({
+  isOpen,
+  onClose,
+  scheduleAPI,
+  dateTime,
+  room,
+  roomMapObject,
+  onClickNavigateFromHere,
+  onClickNavigateToHere,
+}) => {
   const { isLoading, error, data } = useQuery(["room", room, dateTime], {
     queryFn: async () => {
       if (!room) {
@@ -103,13 +119,35 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({ isOpen, onClose, dateTime, room
             id="drawer-right-label"
             className="mb-4 inline-flex items-center text-base font-bold text-gray-900 dark:text-gray-400"
           >
-            Аудитория {room != null ? room.name : "не выбрана"}
+            Аудитория {roomMapObject.name}
           </h5>
         }
       >
         <div className="flex h-full flex-col">
           <Tabs>
             <Tabs.Tab name="Информация" icon={<Info />}>
+              <div className="flex mb-4 p-2">
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full flex items-center justify-center"
+                  onClick={() => {
+                    onClickNavigateFromHere(roomMapObject)
+                  }}
+                >
+                  <RiRouteLine className="mr-2 h-5 w-5" />
+                  Отсюда
+                </button>
+                <button
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 w-full flex items-center justify-center"
+                  onClick={() => {
+                    onClickNavigateToHere(roomMapObject)
+                  }}
+                >
+                  <RiRouteLine className="mr-2 h-5 w-5 transform rotate-180" />
+                  Сюда
+                </button>
+              </div>
+              <div className="flex mb-4 p-2">{/* TODO: кнопки с ближайшими объектами */}</div>
               {isLoading && (
                 <div className="flex h-full items-center justify-center">
                   <Spinner />

@@ -11,13 +11,24 @@ interface RoutesModalProps {
   onClose: () => void
   onSubmit: (mapObjectStart: MapObject, mapObjectEnd: MapObject) => void
   mapData: MapData
+
+  startMapObject?: MapObject | null
+  endMapObject?: MapObject | null
 }
 
-const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, mapData }) => {
+const NavigationDialog: React.FC<RoutesModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  mapData,
+  startMapObject,
+  endMapObject,
+}) => {
   const [start, setStart] = useState<SearchableObject | null>(null)
   const [startSearchResults, setStartSearchResults] = useState<SearchableObject[]>([])
   const [end, setEnd] = useState<SearchableObject | null>(null)
   const [endSearchResults, setEndSearchResults] = useState<SearchableObject[]>([])
+
   const startInputRef = useRef<HTMLInputElement>(null)
   const endInputRef = useRef<HTMLInputElement>(null)
 
@@ -36,11 +47,11 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, ma
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
-    if (!start || !end) {
-      return
+    if (start && end) {
+      onSubmit(start.mapObject, end.mapObject)
+    } else if (startMapObject && endMapObject) {
+      onSubmit(startMapObject, endMapObject)
     }
-
-    onSubmit(start.mapObject, end.mapObject)
   }
 
   const cancelButtonRef = useRef(null)
@@ -85,40 +96,77 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, ma
                   <X size={20} />
                   <span className="sr-only">Закрыть окно</span>
                 </button>
-                <div className="space-y-6 px-6 py-6 lg:px-8">
-                  <div>
-                    <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900">
+                <div className="space-y-6 py-6">
+                  <div className="w-full">
+                    <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 ml-10">
                       Начальная точка
                     </label>
-                    <MapObjectsSearchInput
-                      onSubmit={(searchObject) => {
-                        setStart(searchObject)
-                      }}
-                      showSubmitButton={false}
-                      onChange={(name) => {
-                        setStartSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
-                      }}
-                      searchResults={startSearchResults}
-                      selected={start}
-                      inputRef={startInputRef}
-                    />
+                    <div className="flex flex-row items-center">
+                      <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-9 h-8 flex items-center justify-center mr-2">
+                        А
+                      </div>
+                      <div className="w-full">
+                        <MapObjectsSearchInput
+                          onSubmit={(searchObject) => {
+                            setStart(searchObject)
+                          }}
+                          showSubmitButton={false}
+                          onChange={(name) => {
+                            setStartSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
+                          }}
+                          searchResults={startSearchResults}
+                          selected={start}
+                          inputRef={startInputRef}
+                          initialSearch={startMapObject?.name}
+                        />
+                      </div>
+                    </div>
+                    {!startInputRef.current?.value && !startMapObject && (
+                      <p
+                        className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
+                        onClick={() => {
+                          onClose()
+                        }}
+                      >
+                        выбрать на карте
+                      </p>
+                    )}
                   </div>
-                  <div>
-                    <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900">
+
+                  <div className="w-full">
+                    <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900 ml-10">
                       Конечная точка
                     </label>
-                    <MapObjectsSearchInput
-                      onSubmit={(searchObject) => {
-                        setEnd(searchObject)
-                      }}
-                      selected={end}
-                      showSubmitButton={false}
-                      onChange={(name) => {
-                        setEndSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
-                      }}
-                      searchResults={endSearchResults}
-                      inputRef={endInputRef}
-                    />
+                    <div className="flex flex-row items-center">
+                      <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                        Б
+                      </div>
+                      <div className="w-full">
+                        <MapObjectsSearchInput
+                          onSubmit={(searchObject) => {
+                            setEnd(searchObject)
+                          }}
+                          selected={end}
+                          showSubmitButton={false}
+                          onChange={(name) => {
+                            setEndSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
+                          }}
+                          searchResults={endSearchResults}
+                          inputRef={endInputRef}
+                          initialSearch={endMapObject?.name}
+                        />
+                      </div>
+                    </div>
+                    {!endInputRef.current?.value && !endMapObject && (
+                      <p
+                        className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
+                        onClick={() => {
+                          onClose()
+                        }}
+                      >
+                        выбрать на карте
+                      </p>
+                    )}
                   </div>
 
                   <button
@@ -138,4 +186,4 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, ma
   )
 }
 
-export default RoutesModal
+export default NavigationDialog
