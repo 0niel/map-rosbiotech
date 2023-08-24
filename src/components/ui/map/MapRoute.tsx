@@ -51,115 +51,138 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
       svg.selectAll(".route").remove()
       svg.selectAll(".circle-point").remove()
 
-      let currentFloorPath = path.filter((point) => isPointInThisFloor(point, currentFloor))
+      const currentFloorPath = path.filter((point) => isPointInThisFloor(point, currentFloor))
 
-      console.log(currentFloorPath)
+      // Список сегментов пути, разделенных лестницами
+      const pathsByStairs = [] as Vertex[][]
 
-      // Если две лестницы на одном этаже, то текущий путь заканчивается на второй лестнице
-      // Такое бывает, когда две части карты являются фактически разными корпусами, но на одном этаже
-      // Например, когда Киберзона -> ивц
-      let lastPointIndex = currentFloorPath.length - 1
+      if (currentFloorPath.length === 0) return
+
+      // Первый сегмент пути всегда начинается с начальной точки
+      pathsByStairs.push([currentFloorPath[0] as Vertex])
+
       for (let i = 1; i < currentFloorPath.length; i++) {
         const vert = currentFloorPath[i] as Vertex
         const prevVert = currentFloorPath[i - 1] as Vertex
 
-        if (!vert.mapObjectId || !prevVert.mapObjectId) continue
+        if (!vert.mapObjectId && !prevVert.mapObjectId) {
+          ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+          continue
+        }
 
-        const mapObj = mapData.getMapObjectById(vert.mapObjectId)
-        const prevMapObj = mapData.getMapObjectById(prevVert.mapObjectId)
+        const mapObj = mapData.getMapObjectById(vert.mapObjectId as string)
+        const prevMapObj = mapData.getMapObjectById(prevVert.mapObjectId as string)
 
-        if (!mapObj || !prevMapObj) continue
-
-        console.log(mapObj, prevMapObj)
-        if (mapObj.type === MapObjectType.STAIRS && prevMapObj.type === MapObjectType.STAIRS) {
-          lastPointIndex = i - 1
-          break
+        if (mapObj && prevMapObj) {
+          if (mapObj.type === MapObjectType.STAIRS && prevMapObj.type === MapObjectType.STAIRS) {
+            // Если оба объекта лестницы, то добавить новый сегмент пути
+            pathsByStairs.push([vert])
+          } else if (mapObj.type === MapObjectType.STAIRS && prevMapObj.type !== MapObjectType.STAIRS) {
+            // Если текущий объект лестница, а предыдущий нет, то добавить текущий объект в последний сегмент пути
+            ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+          } else if (mapObj.type !== MapObjectType.STAIRS && prevMapObj.type === MapObjectType.STAIRS) {
+            // Если текущий объект не лестница, а предыдущий объект лестница, то добавить текущий объект в новый сегмент пути
+            pathsByStairs.push([vert])
+          } else if (mapObj.type !== MapObjectType.STAIRS && prevMapObj.type !== MapObjectType.STAIRS) {
+            // Если оба объекта не лестницы, то добавить текущий объект в последний сегмент пути
+            ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+          }
+        } else {
+          ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
         }
       }
 
-      currentFloorPath = currentFloorPath.slice(0, lastPointIndex + 1)
+      for (const floorPath of pathsByStairs) {
+        const lineFunction = d3
+          .line<Vertex>()
+          .x((d) => d.x)
+          .y((d) => d.y)
+          .curve(d3.curveLinear)
 
-      const lineFunction = d3
-        .line<Vertex>()
-        .x((d) => d.x)
-        .y((d) => d.y)
-        .curve(d3.curveLinear)
+        const line = svg
+          .append("path")
+          .attr("class", "route")
+          .attr("d", lineFunction(floorPath))
+          .attr("stroke", "#e74694")
+          .attr("stroke-width", 6)
+          .attr("fill", "none")
+          .attr("stroke-dasharray", "0,0") // чтобы не было видно линии при первом рендере
 
-      const line = svg
-        .append("path")
-        .attr("class", "route")
-        .attr("d", lineFunction(currentFloorPath))
-        .attr("stroke", "#e74694")
-        .attr("stroke-width", 6)
-        .attr("fill", "none")
-        .attr("stroke-dasharray", "0,0") // чтобы не было видно линии при первом рендере
+        line
+          .transition()
+          .duration(1000)
+          .ease(d3.easeLinear)
+          .attrTween("stroke-dasharray", function (this) {
+            const len = this.getTotalLength()
+            return function (t) {
+              return `${len * t}, ${len * (1 - t)}`
+            }
+          })
 
-      line
-        .transition()
-        .duration(1000)
-        .ease(d3.easeLinear)
-        .attrTween("stroke-dasharray", function (this) {
-          const len = this.getTotalLength()
-          return function (t) {
-            return `${len * t}, ${len * (1 - t)}`
+        const drawCirclePoint = (point: Vertex, text: string) => {
+          const circlePoints = svg
+            .append("g")
+            .attr("class", "circle-point")
+            .selectAll(".circle-point")
+            .data([point])
+            .enter()
+
+          circlePoints
+            .append("circle")
+            .attr("cx", (d) => d.x)
+            .attr("cy", (d) => d.y)
+            .attr("r", 18)
+            .attr("fill", "#e74694")
+
+          circlePoints
+            .append("text")
+            .attr("x", (d) => d.x)
+            .attr("y", (d) => d.y)
+            .attr("fill", "#fff")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "middle")
+            .attr("font-size", "18px")
+            .attr("font-weight", "bold")
+            .text(text)
+        }
+
+        const startPoint = path[0] || ({ x: 0, y: 0 } as Vertex)
+        const endPoint = path[path.length - 1] || ({ x: 0, y: 0 } as Vertex)
+
+        const startFloor = getFloorByPoint(startPoint)
+        const endFloor = getFloorByPoint(endPoint)
+
+        const firstCurrentFloorPoint = floorPath[0] || ({ x: 0, y: 0 } as Vertex)
+        const lastCurrentFloorPoint = floorPath[floorPath.length - 1] || ({ x: 0, y: 0 } as Vertex)
+
+        if (startFloor === currentFloor) {
+          drawCirclePoint(startPoint, "A")
+        }
+
+        if (endFloor === currentFloor) {
+          drawCirclePoint(endPoint, "B")
+        }
+
+        if (endFloor < currentFloor) {
+          drawCirclePoint(lastCurrentFloorPoint, "↓")
+        } else if (endFloor > currentFloor) {
+          drawCirclePoint(lastCurrentFloorPoint, "↑")
+        } else if (startFloor === endFloor) {
+          // Если начальная точка и кочная точка находятся на одном этаже, но, на пример, в разных корпусах.
+          // И чтобы до них дойти, нужно подниматься или спускаться по лестницам
+          const pointAfterLastCurrentFloorPoint = path[path.indexOf(lastCurrentFloorPoint) + 1]
+          if (pointAfterLastCurrentFloorPoint) {
+            const pointFloor = getFloorByPoint(pointAfterLastCurrentFloorPoint)
+            if (pointFloor < currentFloor) {
+              drawCirclePoint(lastCurrentFloorPoint, "↓")
+            } else if (pointFloor > currentFloor) {
+              drawCirclePoint(lastCurrentFloorPoint, "↑")
+            }
           }
-        })
+        }
 
-      const drawCirclePoint = (point: Vertex, text: string) => {
-        const circlePoints = svg
-          .append("g")
-          .attr("class", "circle-point")
-          .selectAll(".circle-point")
-          .data([point])
-          .enter()
-
-        circlePoints
-          .append("circle")
-          .attr("cx", (d) => d.x)
-          .attr("cy", (d) => d.y)
-          .attr("r", 18)
-          .attr("fill", "#e74694")
-
-        circlePoints
-          .append("text")
-          .attr("x", (d) => d.x)
-          .attr("y", (d) => d.y)
-          .attr("fill", "#fff")
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "middle")
-          .attr("font-size", "18px")
-          .attr("font-weight", "bold")
-          .text(text)
+        drawCirclePoint(firstCurrentFloorPoint, "")
       }
-
-      const startPoint = path[0] || ({ x: 0, y: 0 } as Vertex)
-      const endPoint = path[path.length - 1] || ({ x: 0, y: 0 } as Vertex)
-
-      const startFloor = getFloorByPoint(startPoint)
-      const endFloor = getFloorByPoint(endPoint)
-
-      const firstCurrentFloorPoint = currentFloorPath[0] || ({ x: 0, y: 0 } as Vertex)
-      const lastCurrentFloorPoint = currentFloorPath[currentFloorPath.length - 1] || ({ x: 0, y: 0 } as Vertex)
-
-      if (startFloor === currentFloor) {
-        drawCirclePoint(startPoint, "A")
-      }
-
-      if (endFloor === currentFloor) {
-        drawCirclePoint(endPoint, "B")
-      }
-
-      if (startFloor === currentFloor && endFloor === currentFloor) {
-        return
-      }
-
-      if (endFloor < currentFloor) {
-        drawCirclePoint(lastCurrentFloorPoint, "↓")
-      } else if (endFloor > currentFloor) {
-        drawCirclePoint(lastCurrentFloorPoint, "↑")
-      }
-
-      drawCirclePoint(firstCurrentFloorPoint, "")
     },
     clearRoute: () => {
       if (!svgRef.current) return
