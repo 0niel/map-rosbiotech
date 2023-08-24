@@ -266,7 +266,7 @@ const MapContainer = () => {
                   setRoutesModalShow(true)
                 }}
               >
-                <Image className="h-6 w-6" src="/icons/route.svg" alt="Маршрут" width={24} height={24} />
+                <RiRouteLine className="h-6 w-6" transform="rotate(180)" />
               </button>
 
               <div className="z-30 md:fixed md:right-10">
