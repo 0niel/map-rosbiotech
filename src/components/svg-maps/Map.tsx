@@ -121,7 +121,7 @@ const Map = ({ floor, onLoaded, svgUrl, mapData }: MapProps) => {
   })
 
   useEffect(() => {
-    if (data && roomsWorkloadData && displayModeStore.mode === MapDisplayMode.HEATMAP) {
+    if (data && roomsWorkloadData && displayModeStore.mode === MapDisplayMode.HEATMAP && mapData && roomsData) {
       const svgElement = document.querySelector("#map svg") as SVGElement
       createHeatMap(svgElement, roomsWorkloadData, roomsData, mapData)
     }

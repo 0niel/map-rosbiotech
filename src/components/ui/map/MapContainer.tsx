@@ -113,8 +113,8 @@ const MapContainer = () => {
 
     fillRoom(room, "#2563EB")
 
-    const name = getMapObjectIdByElement(room)
-    if (!name) {
+    const mapObject = mapData.objects.find((object) => object.id === getMapObjectIdByElement(room))
+    if (!mapObject) {
       return
     }
 
@@ -124,12 +124,12 @@ const MapContainer = () => {
 
     transformComponentRef.current?.zoomToElement(room as HTMLElement)
 
-    const remote = data.find((room) => room.name === name)
+    const remote = data.find((room) => room.name === mapObject.name)
 
     setSelectedRoomOnMap({
       element: room,
       baseElement: baseState,
-      name: name,
+      name: mapObject.name,
       remote: remote || null,
     })
 
