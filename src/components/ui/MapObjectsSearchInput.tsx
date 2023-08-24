@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Search } from "lucide-react"
-import { type SearchableObject } from "~/lib/graph"
+import { type SearchableObject } from "~/lib/map/MapData"
 import DisplayModeSettingsDialog from "./DisplayModeSettingsDialog"
 
 interface MapObjectsSearchInputProps {

@@ -59,14 +59,14 @@ export const encodeRoomName = (roomName: string) => {
   return roomNameEncoded
 }
 
-const isMapObject = (el: Element) => {
+export const isElementMapObject = (el: Element) => {
   return el.getAttribute("data-object") != null
 }
 
 export const getMapObjectIdByElement = (el: Element) => {
   // Формат: "В-78__r__А-101", где "В-78" - название корпуса, "r" - тип объекта, "А-101" - название объекта
   try {
-    if (!isMapObject(el)) return null
+    if (!isElementMapObject(el)) return null
 
     const names = el.getAttribute("data-object")?.split("__")
     const name = names?.[names.length - 1]
@@ -123,4 +123,3 @@ export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
 
   return getTypeByShortName(shortType)
 }
-

@@ -7,7 +7,6 @@ import {
 } from "react-zoom-pan-pinch"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import mapDataJson from "public/routes.json"
-import { getSearchebleObjects, type MapData } from "~/lib/graph"
 import MapRoute, { type MapRouteRef } from "./MapRoute"
 import ScheduleAPI from "~/lib/schedule/api"
 import { useQuery } from "react-query"
@@ -21,7 +20,7 @@ import {
   getMapObjectTypeByElemet,
   mapObjectSelector,
   getMapObjectById,
-} from "~/lib/map/mapObjectsDOM"
+} from "~/lib/map/domUtils"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
 import RoutesModal from "./NavigationDialog"
@@ -29,11 +28,12 @@ import campuses from "~/lib/campuses"
 import { useMapStore } from "~/lib/stores/map"
 import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
 import Image from "next/image"
+import { MapData } from "~/lib/map/MapData"
 
 const scheduleAPI = new ScheduleAPI()
 
 const loadJsonToGraph = (routesJson: string) => {
-  return JSON.parse(routesJson) as MapData
+  return MapData.fromJson(routesJson)
 }
 
 const MapContainer = () => {
@@ -91,10 +91,7 @@ const MapContainer = () => {
         return
       }
 
-      const room = getMapObjectById(router.query.room as string)[0] as Element
-      if (room) {
-        selectRoomEl(room)
-      }
+      // TODO: открытие комнаты по id
     }
   }, [isLoading, transformComponentRef.current])
 
@@ -258,7 +255,6 @@ const MapContainer = () => {
 
                 mapRouteRef.current?.renderRoute(start, end, selectedFloor)
               }}
-              aviableMapObjects={getSearchebleObjects(mapData)}
               mapData={mapData}
             />
 
@@ -346,7 +342,6 @@ const MapContainer = () => {
                 {React.createElement(campusMap?.map ?? "div", {
                   floor: selectedFloor,
                   mapData: mapData,
-
                 })}
               </TransformComponent>
             </TransformWrapper>

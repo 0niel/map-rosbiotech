@@ -3,18 +3,17 @@ import { X } from "lucide-react"
 import { Fragment, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import MapObjectsSearchInput from "../MapObjectsSearchInput"
-import { type MapData, type SearchableObject, searchObjectsByName } from "~/lib/graph"
-import { MapObject, MapObjectType } from "~/lib/map/MapObject"
+import { MapData, type SearchableObject } from "~/lib/map/MapData"
+import { type MapObject, MapObjectType } from "~/lib/map/MapObject"
 
 interface RoutesModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (mapObjectStart: MapObject, mapObjectEnd: MapObject) => void
-  aviableMapObjects: SearchableObject[]
   mapData: MapData
 }
 
-const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, aviableMapObjects, mapData }) => {
+const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, mapData }) => {
   const [start, setStart] = useState<SearchableObject | null>(null)
   const [startSearchResults, setStartSearchResults] = useState<SearchableObject[]>([])
   const [end, setEnd] = useState<SearchableObject | null>(null)
@@ -97,9 +96,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                       }}
                       showSubmitButton={false}
                       onChange={(name) => {
-                        setStartSearchResults(
-                          searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]),
-                        )
+                        setStartSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
                       }}
                       searchResults={startSearchResults}
                       selected={start}
@@ -117,7 +114,7 @@ const RoutesModal: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, av
                       selected={end}
                       showSubmitButton={false}
                       onChange={(name) => {
-                        setEndSearchResults(searchObjectsByName(name, mapData, aviableMapObjects, [MapObjectType.ROOM]))
+                        setEndSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
                       }}
                       searchResults={endSearchResults}
                       inputRef={endInputRef}

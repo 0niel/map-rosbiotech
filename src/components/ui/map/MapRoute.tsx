@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from "react"
 import * as d3 from "d3"
-import { getShortestPath, type MapData, type Graph, type Vertex, getMapObjectById } from "~/lib/graph"
+import { type MapData } from "~/lib/map/MapData"
+import { type Graph, type Vertex } from "~/lib/map/Graph"
 import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
 
 interface MapRouteProps {
@@ -39,7 +40,7 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     renderRoute: (startMapObject, endMapObject, currentFloor) => {
-      const path = getShortestPath(mapData, startMapObject, endMapObject)
+      const path = mapData.getShortestPath(startMapObject, endMapObject)
       if (!path || path.length === 1) return
 
       if (!svgRef.current) return
@@ -64,8 +65,8 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
 
         if (!vert.mapObjectId || !prevVert.mapObjectId) continue
 
-        const mapObj = getMapObjectById(vert.mapObjectId, mapData)
-        const prevMapObj = getMapObjectById(prevVert.mapObjectId, mapData)
+        const mapObj = mapData.getMapObjectById(vert.mapObjectId)
+        const prevMapObj = mapData.getMapObjectById(prevVert.mapObjectId)
 
         if (!mapObj || !prevMapObj) continue
 

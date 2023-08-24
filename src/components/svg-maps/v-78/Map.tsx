@@ -7,7 +7,7 @@ import Floor1 from "./floor_1.svg?url"
 import Floor2 from "./floor_2.svg?url"
 import Floor3 from "./floor_3.svg?url"
 import Floor4 from "./floor_4.svg?url"
-import { MapData } from "~/lib/graph"
+import { MapData } from "~/lib/map/MapData"
 
 const maps = [
   { floor: 0, svgUrl: Floor0.src },

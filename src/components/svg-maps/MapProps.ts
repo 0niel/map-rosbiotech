@@ -1,4 +1,4 @@
-import { MapData } from "~/lib/graph"
+import { MapData } from "~/lib/map/MapData"
 import { type MapDisplayMode } from "./MapDisplayMode"
 
 export type MapProps = {
