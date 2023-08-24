@@ -105,10 +105,6 @@ const MapContainer = () => {
     }
 
     const base = room.cloneNode(true)
-    base.addEventListener("click", (e: Event) => {
-      handleRoomClick(e)
-    })
-
     const baseState = base as Element
 
     fillRoom(room, "#2563EB")
