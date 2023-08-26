@@ -9,7 +9,7 @@ import ScheduleAPI from "~/lib/schedule/api"
 import { useMapStore } from "~/lib/stores/mapStore"
 import { type components } from "~/lib/schedule/schema"
 import { MapDisplayMode } from "./MapDisplayMode"
-import { fillRoom, getAllMapObjectsElements, getMapObjectById } from "~/lib/map/domUtils"
+import { fillRoom, getAllMapObjectsElements, getMapObjectElementById } from "~/lib/map/domUtils"
 import { type MapData } from "~/lib/map/MapData"
 import { MapObjectType } from "~/lib/map/MapObject"
 import toast from "react-hot-toast"
@@ -35,7 +35,7 @@ const createHeatMap = (
       continue
     }
 
-    const mapObject = getMapObjectById(roomMapObject.id)
+    const mapObject = getMapObjectElementById(roomMapObject.id)
     if (!mapObject) {
       continue
     }
@@ -70,7 +70,7 @@ const createStatusesMap = (
       continue
     }
 
-    const mapObject = getMapObjectById(roomMapObject.id)
+    const mapObject = getMapObjectElementById(roomMapObject.id)
     if (!mapObject) {
       continue
     }

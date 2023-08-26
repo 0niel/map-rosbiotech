@@ -7,7 +7,9 @@ import { useRouteStore } from "~/lib/stores/routeStore"
 import { BiWalk } from "react-icons/bi"
 import { TbStairsUp, TbStairsDown } from "react-icons/tb"
 import { use, useCallback } from "react"
-import { X } from "lucide-react"
+import { Link, X } from "lucide-react"
+import { CopyToClipboard } from "react-copy-to-clipboard"
+import { toast } from "react-hot-toast"
 
 interface RouteDetailsProps {
   onDetailsSlideChange: (detailsSlide: DetailsSlide) => void
@@ -25,6 +27,24 @@ export interface DetailsSlide {
 const RouteDetails: React.FC<RouteDetailsProps> = ({ onDetailsSlideChange, onDetailsSlideClick, onClose }) => {
   const { path } = useRouteStore()
   const { floor, mapData } = useMapStore()
+
+  const generateLink = () => {
+    if (!path) {
+      toast.error("Не удалось сгенерировать ссылку на маршрут")
+      return
+    }
+
+    const start = path.at(0)?.at(0)?.mapObjectId
+    const endSegment = path.at(path.length - 1)
+    const end = endSegment?.at(endSegment.length - 1)?.mapObjectId
+
+    if (!start || !end) {
+      toast.error("Не удалось сгенерировать ссылку на маршрут")
+      return
+    }
+
+    return `${window.location.origin}/?start=${start}&end=${end}`
+  }
 
   const getRouteDetailsByPath = useCallback((): DetailsSlide[] => {
     const routeDetails: DetailsSlide[] = []
@@ -103,15 +123,30 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ onDetailsSlideChange, onDet
   }, [mapData, path])
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-xl border px-8 py-6 mx-auto sm:w-[30rem] max-h-44 overflow-y-auto border-gray-300 pointer-events-auto">
-      <button
-        type="button"
-        className="absolute right-4 top-3 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 pointer-events-auto"
-        onClick={onClose}
-      >
-        <X size={20} />
-        <span className="sr-only">Закрыть окно</span>
-      </button>
+    <div className="flex flex-col w-full bg-white rounded-xl border px-8 py-6 mx-auto sm:w-[28rem] max-h-44 overflow-y-auto border-gray-300 pointer-events-auto">
+      <div className="flex items-center mb-4 space-x-2 absolute top-4 right-8 z-10">
+        <CopyToClipboard
+          text={generateLink() || ""}
+          onCopy={() => {
+            toast.success("Ссылка скопирована в буфер обмена")
+          }}
+        >
+          <button
+            type="button"
+            className="bg-gray-100 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-lg p-1.5 text-sm text-gray-900 hover:text-gray-900 flex items-center"
+          >
+            <Link className="h-5 w-5 mr-2" /> поделитьсья
+          </button>
+        </CopyToClipboard>
+        <button
+          type="button"
+          className="top-3 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 pointer-events-auto"
+          onClick={onClose}
+        >
+          <X size={20} />
+          <span className="sr-only">Закрыть окно</span>
+        </button>
+      </div>
       <div className="flex flex-col h-full">
         <ol className="relative border-l border-gray-200">
           {path &&

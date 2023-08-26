@@ -100,7 +100,7 @@ export const getAllMapObjectsElements = (document: Document | Element = window.d
   return roomsEls
 }
 
-export const getMapObjectById = (name: string, document: Document | Element = window.document) => {
+export const getMapObjectElementById = (name: string, document: Document | Element = window.document) => {
   const roomsEls = getAllMapObjectsElements(document)
 
   for (const room of roomsEls) {

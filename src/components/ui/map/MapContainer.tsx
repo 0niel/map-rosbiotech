@@ -19,7 +19,7 @@ import {
   getMapObjectIdByElement,
   getMapObjectTypeByElemet,
   mapObjectSelector,
-  getMapObjectById,
+  getMapObjectElementById,
 } from "~/lib/map/domUtils"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
@@ -74,15 +74,30 @@ const MapContainer = () => {
     prevEvent: null,
   })
 
-  useEffect(() => {
-    if (!isLoading && transformComponentRef.current) {
-      if (!router.query.room) {
-        return
-      }
+  const zoomToMapObject = useCallback(
+    (mapObject: MapObject) => {
+      const id = mapObject.id
 
-      // TODO: открытие комнаты по id
-    }
-  }, [isLoading, router.query.room])
+      if (!mapData) return
+
+      const mapObjectFloor = mapData.getObjectFloorByMapObjectId(id)
+      if (mapObjectFloor !== floor && mapObjectFloor !== undefined) {
+        setFloor(mapObjectFloor)
+        setTimeout(() => {
+          const element = getMapObjectElementById(id)
+          if (element) {
+            transformComponentRef.current?.zoomToElement(element as HTMLElement)
+          }
+        }, 300)
+      } else {
+        const element = getMapObjectElementById(id)
+        if (element) {
+          transformComponentRef.current?.zoomToElement(element as HTMLElement)
+        }
+      }
+    },
+    [floor, mapData, setFloor],
+  )
 
   const selectRoomEl = useCallback(
     (room: Element) => {
@@ -132,6 +147,42 @@ const MapContainer = () => {
 
     setSelectedRoomOnMap(null)
   }, [])
+
+  useEffect(() => {
+    if (isLoading || !transformComponentRef.current || !mapData) return
+
+    const { object } = router.query
+
+    if (object) {
+      const mapObject = mapData.getMapObjectById(router.query.object as string)
+      if (!mapObject) {
+        toast.error("Не найден объект на карте по вашей ссылке")
+        return
+      }
+      zoomToMapObject(mapObject)
+
+      setTimeout(() => {
+        const element = getMapObjectElementById(mapObject.id)
+        if (element) {
+          selectRoomEl(element)
+        }
+      }, 300)
+      return
+    }
+
+    const { start, end } = router.query
+    if (start && end) {
+      const startMapObject = mapData.getMapObjectById(router.query.start as string)
+      const endMapObject = mapData.getMapObjectById(router.query.end as string)
+
+      if (!startMapObject || !endMapObject) {
+        toast.error("Не удалось построить маршрут по вашей ссылке")
+        return
+      }
+
+      setRouteStartAndEnd({ start: startMapObject, end: endMapObject, render: true })
+    }
+  }, [isLoading, router.query, mapData])
 
   const handleRoomClick = useCallback(
     (e: Event) => {
@@ -238,31 +289,6 @@ const MapContainer = () => {
       isPanningRef.current = { isPanning: false, prevEvent: null }
     },
     [handleRoomClick],
-  )
-
-  const zoomToMapObject = useCallback(
-    (mapObject: MapObject) => {
-      const id = mapObject.id
-
-      if (!mapData) return
-
-      const mapObjectFloor = mapData.getObjectFloorByMapObjectId(id)
-      if (mapObjectFloor !== floor && mapObjectFloor !== undefined) {
-        setFloor(mapObjectFloor)
-        setTimeout(() => {
-          const element = getMapObjectById(id)
-          if (element) {
-            transformComponentRef.current?.zoomToElement(element as HTMLElement)
-          }
-        }, 0)
-      } else {
-        const element = getMapObjectById(id)
-        if (element) {
-          transformComponentRef.current?.zoomToElement(element as HTMLElement)
-        }
-      }
-    },
-    [floor, mapData, setFloor],
   )
 
   const [displayDetails, setDisplayDetails] = useState(false)
