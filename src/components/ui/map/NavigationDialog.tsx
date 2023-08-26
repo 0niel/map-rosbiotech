@@ -6,17 +6,26 @@ import MapObjectsSearchInput from "../MapObjectsSearchInput"
 import { MapData, type SearchableObject } from "~/lib/map/MapData"
 import { type MapObject, MapObjectType } from "~/lib/map/MapObject"
 import { useMapStore } from "~/lib/stores/mapStore"
+import { toast } from "react-hot-toast"
 
 interface RoutesModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (mapObjectStart: MapObject, mapObjectEnd: MapObject) => void
+  onSelect: (mapObjectStart?: MapObject | null, mapObjectEnd?: MapObject | null) => void
 
   startMapObject?: MapObject | null
   endMapObject?: MapObject | null
 }
 
-const NavigationDialog: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmit, startMapObject, endMapObject }) => {
+const NavigationDialog: React.FC<RoutesModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  startMapObject,
+  endMapObject,
+  onSelect,
+}) => {
   const { mapData } = useMapStore()
   const [start, setStart] = useState<SearchableObject | null>(null)
   const [startSearchResults, setStartSearchResults] = useState<SearchableObject[]>([])
@@ -45,6 +54,8 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmi
       onSubmit(start.mapObject, end.mapObject)
     } else if (startMapObject && endMapObject) {
       onSubmit(startMapObject, endMapObject)
+    } else {
+      toast.error("Необходимо выбрать начальную и конечную точки")
     }
   }
 
@@ -103,6 +114,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmi
                         <MapObjectsSearchInput
                           onSubmit={(searchObject) => {
                             setStart(searchObject)
+                            onSelect(searchObject.mapObject, null)
                           }}
                           showSubmitButton={false}
                           onChange={(name) => {
@@ -141,6 +153,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({ isOpen, onClose, onSubmi
                         <MapObjectsSearchInput
                           onSubmit={(searchObject) => {
                             setEnd(searchObject)
+                            onSelect(null, searchObject.mapObject)
                           }}
                           selected={end}
                           showSubmitButton={false}
