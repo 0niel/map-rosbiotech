@@ -123,12 +123,26 @@ export interface paths {
      */
     get: operations["get_statuses_api_rooms_statuses_get"]
   }
+  "/api/rooms/statuses/{id}": {
+    /**
+     * Получение статусов аудиторий
+     * @description Получить статусы аудиторий (свободна/занята) для указанного времени
+     */
+    get: operations["get_status_by_id_api_rooms_statuses__id__get"]
+  }
   "/api/rooms/workload": {
     /**
      * Получение загруженности аудиторий
      * @description Получить загруженность аудиторий
      */
     get: operations["get_rooms_workload_api_rooms_workload_get"]
+  }
+  "/api/rooms/workload/{id}": {
+    /**
+     * Получение загруженности аудиторий
+     * @description Получить загруженность аудиторий
+     */
+    get: operations["get_room_workload_api_rooms_workload__id__get"]
   }
   "/api/rooms": {
     /**
@@ -225,6 +239,10 @@ export interface paths {
     /** Parse Schedule */
     post: operations["parse_schedule_api_parse_schedule__post"]
   }
+  "/api/parse-file/": {
+    /** Parse File */
+    post: operations["parse_file_api_parse_file__post"]
+  }
   "/api/versions": {
     /**
      * Получение системной информации
@@ -264,6 +282,15 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    /** Body_parse_file_api_parse_file__post */
+    Body_parse_file_api_parse_file__post: {
+      /**
+       * Schedule
+       * Format: binary
+       * @description Файл с расписанием
+       */
+      schedule: string
+    }
     /** Campus */
     Campus: {
       /** Name */
@@ -448,6 +475,13 @@ export interface components {
       /** Workload */
       workload: number
     }
+    /** RoomStatusGet */
+    RoomStatusGet: {
+      /** Id */
+      id: number
+      /** Status */
+      status: string
+    }
     /** SettingsCreate */
     SettingsCreate: {
       /** Max Week */
@@ -513,6 +547,13 @@ export interface components {
       rtu_schedule_parser: string
       /** Rtu Mirea Timetable */
       rtu_mirea_timetable: string
+    }
+    /** WorkloadGet */
+    WorkloadGet: {
+      /** Id */
+      id: number
+      /** Workload */
+      workload: number
     }
   }
   responses: never
@@ -978,7 +1019,37 @@ export interface operations {
       /** @description Статусы аудиторий получены и возвращены в ответе */
       200: {
         content: {
-          "application/json": unknown
+          "application/json": components["schemas"]["RoomStatusGet"][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"]
+        }
+      }
+    }
+  }
+  /**
+   * Получение статусов аудиторий
+   * @description Получить статусы аудиторий (свободна/занята) для указанного времени
+   */
+  get_status_by_id_api_rooms_statuses__id__get: {
+    parameters: {
+      query?: {
+        /** @description Дата и время в ISO формате. Пример: 2021-09-01T00:00:00+03:00 */
+        date_time?: string
+      }
+      path: {
+        /** @description Id аудитории */
+        id: number
+      }
+    }
+    responses: {
+      /** @description Статусы аудиторий получены и возвращены в ответе */
+      200: {
+        content: {
+          "application/json": components["schemas"]["RoomStatusGet"]
         }
       }
       /** @description Validation Error */
@@ -1004,7 +1075,33 @@ export interface operations {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": unknown
+          "application/json": components["schemas"]["WorkloadGet"][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"]
+        }
+      }
+    }
+  }
+  /**
+   * Получение загруженности аудиторий
+   * @description Получить загруженность аудиторий
+   */
+  get_room_workload_api_rooms_workload__id__get: {
+    parameters: {
+      path: {
+        /** @description Id аудитории */
+        id: number
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["WorkloadGet"]
         }
       }
       /** @description Validation Error */
@@ -1386,6 +1483,36 @@ export interface operations {
       }
     }
   }
+  /** Parse File */
+  parse_file_api_parse_file__post: {
+    parameters: {
+      query: {
+        /** @description Ключ доступа */
+        secret_key: string
+        /** @description Инстиут */
+        institute: string
+        /** @description Степень обучения */
+        degree: number
+      }
+    }
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["Body_parse_file_api_parse_file__post"]
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        content: never
+      }
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"]
+        }
+      }
+    }
+  }
   /**
    * Получение системной информации
    * @description Получить системную информацию
@@ -1405,23 +1532,11 @@ export interface operations {
    * @description Получить максимальное кол-во недель в семестре
    */
   get_max_week_count_api_max_week_get: {
-    parameters: {
-      query: {
-        /** @description Ключ доступа */
-        secret_key: string
-      }
-    }
     responses: {
       /** @description Максимальное кол-во недель получено */
       200: {
         content: {
           "application/json": components["schemas"]["SettingsGet"]
-        }
-      }
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"]
         }
       }
     }

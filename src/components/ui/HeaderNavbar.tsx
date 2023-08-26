@@ -6,11 +6,11 @@ import SearchButton from "./SearchButton"
 import { FaRegCalendarAlt } from "react-icons/fa"
 import { BiTimeFive } from "react-icons/bi"
 import campuses from "~/lib/campuses"
-import { useMapStore } from "~/lib/stores/map"
+import { useMapStore } from "~/lib/stores/mapStore"
 import { useState } from "react"
 import DisplayModeSettingsDialog from "./DisplayModeSettingsDialog"
 import { MapDisplayMode } from "../svg-maps/MapDisplayMode"
-import { useDisplayModeStore } from "~/lib/stores/displayMode"
+import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
 import { cn } from "~/lib/utils"
 
 const MapDisplayButton = ({
@@ -45,8 +45,7 @@ const MapDisplayButton = ({
 }
 
 const HeaderNavbar = () => {
-  const mapStore = useMapStore()
-
+  const { campus, setCampus } = useMapStore()
   const displayModeStore = useDisplayModeStore()
 
   const [displayModeSettingsDialogOpen, setDisplayModeSettingsDialogOpen] = useState(false)
@@ -210,9 +209,9 @@ const HeaderNavbar = () => {
 
             <div className="ml-2">
               <DropdownRadio
-                title={mapStore.campus}
+                title={campus.shortName}
                 options={Array.from(campuses, (campus, i) => ({
-                  label: campus.label,
+                  label: campus.shortName,
                   description: campus.description,
                   id: i.toString(),
                 }))}
@@ -220,7 +219,10 @@ const HeaderNavbar = () => {
                   if (!selectedOption) {
                     return
                   }
-                  mapStore.setCampus(selectedOption.label)
+                  const newCampus = campuses[parseInt(selectedOption.id)]
+                  if (newCampus && newCampus !== campus) {
+                    setCampus(newCampus)
+                  }
                 }}
                 defaultSelectedOptionId="0"
               />

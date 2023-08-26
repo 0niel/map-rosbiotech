@@ -3,10 +3,10 @@ import { SessionProvider } from "next-auth/react"
 import { type AppType } from "next/app"
 import { api } from "~/utils/api"
 import "~/styles/globals.css"
-import { QueryClient, QueryClientProvider } from "react-query"
+import { QueryClientProvider } from "react-query"
 import Head from "next/head"
-
-const queryClient = new QueryClient()
+import queryClient from "~/lib/queryClient"
+import { Toaster } from "react-hot-toast"
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
@@ -52,6 +52,7 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
       <main>
         <QueryClientProvider client={queryClient}>
           <SessionProvider session={session}>
+            <Toaster position="bottom-center" />
             <Component {...pageProps} />
           </SessionProvider>
         </QueryClientProvider>

@@ -8,6 +8,7 @@ import Floor2 from "./2.svg?url"
 import Floor3 from "./3.svg?url"
 import Floor4 from "./4.svg?url"
 import Floor5 from "./5.svg?url"
+import { useMapStore } from "~/lib/stores/mapStore"
 
 const maps = [
   { floor: -1, svgUrl: FloorMinus1.src },
@@ -18,7 +19,8 @@ const maps = [
   { floor: 5, svgUrl: Floor5.src },
 ]
 
-const MapWrapper = ({ floor }: { floor: number }) => {
+const MapWrapper = () => {
+  const { floor } = useMapStore()
   const currentMap = maps.find((map) => map.floor === floor) as MapProps
   return <Map {...currentMap} />
 }

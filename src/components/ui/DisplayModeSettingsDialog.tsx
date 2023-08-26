@@ -3,7 +3,7 @@ import { X } from "lucide-react"
 import { Fragment } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import DateAndTimePicker from "./DateAndTimePicker"
-import { useDisplayModeStore } from "~/lib/stores/displayMode"
+import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
 
 interface DisplayModeSettingsDialogProps {
   isOpen: boolean
@@ -11,11 +11,12 @@ interface DisplayModeSettingsDialogProps {
 }
 
 const DisplayModeSettingsDialog: React.FC<DisplayModeSettingsDialogProps> = ({ isOpen, onClose }) => {
-  const displayMode = useDisplayModeStore()
+  const { timeToDisplay, setTimeToDisplay } = useDisplayModeStore()
 
   const mainButtonRef = React.useRef(null)
 
   const [showDateTimePicker, setShowDateTimePicker] = React.useState(false)
+  const [selectedDateTime, setSelectedDateTime] = React.useState<Date>(timeToDisplay)
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -65,9 +66,10 @@ const DisplayModeSettingsDialog: React.FC<DisplayModeSettingsDialogProps> = ({ i
                   <div className="flex space-x-4">
                     <DateAndTimePicker
                       dateTimePickerShow={showDateTimePicker}
-                      selectedDateTime={displayMode.timeToDisplay}
+                      selectedDateTime={selectedDateTime}
                       setSelectedDateTime={(newDate) => {
-                        displayMode.setTimeToDisplay(newDate)
+                        console.log(newDate)
+                        setSelectedDateTime(newDate)
                       }}
                       setDateTimePickerShow={setShowDateTimePicker}
                     />
@@ -77,11 +79,11 @@ const DisplayModeSettingsDialog: React.FC<DisplayModeSettingsDialogProps> = ({ i
                     type="submit"
                     className="w-full rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white  focus:outline-none focus:ring-4 bg-green-500 hover:bg-green-600 focus:ring-green-300"
                     onClick={() => {
-                      displayMode.setTimeToDisplay(new Date())
+                      setTimeToDisplay(selectedDateTime)
                       onClose()
                     }}
                   >
-                    Текущее время
+                    Применить
                   </button>
                 </div>
               </Dialog.Panel>

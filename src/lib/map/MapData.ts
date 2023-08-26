@@ -225,6 +225,16 @@ export class MapData {
     return this.lazyUnpackedGraph
   }
 
+  getFloorByPoint = (point: Vertex) => {
+    for (const floor in this.floors) {
+      if (this.floors[floor]?.vertices.includes(point)) {
+        return parseInt(floor)
+      }
+    }
+
+    return 0
+  }
+
   // Возвращает все объекты, которые есть в графе и в массиве объектов, то есть объекты, которые есть на карте
   getAllAvailableObjectsInMap(): MapObject[] {
     const unpackedGraph = this.unpackedGraph

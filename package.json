@@ -35,6 +35,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.4",
+    "react-hot-toast": "^2.4.1",
     "react-query": "^3.39.3",
     "react-zoom-pan-pinch": "^3.1.0",
     "superjson": "1.13.1",

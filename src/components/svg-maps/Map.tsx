@@ -1,22 +1,26 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import Spinner from "~/components/ui/Spinner"
 import { Dialog } from "@headlessui/react"
 import { fetchSvg } from "./fetchSvg"
 import { type MapProps } from "./MapProps"
-import { useDisplayModeStore } from "~/lib/stores/displayMode"
+import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
 import ScheduleAPI from "~/lib/schedule/api"
-import { useMapStore } from "~/lib/stores/map"
+import { useMapStore } from "~/lib/stores/mapStore"
 import { type components } from "~/lib/schedule/schema"
 import { MapDisplayMode } from "./MapDisplayMode"
 import { fillRoom, getAllMapObjectsElements, getMapObjectById } from "~/lib/map/domUtils"
 import { type MapData } from "~/lib/map/MapData"
 import { MapObjectType } from "~/lib/map/MapObject"
+import toast from "react-hot-toast"
+import { useRoomsQuery } from "~/lib/hooks/useRoomsQuery"
+import { useRoomsWorkloadQuery } from "~/lib/hooks/useRoomsWorkloadQuery"
+import useScheduleDataStore from "~/lib/stores/scheduleDataStore"
+import { useRoomsStatusesQuery } from "~/lib/hooks/useRoomsStatusesQuery"
 
 const unactiveGray = "hsl(0, 0%, 80%)"
 
 const createHeatMap = (
-  svg: SVGElement,
   workload: { id: number; workload: number }[],
   rooms: components["schemas"]["Room"][],
   mapData: MapData,
@@ -49,22 +53,49 @@ const createHeatMap = (
 
     fillRoom(mapObject, color)
   }
-
-  return svg
 }
 
-const scheduleAPI = new ScheduleAPI()
+const createStatusesMap = (
+  statuses: components["schemas"]["RoomStatusGet"][],
+  rooms: components["schemas"]["Room"][],
+  mapData: MapData,
+) => {
+  for (const mapObjEl of getAllMapObjectsElements()) {
+    fillRoom(mapObjEl, unactiveGray)
+  }
 
-const Map = ({ floor, onLoaded, svgUrl, mapData }: MapProps) => {
+  for (const room of rooms) {
+    const roomMapObject = mapData.objects.find((object) => object.name === room.name)
+    if (!roomMapObject) {
+      continue
+    }
+
+    const mapObject = getMapObjectById(roomMapObject.id)
+    if (!mapObject) {
+      continue
+    }
+
+    const roomStatus = statuses.find((status) => status.id === room.id)?.status
+    if (!roomStatus) {
+      continue
+    }
+
+    const color = roomStatus === "free" ? "#0E9F6E" : "#F05252"
+
+    fillRoom(mapObject, color)
+  }
+}
+
+const Map = ({ onLoaded, svgUrl }: MapProps) => {
   const displayModeStore = useDisplayModeStore()
-  const mapStore = useMapStore()
+  const { mapData } = useMapStore()
 
   const { isLoading, data, refetch, status } = useQuery(["map", svgUrl, displayModeStore.mode], {
     queryFn: async () => {
       return await fetchSvg(svgUrl)
     },
     onError: (error) => {
-      console.error(error)
+      toast.error("Ошибка при загрузке карты")
     },
   })
 
@@ -79,67 +110,66 @@ const Map = ({ floor, onLoaded, svgUrl, mapData }: MapProps) => {
     })
   }, [displayModeStore.mode])
 
-  const { isLoading: roomsIsLoading, data: roomsData } = useQuery<components["schemas"]["Room"][], Error>(
-    ["rooms", mapStore.campus],
-    {
-      queryFn: async () => {
-        const { data, error } = await scheduleAPI.getCampuses()
-        if (error || !data) throw error
+  const { rooms } = useScheduleDataStore()
 
-        const currentCampusId = data.find((campus) => campus.short_name === mapStore.campus)?.id
-        if (!currentCampusId) throw new Error("Кампус не найден")
-
-        const { data: rooms, error: roomsError } = await scheduleAPI.getRooms(currentCampusId)
-        if (roomsError || !rooms) throw roomsError
-
-        return rooms
-      },
-      onError: (error) => {
-        console.error(error)
-      },
-    },
+  const [campusId, setCampusId] = useState<number | undefined>(
+    rooms.find((room) => room.campus)?.campus?.id ?? undefined,
   )
 
-  const {
-    isLoading: roomsWorkloadIsLoading,
-    data: roomsWorkloadData,
-    refetch: refetchWorkload,
-  } = useQuery(["roomsWorkload", roomsData], {
-    queryFn: async () => {
-      if (!roomsData) throw new Error("Нет данных о кабинетах")
-      const room = roomsData[0] as components["schemas"]["Room"]
-      const { data, error } = await scheduleAPI.getRoomsWorkload(room.campus?.id || 0)
-      if (error || !data) throw error
+  useEffect(() => {
+    if (rooms.length > 0) {
+      setCampusId(rooms.find((room) => room.campus)?.campus?.id ?? undefined)
+    }
+  }, [rooms])
 
-      return data as { id: number; workload: number }[]
-    },
-    onError: (error) => {
-      console.error(error)
-    },
-    enabled: roomsData !== undefined && roomsData.length > 0 && displayModeStore.mode === MapDisplayMode.HEATMAP,
+  const { isLoading: roomsWorkloadIsLoading, data: roomsWorkloadData } = useRoomsWorkloadQuery(campusId ?? 0, {
+    enabled: campusId !== undefined && rooms.length > 0 && displayModeStore.mode === MapDisplayMode.HEATMAP,
     refetchOnWindowFocus: false,
+    onError: (error) => {
+      toast.error("Ошибка при загрузке нагрузки кабинетов")
+    },
+  })
+
+  const {
+    isLoading: roomsStatusesIsLoading,
+    data: roomsStatusesData,
+    refetch: refetchRoomsStatuses,
+  } = useRoomsStatusesQuery(campusId ?? 0, displayModeStore.timeToDisplay, {
+    enabled: campusId !== undefined && rooms.length > 0 && displayModeStore.mode === MapDisplayMode.ROOMS_STATUSES,
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      toast.error("Ошибка при загрузке статусов кабинетов")
+    },
   })
 
   useEffect(() => {
-    if (data && roomsWorkloadData && displayModeStore.mode === MapDisplayMode.HEATMAP && mapData && roomsData) {
-      const svgElement = document.querySelector("#map svg") as SVGElement
-      createHeatMap(svgElement, roomsWorkloadData, roomsData, mapData)
+    const svgElement = document.querySelector("#map svg") as SVGElement
+
+    if (!data || !mapData || !rooms || !svgElement) return
+
+    console.log(roomsStatusesData, displayModeStore.mode)
+    if (roomsWorkloadData && displayModeStore.mode === MapDisplayMode.HEATMAP) {
+      createHeatMap(roomsWorkloadData, rooms, mapData)
+    } else if (roomsStatusesData && displayModeStore.mode === MapDisplayMode.ROOMS_STATUSES) {
+      createStatusesMap(roomsStatusesData, rooms, mapData)
     }
-  }, [data, displayModeStore.mode, mapData, roomsData, roomsWorkloadData])
+  }, [data, displayModeStore.mode, mapData, rooms, roomsStatusesData, roomsWorkloadData])
 
   useEffect(() => {
-    console.log(status)
-  }, [status, data])
+    if (displayModeStore.mode === MapDisplayMode.ROOMS_STATUSES) {
+      void refetchRoomsStatuses()
+    }
+  }, [displayModeStore.mode, displayModeStore.timeToDisplay, refetchRoomsStatuses])
 
   return (
     <>
-      <Dialog open={isLoading || roomsIsLoading || roomsWorkloadIsLoading} onClose={() => {}}>
+      <Dialog open={isLoading || roomsWorkloadIsLoading || roomsStatusesIsLoading} onClose={() => {}}>
         <div className="absolute left-0 top-0 flex items-center justify-center w-full h-full bg-white opacity-75">
           <Spinner />
         </div>
       </Dialog>
 
-      {data && <div dangerouslySetInnerHTML={{ __html: data }} id="map" />}
+      {data && mapData && <div dangerouslySetInnerHTML={{ __html: data }} id="map" />}
     </>
   )
 }

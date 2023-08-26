@@ -12,13 +12,13 @@ import Spinner from "../Spinner"
 import ScheduleCalendar from "./ScheduleCalendar"
 import Image from "next/image"
 import { Button } from "flowbite-react"
-import { MapObject, MapObjectType } from "~/lib/map/MapObject"
+import { type MapObject, MapObjectType } from "~/lib/map/MapObject"
+import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
 
 interface RoomDrawerProps {
   isOpen: boolean
   onClose: () => void
   scheduleAPI: ScheduleAPI
-  dateTime: Date
   room: components["schemas"]["Room"] | null
   roomMapObject: MapObject
 
@@ -96,21 +96,22 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
   isOpen,
   onClose,
   scheduleAPI,
-  dateTime,
   room,
   roomMapObject,
   onClickNavigateFromHere,
   onClickNavigateToHere,
   findNearestObject,
 }) => {
-  const { isLoading, error, data } = useQuery(["room", room, dateTime], {
+  const { timeToDisplay } = useDisplayModeStore()
+
+  const { isLoading, error, data } = useQuery(["room", room, timeToDisplay], {
     queryFn: async () => {
       if (!room) {
         return
       }
       const roomLessons = await scheduleAPI.getRoomLessons(room.id)
       const roomInfo = await scheduleAPI.getRoomInfo(room.id)
-      const roomStatus = await scheduleAPI.getRoomsStatuses(dateTime, room.campus?.id || 0)
+      const roomStatus = await scheduleAPI.getRoomsStatuses(timeToDisplay, room.campus?.id || 0)
 
       if (roomLessons.error || roomInfo.error || roomStatus.error) {
         throw new Error("Ошибка загрузки данных")
@@ -197,13 +198,13 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   workload={data?.info?.workload || 0}
                   status={data?.status === "free" ? "Свободна" : "Занята"}
                   purpose={data?.info?.purpose || ""}
-                  eventName={getCurrentEvent(data?.lessons || [], dateTime)?.discipline || ""}
-                  teacher={getCurrentEvent(data?.lessons || [], dateTime)?.teachers || ""}
+                  eventName={getCurrentEvent(data?.lessons || [], timeToDisplay)?.discipline || ""}
+                  teacher={getCurrentEvent(data?.lessons || [], timeToDisplay)?.teachers || ""}
                 />
               )}
             </Tabs.Tab>
             <Tabs.Tab name="Расписание" icon={<Calendar />}>
-              <ScheduleCalendar date={dateTime} lessons={data?.lessons || []} />
+              <ScheduleCalendar date={timeToDisplay} lessons={data?.lessons || []} />
             </Tabs.Tab>
           </Tabs>
         </div>

@@ -4,6 +4,7 @@ import * as d3 from "d3"
 import { type MapData } from "~/lib/map/MapData"
 import { type Graph, type Vertex } from "~/lib/map/Graph"
 import { MapObjectType, type MapObject } from "~/lib/map/MapObject"
+import { useRouteStore } from "~/lib/stores/routeStore"
 
 interface MapRouteProps {
   mapData: MapData
@@ -20,6 +21,8 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
 
   const [mapData, setMapData] = useState<MapData>(props.mapData)
 
+  const rotueStore = useRouteStore()
+
   const isPointInThisFloor = (point: Vertex, floor: number) => {
     const floorGraph = mapData.floors[floor.toString()]
     if (!floorGraph) return false
@@ -27,20 +30,11 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
     return floorGraph.vertices.includes(point)
   }
 
-  const getFloorByPoint = (point: Vertex) => {
-    for (const floor in mapData.floors) {
-      if (mapData.floors[floor]?.vertices.includes(point)) {
-        return parseInt(floor)
-      }
-    }
-
-    return 0
-  }
-
   useImperativeHandle(ref, () => ({
     renderRoute: (startMapObject, endMapObject, currentFloor) => {
       //  Пути, разделенные на сегменты (по этажам, разделенным лестницами)
       const path = mapData.getShortestPathBySegments(startMapObject, endMapObject)
+      rotueStore.setPath(path)
 
       if (!path || path.length === 0) {
         return
@@ -60,8 +54,8 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
       const startPoint = allPoints[0] || ({ x: 0, y: 0 } as Vertex)
       const endPoint = allPoints[allPoints.length - 1] || ({ x: 0, y: 0 } as Vertex)
 
-      const startFloor = getFloorByPoint(startPoint)
-      const endFloor = getFloorByPoint(endPoint)
+      const startFloor = mapData.getFloorByPoint(startPoint)
+      const endFloor = mapData.getFloorByPoint(endPoint)
 
       for (const pathSegment of path) {
         if (!pathSegment || !pathSegment[0] || !isPointInThisFloor(pathSegment[0], currentFloor)) {
@@ -145,7 +139,7 @@ const MapRoute = forwardRef<MapRouteRef, MapRouteProps>((props, ref) => {
           const currentSegmentLastPoint = pathSegment[pathSegment.length - 1] || ({ x: 0, y: 0 } as Vertex)
           const pointAfterCurrentSegment = allPoints[allPoints.indexOf(currentSegmentLastPoint) + 1]
           if (pointAfterCurrentSegment) {
-            const pointFloor = getFloorByPoint(pointAfterCurrentSegment)
+            const pointFloor = mapData.getFloorByPoint(pointAfterCurrentSegment)
             if (pointFloor < currentFloor) {
               drawCirclePoint(lastCurrentFloorPoint, "↓")
             } else if (pointFloor > currentFloor) {
