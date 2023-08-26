@@ -351,7 +351,7 @@ const MapContainer = () => {
                 }}
               />
 
-              <div className="z-30 sm:fixed sm:right-5 sm:bottom-5 fixed bottom-0 right-0 transform -translate-x-1/2 -translate-y-1/2 sm:translate-x-0 sm:translate-y-0">
+              <div className="z-30 sm:fixed sm:right-5 sm:bottom-5 fixed bottom-0 right-2 transform -translate-y-1/2 sm:translate-x-0 sm:translate-y-0">
                 <MapControls
                   onZoomIn={() => transformComponentRef.current?.zoomIn()}
                   onZoomOut={() => transformComponentRef.current?.zoomOut()}
