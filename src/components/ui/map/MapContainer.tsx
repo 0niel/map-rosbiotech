@@ -1,17 +1,10 @@
 import { useRouter } from "next/router"
-import {
-  type ReactZoomPanPinchRef,
-  TransformComponent,
-  TransformWrapper,
-  type ReactZoomPanPinchState,
-} from "react-zoom-pan-pinch"
+import { type ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import mapDataJson from "public/routes.json"
 import MapRoute, { type MapRouteRef } from "./MapRoute"
 import ScheduleAPI from "~/lib/schedule/api"
-import { useQuery } from "react-query"
 import { Spinner } from "flowbite-react"
-import { RiRouteLine } from "react-icons/ri"
 import { type RoomOnMap } from "~/lib/map/RoomOnMap"
 import {
   fillRoom,
@@ -34,7 +27,7 @@ import { useRoomsQuery } from "~/lib/hooks/useRoomsQuery"
 import toast from "react-hot-toast"
 import useScheduleDataStore from "~/lib/stores/scheduleDataStore"
 import MapNavigationButton from "./MapNavigationButton"
-import SearchDialog from "../SearchDialog"
+import campuses from "~/lib/campuses"
 
 const scheduleAPI = new ScheduleAPI()
 
@@ -44,7 +37,8 @@ const loadJsonToGraph = (routesJson: string) => {
 
 const MapContainer = () => {
   const router = useRouter()
-  const { campus, setFloor, floor, setMapData, mapData } = useMapStore()
+  const { campus, setFloor, floor, setMapData, mapData, selectedFromSearchRoom, setSelectedFromSearchRoom, setCampus } =
+    useMapStore()
   const { rooms, setRooms } = useScheduleDataStore()
   const { isLoading, error, data } = useRoomsQuery(campus.shortName, {
     onError: (e) => toast.error("Ошибка при загрузке информации о кабинетах из расписания"),
@@ -86,7 +80,7 @@ const MapContainer = () => {
   })
 
   const zoomToMapObject = useCallback(
-    (mapObject: MapObject) => {
+    (mapObject: MapObject, select: boolean = false) => {
       const id = mapObject.id
 
       if (!mapData) return
@@ -94,15 +88,17 @@ const MapContainer = () => {
       const mapObjectFloor = mapData.getObjectFloorByMapObjectId(id)
       if (mapObjectFloor !== floor && mapObjectFloor !== undefined) {
         setFloor(mapObjectFloor)
-        void getMapObjectElementByIdAsync(id).then((element) => {
-          transformComponentRef.current?.zoomToElement(element as HTMLElement)
-        })
-      } else {
-        const element = getMapObjectElementById(id)
-        if (element) {
-          transformComponentRef.current?.zoomToElement(element as HTMLElement)
-        }
       }
+      void getMapObjectElementByIdAsync(id)
+        .then((element) => {
+          transformComponentRef.current?.zoomToElement(element as HTMLElement)
+          if (select) {
+            selectRoomEl(element as HTMLElement)
+          }
+        })
+        .catch((e) => {
+          toast.error("Не удалось найти объект на карте")
+        })
     },
     [floor, mapData, setFloor],
   )
@@ -120,20 +116,20 @@ const MapContainer = () => {
       const base = room.cloneNode(true)
       const baseState = base as Element
 
-      fillRoom(room, "#2563EB")
-
       const mapObject = mapData?.objects.find((object) => object.id === getMapObjectIdByElement(room))
       if (!mapObject) {
+        toast.error("Нет данных для этой карты")
         return
       }
 
-      if (!data) {
-        return
-      }
+      fillRoom(room, "#2563EB")
 
       transformComponentRef.current?.zoomToElement(room as HTMLElement)
 
-      const remote = data.find((room) => room.name === mapObject.name)
+      let remote = null
+      if (data) {
+        remote = data.find((room) => room.name === mapObject.name)
+      }
 
       setSelectedRoomOnMap({
         element: room,
@@ -167,10 +163,8 @@ const MapContainer = () => {
         toast.error("Не найден объект на карте по вашей ссылке")
         return
       }
-      zoomToMapObject(mapObject)
-      void getMapObjectElementByIdAsync(mapObject.id).then((element) => {
-        selectRoomEl(element as HTMLElement)
-      })
+      console.log("QUERY HERE")
+      zoomToMapObject(mapObject, true)
       return
     }
 
@@ -203,22 +197,23 @@ const MapContainer = () => {
         return
       }
 
-      if (waitForSelectRoomRef.current.start || waitForSelectRoomRef.current.end) {
-        const mapObjectId = getMapObjectIdByElement(room)
-        if (!mapObjectId) return
-        const mapObj = mapData?.getMapObjectById(mapObjectId)
-        if (!mapObj) return
+      // TODO:
+      // if (waitForSelectRoomRef.current.start || waitForSelectRoomRef.current.end) {
+      //   const mapObjectId = getMapObjectIdByElement(room)
+      //   if (!mapObjectId) return
+      //   const mapObj = mapData?.getMapObjectById(mapObjectId)
+      //   if (!mapObj) return
 
-        if (waitForSelectRoomRef.current.start) {
-          setStartMapObject(mapObj)
-        } else if (waitForSelectRoomRef.current.end) {
-          setEndMapObject(mapObj)
-        }
+      //   if (waitForSelectRoomRef.current.start) {
+      //     setStartMapObject(mapObj)
+      //   } else if (waitForSelectRoomRef.current.end) {
+      //     setEndMapObject(mapObj)
+      //   }
 
-        waitForSelectRoomRef.current = { start: false, end: false }
+      //   waitForSelectRoomRef.current = { start: false, end: false }
 
-        return
-      }
+      //   return
+      // }
 
       selectRoomEl(room)
     },
@@ -244,6 +239,31 @@ const MapContainer = () => {
       undefined,
     )
   }, [campus])
+
+  useEffect(() => {
+    if (!selectedFromSearchRoom) {
+      return
+    }
+
+    if (selectedFromSearchRoom.mapObject) {
+      zoomToMapObject(selectedFromSearchRoom.mapObject, true)
+      return
+    }
+
+    if (selectedFromSearchRoom.campus !== campus.shortName) {
+      setCampus(campuses.find((campus) => campus.shortName === selectedFromSearchRoom.campus) ?? campus)
+    }
+
+    const mapObject = mapData?.getObjectByName(selectedFromSearchRoom.name)
+    if (!mapObject) {
+      toast.error("Не удалось найти аудиторию на карте")
+      return
+    }
+
+    zoomToMapObject(mapObject, true)
+
+    setSelectedFromSearchRoom(null)
+  }, [selectedFromSearchRoom])
 
   const handleCloseDrawer = useCallback(() => {
     setDrawerOpened(false)
@@ -344,7 +364,7 @@ const MapContainer = () => {
               if (!mapObject) return
 
               // Маршрут
-              mapRouteRef.current?.renderRoute(selectedRoomOnMap.mapObject, mapObject, floor)
+              setRouteStartAndEnd({ start: selectedRoomOnMap.mapObject, end: mapObject, render: true })
               setDrawerOpened(false)
             }}
           />
@@ -356,7 +376,7 @@ const MapContainer = () => {
           </div>
         )}
 
-        {!isLoading && data && mapData && (
+        {!isLoading && mapData && (
           <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
             <NavigationDialog
               isOpen={routesModalShow}
@@ -466,7 +486,7 @@ const MapContainer = () => {
                   className="pointer-events-none absolute z-20 h-full w-full"
                   mapData={mapData}
                 />
-                {React.createElement(campus.map ?? "div")}
+                <campus.map />
               </TransformComponent>
             </TransformWrapper>
           </div>

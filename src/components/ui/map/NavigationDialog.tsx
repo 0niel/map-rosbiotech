@@ -68,12 +68,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog
-        open={isOpen}
-        onClose={onClose}
-        className="fixed inset-0 z-50 overflow-y-auto"
-        initialFocus={cancelButtonRef}
-      >
+      <Dialog open={isOpen} onClose={onClose} className="fixed z-50" initialFocus={cancelButtonRef}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -86,112 +81,110 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
           <div className="fixed inset-0 z-40 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                <button
-                  type="button"
-                  className="absolute right-2.5 top-3 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
-                  onClick={onClose}
-                >
-                  <X size={20} />
-                  <span className="sr-only">Закрыть окно</span>
-                </button>
-                <div className="space-y-6 py-6">
-                  <div className="w-full">
-                    <label className="mb-2 block text-sm font-medium text-gray-900 ml-10">Начальная точка</label>
-                    <div className="flex flex-row items-center">
-                      <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-9 h-8 flex items-center justify-center mr-2">
-                        А
-                      </div>
-                      <div className="w-full">
-                        <MapObjectsSearchInput
-                          onSubmit={(searchObject) => {
-                            setStart(searchObject)
-                            onSelect(searchObject.mapObject, null)
-                          }}
-                          showSubmitButton={false}
-                          onChange={(name) => {
-                            if (mapData) {
-                              setStartSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
-                            }
-                          }}
-                          searchResults={startSearchResults}
-                          selected={start}
-                          inputRef={startInputRef}
-                          initialSearch={startMapObject?.name}
-                        />
-                      </div>
+        <div className="fixed inset-0 z-50 overflow-y-auto p-2 sm:p-6 md:p-20">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          >
+            <Dialog.Panel className="relative bg-white rounded-lg shadow-xl overflow-hidden p-2 sm:p-4 md:p-6 sm:max-w-3xl sm:mx-auto">
+              <button
+                type="button"
+                className="absolute right-2.5 top-3 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+                onClick={onClose}
+              >
+                <X size={20} />
+                <span className="sr-only">Закрыть окно</span>
+              </button>
+              <div className="space-y-6 py-6">
+                <div className="w-full">
+                  <label className="mb-2 block text-sm font-medium text-gray-900 ml-10">Начальная точка</label>
+                  <div className="flex flex-row items-center">
+                    <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2 flex-shrink-0">
+                      А
                     </div>
-                    {!startInputRef.current?.value && !startMapObject && (
-                      <p
-                        className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
-                        onClick={() => {
-                          setWaitForSelectStart()
+                    <div className="w-full">
+                      <MapObjectsSearchInput
+                        onSubmit={(searchObject) => {
+                          setStart(searchObject)
+                          onSelect(searchObject.mapObject, null)
                         }}
-                      >
-                        выбрать на карте
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="w-full">
-                    <label className="mb-2 block text-sm font-medium text-gray-900 ml-10">Конечная точка</label>
-                    <div className="flex flex-row items-center">
-                      <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                        Б
-                      </div>
-                      <div className="w-full">
-                        <MapObjectsSearchInput
-                          onSubmit={(searchObject) => {
-                            setEnd(searchObject)
-                            onSelect(null, searchObject.mapObject)
-                          }}
-                          selected={end}
-                          showSubmitButton={false}
-                          onChange={(name) => {
-                            if (mapData) {
-                              setEndSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
-                            }
-                          }}
-                          searchResults={endSearchResults}
-                          inputRef={endInputRef}
-                          initialSearch={endMapObject?.name}
-                        />
-                      </div>
+                        showSubmitButton={false}
+                        onChange={(name) => {
+                          if (mapData) {
+                            setStartSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
+                          }
+                        }}
+                        searchResults={startSearchResults}
+                        selected={start}
+                        inputRef={startInputRef}
+                        initialSearch={startMapObject?.name}
+                      />
                     </div>
-                    {!endInputRef.current?.value && !endMapObject && (
-                      <p
-                        className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
-                        onClick={() => {
-                          setWaitForSelectEnd()
-                        }}
-                      >
-                        выбрать на карте
-                      </p>
-                    )}
                   </div>
-
-                  <button
-                    type="submit"
-                    className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                    onClick={handleSubmit}
-                  >
-                    Построить
-                  </button>
+                  {!startInputRef.current?.value && !startMapObject && (
+                    <p
+                      className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
+                      onClick={() => {
+                        setWaitForSelectStart()
+                      }}
+                    >
+                      выбрать на карте
+                    </p>
+                  )}
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
+
+                <div className="w-full">
+                  <label className="mb-2 block text-sm font-medium text-gray-900 ml-10">Конечная точка</label>
+                  <div className="flex flex-row items-center">
+                    <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2 flex-shrink-0">
+                      Б
+                    </div>
+                    <div className="w-full">
+                      <MapObjectsSearchInput
+                        onSubmit={(searchObject) => {
+                          setEnd(searchObject)
+                          onSelect(null, searchObject.mapObject)
+                        }}
+                        selected={end}
+                        showSubmitButton={false}
+                        onChange={(name) => {
+                          if (mapData) {
+                            setEndSearchResults(mapData.searchObjectsByName(name, [MapObjectType.ROOM]))
+                          }
+                        }}
+                        searchResults={endSearchResults}
+                        inputRef={endInputRef}
+                        initialSearch={endMapObject?.name}
+                      />
+                    </div>
+                  </div>
+                  {!endInputRef.current?.value && !endMapObject && (
+                    <p
+                      className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
+                      onClick={() => {
+                        setWaitForSelectEnd()
+                      }}
+                    >
+                      выбрать на карте
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  onClick={handleSubmit}
+                >
+                  Построить
+                </button>
+              </div>
+            </Dialog.Panel>
+          </Transition.Child>
         </div>
       </Dialog>
     </Transition.Root>

@@ -65,7 +65,7 @@ const HeaderNavbar = () => {
   return (
     <>
       <SearchDialog open={searchOpen} setOpen={setSearchOpen} />
-      <header className="sticky top-0 z-50">
+      <header className="sticky top-0 z-10">
         <DisplayModeSettingsDialog
           isOpen={displayModeSettingsDialogOpen}
           onClose={function (): void {
@@ -183,7 +183,7 @@ const HeaderNavbar = () => {
                           )}
                         />
                       }
-                      text="тепловая карта"
+                      text="нагрузка аудиторий"
                     />
                     <MapDisplayButton
                       mode={MapDisplayMode.ROOMS_STATUSES}

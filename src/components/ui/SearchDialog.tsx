@@ -10,9 +10,13 @@ import { MapObjectType } from "~/lib/map/MapObject"
 import { type SearchableObject } from "~/lib/map/MapData"
 import { PiMapPin } from "react-icons/pi"
 import Image from "next/image"
-import { StrapiResponse, searchEmployees } from "~/lib/employees/api"
+import { MdPersonSearch } from "react-icons/md"
+import { type StrapiResponse, searchEmployees } from "~/lib/employees/api"
+import { FaRegFrownOpen } from "react-icons/fa"
+import { X } from "lucide-react"
+import { toast } from "react-hot-toast"
 
-interface CommandPaletteProps {
+interface SearchDialogProps {
   open: boolean
   setOpen: (state: boolean) => void
 }
@@ -28,10 +32,10 @@ function SearchHighlighter(props: { textToHighlight: string; query: string; isAc
   )
 }
 
-export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
+export default function SearchDialog({ open, setOpen }: SearchDialogProps) {
   const [query, setQuery] = useState("")
 
-  const { mapData } = useMapStore()
+  const { mapData, setSelectedFromSearchRoom } = useMapStore()
 
   const { data: employeeData, isLoading: employeeIsLoading } = useQuery<StrapiResponse>("searchEmployees", {
     queryFn: async () => {
@@ -54,6 +58,7 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
   })
 
   const [results, setResults] = useState<Record<string, SearchableObject[]>[]>([])
+
   useEffect(() => {
     if (query.length < 2) return
 
@@ -74,26 +79,31 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
     }
   }, [query])
 
-  const closePalette = () => setOpen(false)
+  const closeDialog = () => setOpen(false)
 
   const onSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)
 
   const onEmployeeClick = (employee: StrapiResponse["data"][0]) => {
     const employeeRooms = employee?.attributes?.positions
-      .map((position) => position?.contacts.map((contact) => contact.room?.data.attributes.name ?? "Неизвестно"))
+      .map((position) => position?.contacts.map((contact) => contact?.room?.data.attributes))
       .flat()
 
-    const set = new Set(employeeRooms)
-
-    if (set.size == 1) {
-      console.log(employee)
+    if (employeeRooms.length == 1) {
+      if (employeeRooms[0]?.name && employeeRooms[0]?.campus) {
+        const room = { name: employeeRooms[0]?.name, campus: employeeRooms[0]?.campus, mapObject: null }
+        setSelectedFromSearchRoom(room)
+        closeDialog()
+        return
+      }
     }
+
+    toast.error("Не удалось определить аудиторию сотрудника")
   }
 
   return (
     <>
       <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery("")} appear>
-        <Dialog as="div" className="relative z-30" onClose={() => setOpen(false)}>
+        <Dialog as="div" className="relative z-30" open={open} onClose={() => setOpen(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -106,7 +116,7 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
             <div className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
           </Transition.Child>
 
-          <div className="fixed inset-0 z-30 overflow-y-auto p-2 sm:p-6 md:p-20 top-40 sm:top-0">
+          <div className="fixed inset-0 z-30 overflow-y-auto p-2 sm:p-6 md:p-20">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -116,7 +126,7 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="mx-auto max-w-2xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
+              <Dialog.Panel className="mx-auto max-w-2xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all sm:h-auto sm:w-full sm:max-w-2xl h-full">
                 <Combobox>
                   {({ open, activeOption }) => (
                     <>
@@ -132,10 +142,19 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
                           autoFocus
                           autoComplete="off"
                         />
+                        <button
+                          type="button"
+                          className="sm:hidden absolute right-3 top-3.5 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          onClick={() => {
+                            closeDialog()
+                          }}
+                        >
+                          <X className="h-5 w-5" aria-hidden="true" />
+                        </button>
                       </div>
                       {query === "" && employeeData === undefined && (
                         <div className="border-t border-gray-100 px-6 py-14 text-center text-sm sm:px-14">
-                          {/* <GlobeAmericasIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" /> */}
+                          <MdPersonSearch className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                           <p className="mt-4 font-semibold text-gray-900">Поиск сотрудников или аудиторий</p>
                           <p className="mt-2 text-gray-500">Вы можете быстро перейти к нужному аудитории</p>
                         </div>
@@ -143,7 +162,7 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
                       {employeeData?.data && employeeData?.data.length > 0 && (
                         <Combobox.Options
                           static
-                          className="max-h-80 scroll-pb-2 scroll-pt-11 space-y-2 overflow-y-auto pb-2"
+                          className="sm:max-h-80 scroll-pb-2 scroll-pt-11 space-y-2 overflow-y-auto pb-2 max-h-full"
                         >
                           <div className="px-4 py-2 text-sm font-medium text-gray-900">Сотрудники</div>
                           {employeeData?.data.map((employee) => (
@@ -162,17 +181,17 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
                               }
                             >
                               {({ active }) => (
-                                <div className="flex items-center space-x-3">
+                                <div className="flex items-center space-x-3 w-full">
                                   {employee.attributes.photo && (
                                     <Image
-                                      className="rounded-full mr-2 h-12 w-12 object-cover"
+                                      className="rounded-full object-cover mr-2 h-12 w-12 flex-shrink-0"
                                       src={employee.attributes.photo.data.attributes.url}
-                                      width={42}
-                                      height={42}
+                                      width={48}
+                                      height={48}
                                       alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
                                     />
                                   )}
-                                  <div className="flex flex-col">
+                                  <div className="flex flex-col flex-grow">
                                     <div className="text-md font-medium text-gray-900 flex flex-row">
                                       <SearchHighlighter
                                         textToHighlight={`${employee.attributes.lastName} ${
@@ -225,7 +244,12 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
                                     value={obj.mapObject.name}
                                     className="cursor-pointer p-4 hover:bg-gray-200"
                                     onClick={() => {
-                                      closePalette()
+                                      setSelectedFromSearchRoom({
+                                        name: obj.mapObject.name,
+                                        campus: "",
+                                        mapObject: obj.mapObject,
+                                      })
+                                      closeDialog()
                                     }}
                                   >
                                     <p className="text-gray-800">{obj.mapObject.name}</p>
@@ -239,7 +263,7 @@ export default function CommandPalette({ open, setOpen }: CommandPaletteProps) {
 
                       {query !== "" && employeeData && employeeData.data.length === 0 && results.length === 0 && (
                         <div className="border-t border-gray-100 px-6 py-14 text-center text-sm sm:px-14">
-                          {/* <FaceFrownIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" /> */}
+                          <FaRegFrownOpen className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                           <p className="mt-4 font-semibold text-gray-900">Результатов не найдено</p>
                           <p className="mt-2 text-gray-500">Мы не смогли найти ничего по этому запросу.</p>
                         </div>

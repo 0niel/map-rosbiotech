@@ -17,6 +17,7 @@ import { useRoomsQuery } from "~/lib/hooks/useRoomsQuery"
 import { useRoomsWorkloadQuery } from "~/lib/hooks/useRoomsWorkloadQuery"
 import useScheduleDataStore from "~/lib/stores/scheduleDataStore"
 import { useRoomsStatusesQuery } from "~/lib/hooks/useRoomsStatusesQuery"
+import { svg } from "d3"
 
 const unactiveGray = "hsl(0, 0%, 80%)"
 
@@ -86,7 +87,7 @@ const createStatusesMap = (
   }
 }
 
-const Map = ({ onLoaded, svgUrl }: MapProps) => {
+const Map = ({ svgUrl }: MapProps) => {
   const displayModeStore = useDisplayModeStore()
   const { mapData } = useMapStore()
 
@@ -147,7 +148,6 @@ const Map = ({ onLoaded, svgUrl }: MapProps) => {
 
     if (!data || !mapData || !rooms || !svgElement) return
 
-    console.log(roomsStatusesData, displayModeStore.mode)
     if (roomsWorkloadData && displayModeStore.mode === MapDisplayMode.HEATMAP) {
       createHeatMap(roomsWorkloadData, rooms, mapData)
     } else if (roomsStatusesData && displayModeStore.mode === MapDisplayMode.ROOMS_STATUSES) {

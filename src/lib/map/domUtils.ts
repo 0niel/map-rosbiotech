@@ -113,20 +113,30 @@ export const getMapObjectElementById = (name: string, document: Document | Eleme
   return null
 }
 
-const mapSelector = "#map svg"
-export const getMapObjectElementByIdAsync = async (name: string, document: Document | Element = window.document) => {
-  if (!document.querySelector(mapSelector)) {
-    await new Promise((resolve) => {
-      const interval = setInterval(() => {
-        if (document.querySelector(mapSelector)) {
-          clearInterval(interval)
-          resolve(null)
-        }
+export const getMapObjectElementByIdAsync = async (id: string, document: Document | Element = window.document) => {
+  const maxAttempts = 50
+  let currentAttempt = 0
+
+  const getRoom = () => {
+    const room = getMapObjectElementById(id, document)
+    if (room) {
+      return room
+    }
+
+    if (currentAttempt >= maxAttempts) {
+      return null
+    }
+
+    currentAttempt++
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(getRoom())
       }, 100)
     })
   }
 
-  return getMapObjectElementById(name, document)
+  return getRoom()
 }
 
 export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
