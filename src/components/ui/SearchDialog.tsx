@@ -42,12 +42,14 @@ export default function SearchDialog({ open, setOpen }: SearchDialogProps) {
       const employees = await searchEmployees(query)
       const employeesByPositions = []
       for (const employee of employees.data) {
-        const positions = employee.attributes.positions
-
-        for (const position of positions) {
-          const copy = { ...employee }
-          copy.attributes.positions = [position]
-          employeesByPositions.push(copy)
+        for (const position of employee.attributes.positions) {
+          employeesByPositions.push({
+            id: employee.id,
+            attributes: {
+              ...employee.attributes,
+              positions: [position],
+            },
+          })
         }
       }
       return { data: employeesByPositions }

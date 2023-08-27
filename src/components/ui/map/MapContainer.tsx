@@ -391,7 +391,7 @@ const MapContainer = () => {
               onSubmit={(start: MapObject, end: MapObject) => {
                 setRoutesModalShow(false)
                 setRouteStartAndEnd({ start, end, render: true })
-
+                zoomToMapObject(start)
                 mapRouteRef.current?.renderRoute(start, end, floor)
               }}
               startMapObject={routeStartAndEnd.start}
