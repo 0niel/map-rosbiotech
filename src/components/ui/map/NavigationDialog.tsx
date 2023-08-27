@@ -16,6 +16,9 @@ interface RoutesModalProps {
 
   startMapObject?: MapObject | null
   endMapObject?: MapObject | null
+
+  setWaitForSelectStart: () => void
+  setWaitForSelectEnd: () => void
 }
 
 const NavigationDialog: React.FC<RoutesModalProps> = ({
@@ -25,6 +28,8 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
   startMapObject,
   endMapObject,
   onSelect,
+  setWaitForSelectStart,
+  setWaitForSelectEnd,
 }) => {
   const { mapData } = useMapStore()
   const [start, setStart] = useState<SearchableObject | null>(null)
@@ -103,9 +108,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
                 </button>
                 <div className="space-y-6 py-6">
                   <div className="w-full">
-                    <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 ml-10">
-                      Начальная точка
-                    </label>
+                    <label className="mb-2 block text-sm font-medium text-gray-900 ml-10">Начальная точка</label>
                     <div className="flex flex-row items-center">
                       <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-9 h-8 flex items-center justify-center mr-2">
                         А
@@ -133,7 +136,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
                       <p
                         className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
                         onClick={() => {
-                          onClose()
+                          setWaitForSelectStart()
                         }}
                       >
                         выбрать на карте
@@ -142,9 +145,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
                   </div>
 
                   <div className="w-full">
-                    <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900 ml-10">
-                      Конечная точка
-                    </label>
+                    <label className="mb-2 block text-sm font-medium text-gray-900 ml-10">Конечная точка</label>
                     <div className="flex flex-row items-center">
                       <div className="text-center bg-blue-300 text-blue-700 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2">
                         Б
@@ -172,7 +173,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
                       <p
                         className="mt-2 text-sm text-blue-700 font-medium text-left cursor-pointer hover:underline ml-10"
                         onClick={() => {
-                          onClose()
+                          setWaitForSelectEnd()
                         }}
                       >
                         выбрать на карте

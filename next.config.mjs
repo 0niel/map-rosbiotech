@@ -16,7 +16,7 @@ const config = {
   },
 
   images: {
-    domains: ["flowbite.s3.amazonaws.com", "flowbite.com"],
+    domains: ["flowbite.s3.amazonaws.com", "flowbite.com", "cms.mirea.ninja", "cdn.cms.mirea.ninja"],
   },
 
   webpack(config) {

@@ -9,7 +9,7 @@ interface MapNavigationButtonProps {
   onClickShowDetails: () => void
 }
 
-const MapNavigationButtont = (props: MapNavigationButtonProps) => {
+const MapNavigationButton = (props: MapNavigationButtonProps) => {
   const { startMapObject, endMapObject, path } = useRouteStore()
 
   return (
@@ -34,7 +34,6 @@ const MapNavigationButtont = (props: MapNavigationButtonProps) => {
                   props.onClickShowDetails?.()
                 }}
               >
-                <RiRouteLine className="h-6 w-6" transform="rotate(180)" />
                 Детали маршрута
               </button>
               <div className="w-px h-12 bg-gray-200" />
@@ -78,4 +77,4 @@ const MapNavigationButtont = (props: MapNavigationButtonProps) => {
   )
 }
 
-export default MapNavigationButtont
+export default MapNavigationButton

@@ -7,7 +7,8 @@ import { useRouteStore } from "~/lib/stores/routeStore"
 import { BiWalk } from "react-icons/bi"
 import { TbStairsUp, TbStairsDown } from "react-icons/tb"
 import { use, useCallback } from "react"
-import { Link, X } from "lucide-react"
+import { X } from "lucide-react"
+import { FaShare } from "react-icons/fa"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { toast } from "react-hot-toast"
 
@@ -123,7 +124,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ onDetailsSlideChange, onDet
   }, [mapData, path])
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-xl border px-8 py-6 mx-auto sm:w-[28rem] max-h-44 overflow-y-auto border-gray-300 pointer-events-auto">
+    <div className="flex flex-colbg-white rounded-xl border px-8 py-6 mx-auto sm:w-[28rem] w-[calc(100vw-5rem)] max-h-44 overflow-y-auto border-gray-300 pointer-events-auto bg-white scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100">
       <div className="flex items-center mb-4 space-x-2 absolute top-4 right-8 z-10">
         <CopyToClipboard
           text={generateLink() || ""}
@@ -135,7 +136,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ onDetailsSlideChange, onDet
             type="button"
             className="bg-gray-100 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-lg p-1.5 text-sm text-gray-900 hover:text-gray-900 flex items-center"
           >
-            <Link className="h-5 w-5 mr-2" /> поделитьсья
+            <FaShare className="h-5 w-5" />
           </button>
         </CopyToClipboard>
         <button

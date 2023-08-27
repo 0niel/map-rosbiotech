@@ -20,6 +20,7 @@ import {
   getMapObjectTypeByElemet,
   mapObjectSelector,
   getMapObjectElementById,
+  getMapObjectElementByIdAsync,
 } from "~/lib/map/domUtils"
 import MapControls from "./MapControls"
 import RoomDrawer from "./RoomDrawer"
@@ -32,7 +33,8 @@ import RouteDetails, { type DetailsSlide } from "./RouteDetails"
 import { useRoomsQuery } from "~/lib/hooks/useRoomsQuery"
 import toast from "react-hot-toast"
 import useScheduleDataStore from "~/lib/stores/scheduleDataStore"
-import MapNavigationButtont from "./MapNavigationButton"
+import MapNavigationButton from "./MapNavigationButton"
+import SearchDialog from "../SearchDialog"
 
 const scheduleAPI = new ScheduleAPI()
 
@@ -59,7 +61,16 @@ const MapContainer = () => {
 
   const mapRouteRef = useRef<MapRouteRef>(null)
 
+  const { setStartMapObject, setEndMapObject } = useRouteStore()
+
   const [drawerOpened, setDrawerOpened] = useState(false)
+
+  // Если в диалоге выбора маршрута нажали на кнопку "Выбрать на карте", то ждем выбора точки на карте
+  // Если выбрали, то не открываем drawer справа, если ожидается выбор для точки
+  const waitForSelectRoomRef = useRef<{ start: boolean; end: boolean }>({
+    start: false,
+    end: false,
+  })
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null)
 
@@ -83,12 +94,9 @@ const MapContainer = () => {
       const mapObjectFloor = mapData.getObjectFloorByMapObjectId(id)
       if (mapObjectFloor !== floor && mapObjectFloor !== undefined) {
         setFloor(mapObjectFloor)
-        setTimeout(() => {
-          const element = getMapObjectElementById(id)
-          if (element) {
-            transformComponentRef.current?.zoomToElement(element as HTMLElement)
-          }
-        }, 300)
+        void getMapObjectElementByIdAsync(id).then((element) => {
+          transformComponentRef.current?.zoomToElement(element as HTMLElement)
+        })
       } else {
         const element = getMapObjectElementById(id)
         if (element) {
@@ -160,13 +168,9 @@ const MapContainer = () => {
         return
       }
       zoomToMapObject(mapObject)
-
-      setTimeout(() => {
-        const element = getMapObjectElementById(mapObject.id)
-        if (element) {
-          selectRoomEl(element)
-        }
-      }, 300)
+      void getMapObjectElementByIdAsync(mapObject.id).then((element) => {
+        selectRoomEl(element as HTMLElement)
+      })
       return
     }
 
@@ -199,9 +203,26 @@ const MapContainer = () => {
         return
       }
 
+      if (waitForSelectRoomRef.current.start || waitForSelectRoomRef.current.end) {
+        const mapObjectId = getMapObjectIdByElement(room)
+        if (!mapObjectId) return
+        const mapObj = mapData?.getMapObjectById(mapObjectId)
+        if (!mapObj) return
+
+        if (waitForSelectRoomRef.current.start) {
+          setStartMapObject(mapObj)
+        } else if (waitForSelectRoomRef.current.end) {
+          setEndMapObject(mapObj)
+        }
+
+        waitForSelectRoomRef.current = { start: false, end: false }
+
+        return
+      }
+
       selectRoomEl(room)
     },
-    [selectRoomEl],
+    [mapData, selectRoomEl, setEndMapObject, setStartMapObject],
   )
 
   useEffect(() => {
@@ -240,8 +261,6 @@ const MapContainer = () => {
     end: null,
     render: false,
   }))
-
-  const { setStartMapObject, setEndMapObject } = useRouteStore()
 
   useEffect(() => {
     if (!routeStartAndEnd) {
@@ -357,10 +376,18 @@ const MapContainer = () => {
               }}
               startMapObject={routeStartAndEnd.start}
               endMapObject={routeStartAndEnd.end}
+              setWaitForSelectStart={() => {
+                waitForSelectRoomRef.current = { start: true, end: false }
+                setRoutesModalShow(false)
+              }}
+              setWaitForSelectEnd={() => {
+                waitForSelectRoomRef.current = { start: false, end: true }
+                setRoutesModalShow(false)
+              }}
             />
 
             <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
-              <MapNavigationButtont
+              <MapNavigationButton
                 onClick={() => setRoutesModalShow(true)}
                 onClickShowDetails={() => {
                   setDisplayDetails(true)

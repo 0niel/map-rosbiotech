@@ -113,6 +113,22 @@ export const getMapObjectElementById = (name: string, document: Document | Eleme
   return null
 }
 
+const mapSelector = "#map svg"
+export const getMapObjectElementByIdAsync = async (name: string, document: Document | Element = window.document) => {
+  if (!document.querySelector(mapSelector)) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (document.querySelector(mapSelector)) {
+          clearInterval(interval)
+          resolve(null)
+        }
+      }, 100)
+    })
+  }
+
+  return getMapObjectElementById(name, document)
+}
+
 export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
   const name = el.getAttribute("data-object")
   if (!name) return null
