@@ -345,12 +345,12 @@ const MapContainer = () => {
             onClickNavigateFromHere={(mapObject) => {
               setRouteStartAndEnd({ start: mapObject, end: routeStartAndEnd.end, render: false })
               setRoutesModalShow(true)
-              setDrawerOpened(false)
+              handleCloseDrawer()
             }}
             onClickNavigateToHere={(mapObject) => {
               setRouteStartAndEnd({ start: routeStartAndEnd.start, end: mapObject, render: false })
               setRoutesModalShow(true)
-              setDrawerOpened(false)
+              handleCloseDrawer()
             }}
             findNearestObject={(mapObjectType: MapObjectType, mapObjectNames: string[]) => {
               if (!selectedRoomOnMap.mapObject) return
@@ -365,7 +365,7 @@ const MapContainer = () => {
 
               // Маршрут
               setRouteStartAndEnd({ start: selectedRoomOnMap.mapObject, end: mapObject, render: true })
-              setDrawerOpened(false)
+              handleCloseDrawer()
             }}
           />
         )}
