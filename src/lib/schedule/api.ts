@@ -32,7 +32,7 @@ class ScheduleAPI {
     const { data, error } = await this.GET("/api/rooms", {
       params: {
         query: {
-          limit: 10,
+          limit: 3000,
           campus_id: campusId,
         },
       },
