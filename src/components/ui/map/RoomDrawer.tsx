@@ -275,59 +275,60 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <Spinner />
                 </div>
               )}
-              {!employeeIsLoading && employeeData?.data.length > 0 && (
-                <div className="flex flex-col">
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-400 mb-2">
-                    Сотрудники, которые работают в этой аудитории
-                  </p>
-                  <div className="flex flex-col space-y-4">
-                    {employeeData.data.map((employee) => (
-                      <div key={employee.id} className="flex flex-row tems-center space-x-2">
-                        {employee.attributes.photo ? (
-                          <Image
-                            src={employee.attributes.photo.data.attributes.url}
-                            alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
-                            className="w-20 h-20 object-cover rounded-full flex-shrink-0"
-                            width={80}
-                            height={80}
-                          />
-                        ) : (
-                          <div className="w-20 h-20 bg-gray-200 rounded-full" />
-                        )}
+              {(!employeeIsLoading && employeeData?.data?.length) ||
+                (0 > 0 && (
+                  <div className="flex flex-col">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-400 mb-2">
+                      Сотрудники, которые работают в этой аудитории
+                    </p>
+                    <div className="flex flex-col space-y-4">
+                      {employeeData?.data.map((employee) => (
+                        <div key={employee.id} className="flex flex-row tems-center space-x-2">
+                          {employee.attributes.photo ? (
+                            <Image
+                              src={employee.attributes.photo.data.attributes.url}
+                              alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
+                              className="w-20 h-20 object-cover rounded-full flex-shrink-0"
+                              width={80}
+                              height={80}
+                            />
+                          ) : (
+                            <div className="w-20 h-20 bg-gray-200 rounded-full" />
+                          )}
 
-                        <div className="flex flex-col">
-                          <p className="text-sm font-medium text-gray-900">
-                            {employee.attributes.firstName} {employee.attributes.lastName}{" "}
-                            {employee.attributes.patronymic}
-                          </p>
+                          <div className="flex flex-col">
+                            <p className="text-sm font-medium text-gray-900">
+                              {employee.attributes.firstName} {employee.attributes.lastName}{" "}
+                              {employee.attributes.patronymic}
+                            </p>
 
-                          {employee.attributes.positions
-                            .filter(
-                              (position) =>
-                                position.contacts.filter(
-                                  (contact) => contact.room?.data.attributes.name === roomMapObject.name,
-                                ).length > 0,
-                            )
-                            .map((position, index) => (
-                              <div key={index} className="text-xs text-gray-600">
-                                <p>{position.department}</p>
-                                <p>{position.post}</p>
-                                {position.contacts.map((contact, i) => (
-                                  <div key={i}>
-                                    {contact.phone && <p>Телефон: {contact.phone}</p>}
-                                    {contact.IP && <p>IP: {contact.IP}</p>}
-                                    {contact.email && <p>Email: {contact.email}</p>}
-                                    {/* {contact.receptionTime && <p>Время приема: {contact.receptionTime}</p>} */}
-                                  </div>
-                                ))}
-                              </div>
-                            ))}
+                            {employee.attributes.positions
+                              .filter(
+                                (position) =>
+                                  position.contacts.filter(
+                                    (contact) => contact.room?.data.attributes.name === roomMapObject.name,
+                                  ).length > 0,
+                              )
+                              .map((position, index) => (
+                                <div key={index} className="text-xs text-gray-600">
+                                  <p>{position.department}</p>
+                                  <p>{position.post}</p>
+                                  {position.contacts.map((contact, i) => (
+                                    <div key={i}>
+                                      {contact.phone && <p>Телефон: {contact.phone}</p>}
+                                      {contact.IP && <p>IP: {contact.IP}</p>}
+                                      {contact.email && <p>Email: {contact.email}</p>}
+                                      {/* {contact.receptionTime && <p>Время приема: {contact.receptionTime}</p>} */}
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                ))}
             </Tabs.Tab>
             <Tabs.Tab name="Расписание" icon={<Calendar />}>
               <ScheduleCalendar date={timeToDisplay} lessons={data?.lessons || []} />
