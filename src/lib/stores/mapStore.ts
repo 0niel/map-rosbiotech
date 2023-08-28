@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { type MapData } from "../map/MapData"
 import { type Campus, initialCampus } from "../campuses"
-import { MapObject } from "../map/MapObject"
+import { type MapObject } from "../map/MapObject"
 
 interface MapState {
   campus: Campus
@@ -13,8 +13,8 @@ interface MapState {
   setMapData: (mapData: MapData | null) => void
 
   // Используется для поиска по карте в SearchDialog
-  selectedFromSearchRoom: { name: string; campus: string, mapObject: MapObject | null } | null
-  setSelectedFromSearchRoom: (room: { name: string; campus: string, mapObject: MapObject | null } | null) => void
+  selectedFromSearchRoom: { name: string; campus: string; mapObject: MapObject | null } | null
+  setSelectedFromSearchRoom: (room: { name: string; campus: string; mapObject: MapObject | null } | null) => void
 }
 
 export const useMapStore = create<MapState>()(

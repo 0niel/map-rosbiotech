@@ -47,3 +47,11 @@ export const searchEmployees = async (query: string) => {
 
   return data.data
 }
+
+export const searchEmployeesByRoom = async (room: string, campus: string) => {
+  const data = await axios.get<StrapiResponse>(
+    `${API_URL}/api/employees?populate[0]=positions&populate[1]=positions.contacts&populate[2]=photo&populate[3]=positions.contacts.room&filters[positions][contacts][room][name]=${room}&filters[positions][contacts][room][campus]=${campus}`,
+  )
+
+  return data.data
+}
