@@ -136,11 +136,12 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
     },
   })
 
-  const { data: employeeData, isLoading: employeeIsLoading } = useQuery<StrapiResponse>("searchEmployees", {
+  const { data: employeeData, isLoading: employeeIsLoading } = useQuery<StrapiResponse>(["employees", roomMapObject], {
     queryFn: async () => {
       const employees = await searchEmployeesByRoom(roomMapObject.name, campus.shortName)
       return employees
     },
+    refetchOnWindowFocus: false,
   })
 
   return (
@@ -274,7 +275,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <Spinner />
                 </div>
               )}
-              {!employeeIsLoading && employeeData?.data && (
+              {!employeeIsLoading && employeeData?.data.length > 0 && (
                 <div className="flex flex-col">
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-400 mb-2">
                     Сотрудники, которые работают в этой аудитории
