@@ -18,7 +18,7 @@ import { Dropdown } from "flowbite-react"
 import QRCode from "qrcode.react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { toast } from "react-hot-toast"
-import { StrapiResponse, searchEmployees, searchEmployeesByRoom } from "~/lib/employees/api"
+import { type StrapiResponse, searchEmployees, searchEmployeesByRoom } from "~/lib/employees/api"
 import { useMapStore } from "~/lib/stores/mapStore"
 
 interface RoomDrawerProps {

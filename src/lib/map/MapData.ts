@@ -158,9 +158,15 @@ export class MapData {
   }
 
   getNearestMapObjectByType(startMapObject: MapObject, mapObjectType: MapObjectType, mapObjectNames: string[]) {
-    const mapObjectsWithTargetType = this.getAllAvailableObjectsInMap().filter((o) => {
-      return o.type === mapObjectType && mapObjectNames.includes(o.name)
+    let mapObjectsWithTargetType = this.getAllAvailableObjectsInMap().filter((o) => {
+      return o.type === mapObjectType
     })
+
+    if (mapObjectNames.length > 0) {
+      mapObjectsWithTargetType = mapObjectsWithTargetType.filter((o) => {
+        return mapObjectNames.includes(o.name)
+      })
+    }
 
     let minDistance = Infinity
     let nearestObject = null
