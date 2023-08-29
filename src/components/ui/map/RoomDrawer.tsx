@@ -271,7 +271,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                 />
               )}
 
-              {!employeeIsLoading && employeeData?.data?.length && employeeData?.data?.length > 0 && (
+              {!employeeIsLoading && employeeData?.data && employeeData?.data.length > 0 ? (
                 <div className="flex flex-col">
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-400 mb-2">
                     Сотрудники, которые работают в этой аудитории
@@ -323,7 +323,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     ))}
                   </div>
                 </div>
-              )}
+              ) : null}
             </Tabs.Tab>
             <Tabs.Tab name="Расписание" icon={<Calendar />}>
               <ScheduleCalendar date={timeToDisplay} lessons={data?.lessons || []} />
