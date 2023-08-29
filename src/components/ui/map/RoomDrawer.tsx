@@ -243,22 +243,24 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <FastNavigateButton onClick={() => findNearestObject(MapObjectType.CANTEEN, [])} title="Буфет" />
                 </div>
               </div>
-              {isLoading || employeeIsLoading ? (
-                <div className="flex h-full items-center justify-center">
-                  <Spinner />
-                </div>
-              ) : null}
-              {!isLoading && error ? (
-                <div className="flex h-full items-center justify-center">
-                  <p>Ошибка загрузки данных</p>
-                </div>
-              ) : null}
-              {!room && !employeeData?.data && !isLoading && !employeeIsLoading ? (
+              {isLoading ||
+                (employeeIsLoading && (
+                  <div className="flex h-full items-center justify-center">
+                    <Spinner />
+                  </div>
+                ))}
+              {!isLoading ||
+                (error && (
+                  <div className="flex h-full items-center justify-center">
+                    <p>Ошибка загрузки данных</p>
+                  </div>
+                ))}
+              {!room && !employeeData?.data && !isLoading && !employeeIsLoading && (
                 <div className="flex h-full flex-col items-center justify-center">
                   <Image src="assets/ghost.svg" width={200} height={200} alt={""} />
                   <p className="text-center text-gray-500">Нет данных по этой аудитории</p>
                 </div>
-              ) : null}
+              )}
               {!isLoading && data && (
                 <RoomInfoTabContent
                   workload={data?.info?.workload || 0}

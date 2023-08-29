@@ -22,7 +22,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   return (
     <FbSidebar
       collapsed={false}
-      aria-label="Боковая панель"
+      aria-label="sidebar"
+      id="sidebar"
+      role="navigation"
       className={clsx(
         "fixed top-0 z-40 h-screen w-64 max-w-full transform overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0",
         {
