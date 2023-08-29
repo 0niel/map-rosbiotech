@@ -115,7 +115,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
   const { timeToDisplay } = useDisplayModeStore()
   const { campus } = useMapStore()
 
-  const { isLoading, error, data } = useQuery(["room", room, timeToDisplay], {
+  const { isLoading, isError, data, isFetched } = useQuery(["room", timeToDisplay, roomMapObject], {
     queryFn: async () => {
       if (!room) {
         return
@@ -136,7 +136,11 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
     },
   })
 
-  const { data: employeeData, isLoading: employeeIsLoading } = useQuery<StrapiResponse>(["employees", roomMapObject], {
+  const {
+    data: employeeData,
+    isLoading: employeeIsLoading,
+    isFetched: isEmployeeFetched,
+  } = useQuery<StrapiResponse>(["employees", roomMapObject], {
     queryFn: async () => {
       const employees = await searchEmployeesByRoom(roomMapObject.name, campus.shortName)
       return employees
@@ -243,19 +247,17 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <FastNavigateButton onClick={() => findNearestObject(MapObjectType.CANTEEN, [])} title="Буфет" />
                 </div>
               </div>
-              {isLoading ||
-                (employeeIsLoading && (
-                  <div className="flex h-full items-center justify-center">
-                    <Spinner />
-                  </div>
-                ))}
-              {!isLoading ||
-                (error && (
-                  <div className="flex h-full items-center justify-center">
-                    <p>Ошибка загрузки данных</p>
-                  </div>
-                ))}
-              {!room && !employeeData?.data && !isLoading && !employeeIsLoading && (
+              {(isLoading || employeeIsLoading) && (
+                <div className="flex h-full items-center justify-center">
+                  <Spinner />
+                </div>
+              )}
+              {isError && (
+                <div className="flex h-full items-center justify-center">
+                  <p>Ошибка загрузки данных</p>
+                </div>
+              )}
+              {isFetched && !data && isEmployeeFetched && employeeData?.data?.length === 0 && (
                 <div className="flex h-full flex-col items-center justify-center">
                   <Image src="assets/ghost.svg" width={200} height={200} alt={""} />
                   <p className="text-center text-gray-500">Нет данных по этой аудитории</p>
