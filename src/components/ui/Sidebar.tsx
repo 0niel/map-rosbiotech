@@ -26,7 +26,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
       id="sidebar"
       role="navigation"
       className={clsx(
-        "fixed top-0 z-40 h-screen w-64 max-w-full transform overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0",
+        "fixed top-0 z-40 h-screen w-64 max-w-full transform overflow-y-auto transition-transform duration-300 ease-in-out",
         {
           "translate-x-0": open,
           "-translate-x-full": !open,
@@ -39,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
           <p className="text-xl font-bold text-gray-800 dark:text-gray-200 sm:text-2xl sm:font-semibold">Карта</p>
         </div>
         <button
-          className="ml-3 inline-flex h-10 items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:hidden"
+          className="ml-3 inline-flex h-10 items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
           onClick={() => setOpen(!open)}
         >
           <span className="sr-only">Закрыть боковую панель</span>
