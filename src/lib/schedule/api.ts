@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosError } from "axios"
 import createClient from "openapi-fetch"
 import { type paths, type components } from "./schema"
 
-const API_URL = "https://timetable.mirea.ninja"
+const API_URL = "https://timetable.mirea.ru"
 
 class ScheduleAPI {
   private GET
