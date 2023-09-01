@@ -155,7 +155,7 @@ const MapContainer = () => {
   }, [])
 
   useEffect(() => {
-    if (isLoading || !transformComponentRef.current || !mapData) return
+    if (isLoading || !transformComponentRef.current || !mapData || !data) return
 
     const { object } = router.query
 
@@ -201,7 +201,7 @@ const MapContainer = () => {
 
       setTimeToDisplay(new Date(date as string))
     }
-  }, [isLoading, router.query, mapData])
+  }, [isLoading, router.query, mapData, data])
 
   const handleRoomClick = useCallback(
     (e: Event) => {
