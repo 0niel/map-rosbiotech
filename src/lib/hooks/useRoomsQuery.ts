@@ -18,6 +18,9 @@ export const useRoomsQuery = (campus: string, options?: UseQueryOptions<componen
 
       return rooms
     },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     ...options,
   })
 }

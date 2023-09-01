@@ -28,6 +28,7 @@ import toast from "react-hot-toast"
 import useScheduleDataStore from "~/lib/stores/scheduleDataStore"
 import MapNavigationButton from "./MapNavigationButton"
 import campuses from "~/lib/campuses"
+import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
 
 const scheduleAPI = new ScheduleAPI()
 
@@ -39,6 +40,7 @@ const MapContainer = () => {
   const router = useRouter()
   const { campus, setFloor, floor, setMapData, mapData, selectedFromSearchRoom, setSelectedFromSearchRoom, setCampus } =
     useMapStore()
+  const { setTimeToDisplay } = useDisplayModeStore()
   const { rooms, setRooms } = useScheduleDataStore()
   const { isLoading, error, data } = useRoomsQuery(campus.shortName, {
     onError: (e) => toast.error("Ошибка при загрузке информации о кабинетах из расписания"),
@@ -163,7 +165,6 @@ const MapContainer = () => {
         toast.error("Не найден объект на карте по вашей ссылке")
         return
       }
-      console.log("QUERY HERE")
       zoomToMapObject(mapObject, true)
       return
     }
@@ -179,6 +180,26 @@ const MapContainer = () => {
       }
 
       setRouteStartAndEnd({ start: startMapObject, end: endMapObject, render: true })
+    }
+
+    const { room, campus: c, date } = router.query
+
+    if (room && campus && date) {
+      if (c && (c as string) !== campus.shortName) {
+        setCampus(campuses.find((campus) => campus.shortName === c) ?? campus)
+      }
+
+      // TODO: Нет гарантий, что во время этого поиска уже загрузились данные о кабинетах для этого кампуса, если кампус был сменен. Сделать проверку в мап дате!!!
+      const mapObject = mapData.getObjectByName(room as string)
+
+      if (!mapObject) {
+        toast.error("Не удалось найти аудиторию на карте")
+        return
+      }
+
+      zoomToMapObject(mapObject, true)
+
+      setTimeToDisplay(new Date(date as string))
     }
   }, [isLoading, router.query, mapData])
 
