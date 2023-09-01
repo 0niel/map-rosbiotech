@@ -122,7 +122,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
       }
       const roomLessons = await scheduleAPI.getRoomLessons(room.id)
       const roomInfo = await scheduleAPI.getRoomInfo(room.id)
-      const roomStatus = await scheduleAPI.getRoomsStatuses(timeToDisplay, room.campus?.id || 0)
+      const roomStatus = await scheduleAPI.getRoomStatus(timeToDisplay, room?.id || 0)
 
       if (roomLessons.error || roomInfo.error || roomStatus.error) {
         throw new Error("Ошибка загрузки данных")
@@ -131,7 +131,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
       return {
         lessons: roomLessons.data,
         info: roomInfo.data,
-        status: (roomStatus.data as { id: number; status: string }[]).find((r) => r.id === room.id)?.status,
+        status: roomStatus.data?.status,
       }
     },
   })

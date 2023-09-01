@@ -78,6 +78,21 @@ class ScheduleAPI {
     return { data, error }
   }
 
+  async getRoomStatus(dateTime: Date, roomId: number) {
+    const { data, error } = await this.GET("/api/rooms/statuses/{id}", {
+      params: {
+        query: {
+          date_time: dateTime.toISOString(),
+        },
+        path: {
+          id: roomId,
+        },
+      },
+    })
+
+    return { data, error }
+  }
+
   async getRoomsWorkload(campusId: number) {
     const { data, error } = await this.GET("/api/rooms/workload", {
       params: {
