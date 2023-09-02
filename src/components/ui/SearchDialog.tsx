@@ -15,6 +15,7 @@ import { type StrapiResponse, searchEmployees } from "~/lib/employees/api"
 import { FaRegFrownOpen } from "react-icons/fa"
 import { X } from "lucide-react"
 import { toast } from "react-hot-toast"
+import { api } from "~/utils/api"
 
 interface SearchDialogProps {
   open: boolean
@@ -60,6 +61,11 @@ export default function SearchDialog({ open, setOpen }: SearchDialogProps) {
   })
 
   const [results, setResults] = useState<Record<string, SearchableObject[]>[]>([])
+
+  const addSearchHistory = api.searchHistory.add.useMutation()
+  const { data: popularSearches } = api.searchHistory.getTopSearches.useQuery({
+    limit: 6,
+  })
 
   useEffect(() => {
     if (query.length < 2) return
@@ -161,6 +167,30 @@ export default function SearchDialog({ open, setOpen }: SearchDialogProps) {
                           <p className="mt-2 text-gray-500">Вы можете быстро перейти к нужному аудитории</p>
                         </div>
                       )}
+
+                      {popularSearches && popularSearches.length > 0 && (
+                        <Combobox.Options
+                          static
+                          className="max-h-80 scroll-pb-2 scroll-pt-11 space-y-2 overflow-y-auto pb-2"
+                        >
+                          <div className="px-4 py-2 text-sm font-medium text-gray-900">Популярные запросы</div>
+                          {popularSearches.map((search) => (
+                            <Combobox.Option
+                              key={search.query}
+                              value={search.query}
+                              onClick={() => {
+                                setQuery(search.query.split(" ")[0] ?? "")
+                                void addSearchHistory.mutateAsync({ query: search.query })
+                              }}
+                              className="cursor-pointer p-4 hover:bg-gray-200 flex flex-row items-center space-x-3"
+                            >
+                              <p className="text-gray-800">{search.query}</p>
+                              <p className="text-gray-500 text-xs">{search.searchCount} поисков</p>
+                            </Combobox.Option>
+                          ))}
+                        </Combobox.Options>
+                      )}
+
                       {employeeData?.data && employeeData?.data.length > 0 && (
                         <Combobox.Options
                           static
@@ -173,6 +203,9 @@ export default function SearchDialog({ open, setOpen }: SearchDialogProps) {
                               value={employee}
                               onClick={() => {
                                 onEmployeeClick(employee)
+                                void addSearchHistory.mutateAsync({
+                                  query: `${employee.attributes.lastName} ${employee.attributes.firstName}`,
+                                })
                               }}
                               className={({ active }) =>
                                 cn(
@@ -251,6 +284,7 @@ export default function SearchDialog({ open, setOpen }: SearchDialogProps) {
                                         campus: "",
                                         mapObject: obj.mapObject,
                                       })
+                                      void addSearchHistory.mutateAsync({ query: obj.mapObject.name })
                                       closeDialog()
                                     }}
                                   >

@@ -2,9 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
-    binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+    binaryTargets   = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -12,10 +12,14 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model SearchHistory {
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    query       String
+    searchCount Int
+
+    @@index([query])
 }
 
 // Necessary for Next auth
