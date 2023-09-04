@@ -295,7 +295,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
 
                         <div className="flex flex-col">
                           <p className="text-sm font-medium text-gray-900">
-                            {employee.attributes.firstName} {employee.attributes.lastName}{" "}
+                            {employee.attributes.lastName} {employee.attributes.firstName}{" "}
                             {employee.attributes.patronymic}
                           </p>
 
