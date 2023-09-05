@@ -14,6 +14,13 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
   selectedDateTime,
   setSelectedDateTime,
 }) => {
+  const [value, setValue] = React.useState("")
+
+  React.useEffect(() => {
+    const currentTime = new Date()
+    setValue(`${currentTime.getHours()}:${currentTime.getMinutes()}`)
+  }, [])
+
   return (
     <div className="flex w-full max-w-xl flex-row space-x-4">
       <Datepicker
@@ -57,13 +64,10 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
           min="08:00"
           max="20:00"
           step="900"
-          value={selectedDateTime?.toLocaleTimeString("ru-RU", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          value={value}
           id="time"
           onChange={(e) => {
-            e.preventDefault()
+            setValue(e.target.value)
             const [hours, minutes] = e.target.value.split(":")
 
             let date = new Date()
