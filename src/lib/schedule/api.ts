@@ -66,10 +66,15 @@ class ScheduleAPI {
   }
 
   async getRoomsStatuses(dateTime: Date, campusId: number) {
+    const tzOffset = new Date(dateTime).getTimezoneOffset() * 60000
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const localISOTime = new Date(dateTime - tzOffset).toISOString().slice(0, -1)
+
     const { data, error } = await this.GET("/api/rooms/statuses", {
       params: {
         query: {
-          date_time: dateTime.toISOString(),
+          date_time: localISOTime,
           campus_id: campusId,
         },
       },
@@ -79,10 +84,15 @@ class ScheduleAPI {
   }
 
   async getRoomStatus(dateTime: Date, roomId: number) {
+    const tzOffset = new Date(dateTime).getTimezoneOffset() * 60000
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const localISOTime = new Date(dateTime - tzOffset).toISOString().slice(0, -1)
+
     const { data, error } = await this.GET("/api/rooms/statuses/{id}", {
       params: {
         query: {
-          date_time: dateTime.toISOString(),
+          date_time: localISOTime,
         },
         path: {
           id: roomId,
