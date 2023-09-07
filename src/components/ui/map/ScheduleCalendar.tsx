@@ -57,6 +57,51 @@ const getLessonsForDate = (lessons: components["schemas"]["Lesson"][], date: Dat
   return newLessons.sort((a, b) => a.calls.num - b.calls.num)
 }
 
+export const getEventPointColor = (event: string) => {
+  switch (event) {
+    case "пр":
+      return "bg-blue-400"
+    case "лек":
+      return "bg-green-400"
+    case "лаб":
+      return "bg-yellow-400"
+    case "зач":
+      return "bg-red-400"
+    default:
+      return "bg-gray-400"
+  }
+}
+
+function getLessonTypeColor(type: string) {
+  switch (type) {
+    case "пр":
+      return "bg-blue-100 text-blue-800"
+    case "лек":
+      return "bg-green-100 text-green-800"
+    case "лаб":
+      return "bg-yellow-100 text-yellow-800"
+    case "зач":
+      return "bg-red-100 text-red-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
+
+function getLessonTypeBackgroundColor(type: string) {
+  switch (type) {
+    case "пр":
+      return "bg-blue-50 hover:bg-blue-100"
+    case "лек":
+      return "bg-green-50 hover:bg-green-100"
+    case "лаб":
+      return "bg-yellow-50 hover:bg-yellow-100"
+    case "зач":
+      return "bg-red-50 hover:bg-red-100"
+    default:
+      return "bg-gray-50 hover:bg-gray-100"
+  }
+}
+
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(date)
 
@@ -131,6 +176,14 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
             >
               <p className="text-sm font-medium">{day.getDate()}</p>
             </div>
+            <div className="flex flex-row justify-center space-x-0.5">
+              {getLessonsForDate(lessons, day).map((lesson, eventIdx) => (
+                <div
+                  key={eventIdx}
+                  className={`mt-1 h-1.5 w-1.5 rounded-full ${getEventPointColor(lesson.lesson_type?.name ?? "пр")}`}
+                />
+              ))}
+            </div>
           </button>
         ))}
       </div>
@@ -143,7 +196,11 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
             key={lesson.id}
           >
             <div className="flex w-full flex-row items-center justify-between space-x-2">
-              <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+              <span
+                className={`mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium ${getLessonTypeColor(
+                  lesson.lesson_type?.name ?? "пр",
+                )}`}
+              >
                 {lesson.lesson_type?.name}
               </span>
               <span className="text-xs font-medium text-gray-500">
