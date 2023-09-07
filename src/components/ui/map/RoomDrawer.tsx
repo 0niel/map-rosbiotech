@@ -328,7 +328,12 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               ) : null}
             </Tabs.Tab>
             <Tabs.Tab name="Расписание" icon={<Calendar />}>
-              <ScheduleCalendar date={timeToDisplay} lessons={data?.lessons || []} />
+              {isLoading && (
+                <div className="flex h-full items-center justify-center">
+                  <Spinner />
+                </div>
+              )}
+              {!isLoading && <ScheduleCalendar date={timeToDisplay} lessons={data?.lessons || []} />}
             </Tabs.Tab>
           </Tabs>
         </div>

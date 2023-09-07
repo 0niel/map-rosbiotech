@@ -20,7 +20,6 @@ interface ScheduleCalendarProps {
  * есть занятия в это время.
  */
 const groupLessonsByGroups = (lessons: components["schemas"]["Lesson"][]) => {
-  console.log("LESSONS", lessons)
   const newLessons: components["schemas"]["Lesson"][] = []
 
   lessons?.forEach((lesson) => {
