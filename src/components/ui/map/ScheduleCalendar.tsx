@@ -1,6 +1,12 @@
 import { ChevronLeft, ChevronRight, User2, Paperclip } from "lucide-react"
 import { useState } from "react"
-import { getWeekDaysByDate, getWeekByDate } from "~/lib/schedule/utils"
+import {
+  getWeekDaysByDate,
+  getAcademicWeek,
+  getDaysInWeek,
+  getNormalizedWeekday,
+  MAX_WEEKS,
+} from "~/lib/schedule/utils"
 import { type components } from "~/lib/schedule/schema"
 
 interface ScheduleCalendarProps {
@@ -8,24 +14,13 @@ interface ScheduleCalendarProps {
   lessons: components["schemas"]["Lesson"][]
 }
 
-const geеLessonsByDate = (lessons: components["schemas"]["Lesson"][], date: Date) => {
-  const week = getWeekByDate(date)
-  const weekday = date.getDay() === 0 ? 7 : date.getDay()
-
-  const currentLessons = lessons.filter((lesson) => {
-    const lessonWeeks = lesson.weeks
-    const lessonWeekday = lesson.weekday
-
-    const isWeekday = lessonWeekday === weekday
-    const isWeek = lessonWeeks.includes(week)
-
-    return isWeekday && isWeek
-  })
-
-  return currentLessons
-}
-
-const joinLessonsByGroups = (lessons: components["schemas"]["Lesson"][]) => {
+/**
+ * Группирует занятия по дисциплине, времени начала и дню недели. Если в одно время начала
+ * несколько занятий, то в названии группы будут перечислены все группы, у которых
+ * есть занятия в это время.
+ */
+const groupLessonsByGroups = (lessons: components["schemas"]["Lesson"][]) => {
+  console.log("LESSONS", lessons)
   const newLessons: components["schemas"]["Lesson"][] = []
 
   lessons?.forEach((lesson) => {
@@ -48,8 +43,49 @@ const joinLessonsByGroups = (lessons: components["schemas"]["Lesson"][]) => {
   return newLessons
 }
 
+const getLessonsForDate = (lessons: components["schemas"]["Lesson"][], date: Date) => {
+  const week = getAcademicWeek(date)
+  const weekday = getNormalizedWeekday(date)
+
+  if (!lessons) {
+    return []
+  }
+
+  const newLessons = lessons.filter((lesson: components["schemas"]["Lesson"]) => {
+    return lesson.weeks.includes(week) && lesson.weekday === weekday
+  })
+
+  return newLessons.sort((a, b) => a.calls.num - b.calls.num)
+}
+
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(date)
+
+  const handleClickPrevWeek = () => {
+    const selectedWeek = getAcademicWeek(selectedDate)
+    const prevWeek = selectedWeek - 1
+
+    if (prevWeek > 0) {
+      const daysInPrevWeek = getDaysInWeek(prevWeek)
+      const currentWeekDay = getNormalizedWeekday(selectedDate)
+      const dateToSelect = daysInPrevWeek[currentWeekDay - 1]
+
+      setSelectedDate(dateToSelect ?? selectedDate)
+    }
+  }
+
+  const handleClickNextWeek = () => {
+    const selectedWeek = getAcademicWeek(selectedDate)
+    const nextWeek = selectedWeek + 1
+
+    if (nextWeek <= MAX_WEEKS) {
+      const daysInNextWeek = getDaysInWeek(nextWeek)
+      const currentWeekDay = getNormalizedWeekday(selectedDate)
+      const dateToSelect = daysInNextWeek[currentWeekDay - 1]
+
+      setSelectedDate(dateToSelect ?? selectedDate)
+    }
+  }
 
   return (
     <div className="flex flex-col space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-2">
@@ -57,7 +93,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
         <button
           type="button"
           className="rounded-lg p-2 text-sm font-medium transition duration-150 ease-in-out hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-700 active:text-white active:ring-blue-500"
-          onClick={() => setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() - 7)))}
+          onClick={() => handleClickPrevWeek()}
         >
           <ChevronLeft size={24} />
         </button>
@@ -66,12 +102,12 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
             month: "long",
             year: "numeric",
           })}{" "}
-          • {getWeekByDate(selectedDate)} неделя
+          • {getAcademicWeek(selectedDate)} неделя
         </h3>
         <button
           type="button"
           className="rounded-lg p-2 text-sm font-medium transition duration-150 ease-in-out hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-700 active:text-white active:ring-blue-500"
-          onClick={() => setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() + 7)))}
+          onClick={() => handleClickNextWeek()}
         >
           <ChevronRight size={24} />
         </button>
@@ -102,7 +138,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
 
       {/* Расписание */}
       <div className="flex w-full flex-col space-y-2">
-        {joinLessonsByGroups(geеLessonsByDate(lessons, selectedDate)).map((lesson) => (
+        {groupLessonsByGroups(getLessonsForDate(lessons, selectedDate)).map((lesson) => (
           <div
             className="flex w-full flex-col space-y-1 rounded-lg border border-gray-300 bg-white p-2"
             key={lesson.id}

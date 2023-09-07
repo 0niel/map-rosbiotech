@@ -6,7 +6,7 @@ import { RiRouteLine } from "react-icons/ri"
 import RoomInfoTabContent from "./RoomInfoTabContent"
 import { useQuery } from "react-query"
 import type ScheduleAPI from "~/lib/schedule/api"
-import { getWeekByDate } from "~/lib/schedule/utils"
+import { getAcademicWeek } from "~/lib/schedule/utils"
 import RightDrawer from "../RightDrawer"
 import Spinner from "../Spinner"
 import ScheduleCalendar from "./ScheduleCalendar"
@@ -36,7 +36,7 @@ interface RoomDrawerProps {
 
 const getCurrentEvent = (lessons: components["schemas"]["Lesson"][], dateTime: Date) => {
   const date = new Date(dateTime)
-  const week = getWeekByDate(date)
+  const week = getAcademicWeek(date)
   // weekday 1 - понедельник, 2 - вторник, ...
   const weekday = date.getDay() === 0 ? 7 : date.getDay()
 
