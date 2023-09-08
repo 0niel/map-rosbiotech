@@ -1,3 +1,5 @@
+import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
+
 interface RoomInfoTabContentProps {
   purpose: string
   workload: number
@@ -7,12 +9,15 @@ interface RoomInfoTabContentProps {
 }
 
 const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({ purpose, workload, status, eventName, teacher }) => {
+  const { timeToDisplay } = useDisplayModeStore()
+
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-left text-sm text-gray-500">
         <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800">
           <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-            Информация о кабинете отображается для выбранного времени и даты
+            Информация о кабинете отображается для {timeToDisplay.toLocaleDateString("ru")} в{" "}
+            {timeToDisplay.toLocaleString("ru", { hour: "numeric", minute: "numeric" })}
           </p>
         </caption>
 

@@ -65,12 +65,11 @@ const DisplayModeSettingsDialog: React.FC<DisplayModeSettingsDialogProps> = ({ i
                   <p>Выберите дату и время, для которых будет отображена карта:</p>
                   <div className="flex space-x-4">
                     <DateAndTimePicker
-                      dateTimePickerShow={showDateTimePicker}
                       selectedDateTime={selectedDateTime}
                       setSelectedDateTime={(newDate) => {
-                        console.log(newDate)
                         setSelectedDateTime(newDate)
                       }}
+                      dateTimePickerShow={showDateTimePicker}
                       setDateTimePickerShow={setShowDateTimePicker}
                     />
                   </div>

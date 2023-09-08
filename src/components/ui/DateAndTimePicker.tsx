@@ -17,9 +17,8 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
   const [value, setValue] = React.useState("")
 
   React.useEffect(() => {
-    const currentTime = new Date()
-    setValue(`${currentTime.getHours()}:${currentTime.getMinutes()}`)
-  }, [])
+    setValue(`${selectedDateTime.getHours()}:${selectedDateTime.getMinutes()}`)
+  }, [selectedDateTime])
 
   return (
     <div className="flex w-full max-w-xl flex-row space-x-4">
@@ -60,7 +59,7 @@ const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
       <label htmlFor="time" className="text-sm text-gray-900">
         <input
           type="time"
-          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 сursor-pointer focus:outline-none"
           min="08:00"
           max="20:00"
           step="900"

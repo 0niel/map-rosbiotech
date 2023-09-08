@@ -263,6 +263,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <p className="text-center text-gray-500">Нет данных по этой аудитории</p>
                 </div>
               )}
+
               {!isLoading && data && (
                 <RoomInfoTabContent
                   workload={data?.info?.workload || 0}

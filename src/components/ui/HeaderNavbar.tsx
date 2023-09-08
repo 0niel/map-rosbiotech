@@ -13,6 +13,7 @@ import { MapDisplayMode } from "../svg-maps/MapDisplayMode"
 import { useDisplayModeStore } from "~/lib/stores/displayModeStore"
 import { cn } from "~/lib/utils"
 import SearchDialog from "./SearchDialog"
+import toast from "react-hot-toast"
 
 const MapDisplayButton = ({
   mode,
@@ -70,6 +71,7 @@ const HeaderNavbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
           isOpen={displayModeSettingsDialogOpen}
           onClose={function (): void {
             setDisplayModeSettingsDialogOpen(false)
+            toast.success("Время и дата отображения статусов аудиторий изменены")
           }}
         />
         <nav className="border-gray-200 bg-white px-4 py-2.5 dark:bg-gray-800 lg:px-6 select-none">
