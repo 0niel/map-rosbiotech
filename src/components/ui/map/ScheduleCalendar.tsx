@@ -8,6 +8,7 @@ import {
   MAX_WEEKS,
 } from "~/lib/schedule/utils"
 import { type components } from "~/lib/schedule/schema"
+import { PiStudentFill } from "react-icons/pi"
 
 interface ScheduleCalendarProps {
   date: Date
@@ -223,16 +224,13 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
               </span>
             </div>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium text-gray-700">
-                <Paperclip size={16} className="mr-1 inline" />
-                {lesson.discipline.name}
-              </p>
+              <p className="text-sm font-medium text-gray-700">{lesson.discipline.name}</p>
               <p className="text-xs font-medium text-gray-500">
                 <User2 size={16} className="mr-1 inline" />
                 {lesson.teachers.map((teacher) => teacher.name).join(", ")}
               </p>
               <p className="text-xs font-medium text-gray-500">
-                <User2 size={16} className="mr-1 inline" />
+                <PiStudentFill size={16} className="mr-1 inline" />
                 {lesson.group.name}
               </p>
             </div>
