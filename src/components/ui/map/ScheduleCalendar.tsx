@@ -131,8 +131,22 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
     }
   }
 
+  const getMonthName = (date: Date) => {
+    let name = date.toLocaleDateString("ru-RU", {
+      month: "long",
+      year: "numeric",
+    })
+
+    name = name[0]?.toUpperCase() + name.slice(1)
+
+    // Обрезаем " г." в конце
+    name = name.slice(0, name.length - 3)
+
+    return name
+  }
+
   return (
-    <div className="flex flex-col space-y-2 rounded-lg border border-gray-300 bg-gray-50 p-2">
+    <div className="flex flex-col rounded-lg p-2">
       <div className="flex flex-row items-center justify-between">
         <button
           type="button"
@@ -141,12 +155,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
         >
           <ChevronLeft size={24} />
         </button>
-        <h3 className="text-base font-semibold text-gray-700">
-          {selectedDate.toLocaleDateString("ru-RU", {
-            month: "long",
-            year: "numeric",
-          })}{" "}
-          • {getAcademicWeek(selectedDate)} неделя
+        <h3 className="text-base font-semibold text-gray-700 flex flex-row items-center space-x-2">
+          {getMonthName(selectedDate)} • {getAcademicWeek(selectedDate)} неделя
         </h3>
         <button
           type="button"
@@ -157,7 +167,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
         </button>
       </div>
       {/* Кнопки дней недели */}
-      <div className="flex w-full flex-row space-x-2">
+      <div className="flex w-full flex-row space-x-2 mb-4">
         {getWeekDaysByDate(selectedDate).map((day: Date) => (
           <button
             className="flex w-full flex-col items-center justify-around ease-in-out"
@@ -177,12 +187,14 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
               <p className="text-sm font-medium">{day.getDate()}</p>
             </div>
             <div className="flex flex-row justify-center space-x-0.5">
-              {getLessonsForDate(lessons, day).map((lesson, eventIdx) => (
-                <div
-                  key={eventIdx}
-                  className={`mt-1 h-1.5 w-1.5 rounded-full ${getEventPointColor(lesson.lesson_type?.name ?? "пр")}`}
-                />
-              ))}
+              {groupLessonsByGroups(getLessonsForDate(lessons, day)).map((lesson, eventIdx) => {
+                return (
+                  <div
+                    key={eventIdx}
+                    className={`mt-1 h-1.5 w-1.5 rounded-full ${getEventPointColor(lesson.lesson_type?.name ?? "пр")}`}
+                  />
+                )
+              })}
             </div>
           </button>
         ))}
@@ -192,7 +204,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
       <div className="flex w-full flex-col space-y-2">
         {groupLessonsByGroups(getLessonsForDate(lessons, selectedDate)).map((lesson) => (
           <div
-            className="flex w-full flex-col space-y-1 rounded-lg border border-gray-300 bg-white p-2"
+            className="flex w-full flex-col space-y-1 rounded-lg border border-gray-200 bg-white p-2"
             key={lesson.id}
           >
             <div className="flex w-full flex-row items-center justify-between space-x-2">
@@ -204,7 +216,10 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ date, lessons }) =>
                 {lesson.lesson_type?.name}
               </span>
               <span className="text-xs font-medium text-gray-500">
-                {lesson.calls.time_start.slice(0, 5)} - {lesson.calls.time_end.slice(0, 5)}
+                <span className="mr-2">{lesson.calls.num} пара</span>
+                <span>
+                  {lesson.calls.time_start.slice(0, 5)} - {lesson.calls.time_end.slice(0, 5)}
+                </span>
               </span>
             </div>
             <div className="flex flex-col space-y-1">
