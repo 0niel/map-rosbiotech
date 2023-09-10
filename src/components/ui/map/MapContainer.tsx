@@ -250,18 +250,6 @@ const MapContainer = () => {
   }, [campus, setFloor, unselectRoomEl])
 
   useEffect(() => {
-    const currentScreenWidth = window.innerWidth
-    const isSmallScreen = currentScreenWidth < 1024
-
-    transformComponentRef.current?.setTransform(
-      isSmallScreen ? campus.initialPositionX ?? 0 * 2 : campus.initialPositionX ?? 0,
-      campus.initialPositionY ?? 0,
-      campus.initialScale ?? 1,
-      undefined,
-    )
-  }, [campus])
-
-  useEffect(() => {
     if (!selectedFromSearchRoom) {
       return
     }
