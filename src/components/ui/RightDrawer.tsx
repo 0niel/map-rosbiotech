@@ -24,7 +24,7 @@ const RightDrawer: React.FC<RightDrawerProps> = ({ titleComponent, children, isO
   return (
     <div
       id="drawer-right"
-      className={`fixed right-0 top-0 z-40 h-screen overflow-y-auto p-4 transition-transform ${drawerClass} bg-white z-50 dark:bg-gray-800 dark:text-white md:w-96 w-full`}
+      className={`fixed right-0 top-0 z-40 overflow-y-auto p-4 transition-transform ${drawerClass} bg-white z-50 md:w-96 w-full h-full md:shadow-sm md:overflow-y-auto`}
       tabIndex={-1}
       aria-labelledby="drawer-right-label"
     >
