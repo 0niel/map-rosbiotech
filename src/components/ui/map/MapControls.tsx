@@ -2,6 +2,7 @@ import React from "react"
 import FloorSelectorButtons from "./FloorSelectorButtons"
 import ScaleButtons from "./ScaleButtons"
 import { useMapStore } from "~/lib/stores/mapStore"
+import { useHotkeys } from "react-hotkeys-hook"
 
 interface MapControlsProps {
   floors: number[]
@@ -11,6 +12,21 @@ interface MapControlsProps {
 
 const MapControls: React.FC<MapControlsProps> = ({ floors, onZoomIn, onZoomOut }) => {
   const { floor, setFloor } = useMapStore()
+
+  useHotkeys("up", () => {
+    const newFloor = floors[floors.indexOf(floor) - 1]
+    if (newFloor !== undefined) {
+      setFloor(newFloor)
+    }
+  })
+
+  useHotkeys("down", () => {
+    const newFloor = floors[floors.indexOf(floor) + 1]
+    if (newFloor !== undefined) {
+      setFloor(newFloor)
+    }
+  })
+
   return (
     <div className="select-none">
       <FloorSelectorButtons floors={floors} selectedFloor={floor} onFloorSelect={(floor) => setFloor(floor)} />
