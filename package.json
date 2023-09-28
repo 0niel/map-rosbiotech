@@ -40,6 +40,7 @@
     "react-highlight-words": "^0.20.0",
     "react-hook-form": "^7.45.4",
     "react-hot-toast": "^2.4.1",
+    "react-hotkeys-hook": "^4.4.1",
     "react-query": "^3.39.3",
     "react-spring-bottom-sheet": "^3.5.0-alpha.0",
     "react-zoom-pan-pinch": "^3.1.0",
