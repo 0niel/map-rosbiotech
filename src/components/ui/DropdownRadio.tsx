@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { ChevronDown } from "lucide-react"
+import {useHotkeys} from "react-hotkeys-hook";
 
 type DropdownRadioOption = {
   id: string
@@ -34,6 +35,24 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
     onSelectionChange(option)
     setIsVisible(false)
   }
+
+  useHotkeys("left", () => {
+    if (selectedOption) {
+      const newOption = options.at(options.map((option) => option.id).indexOf(selectedOption.id) - 1)
+      if (newOption !== undefined) {
+        handleOptionClick(newOption)
+      }
+    }
+  })
+
+  useHotkeys("right", () => {
+    if (selectedOption) {
+      const newOption = options.at((options.map((option) => option.id).indexOf(selectedOption.id) + 1) % options.length)
+      if (newOption !== undefined) {
+        handleOptionClick(newOption)
+      }
+    }
+  })
 
   return (
     <div className="pointer-events-auto">
