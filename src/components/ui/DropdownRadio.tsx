@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { ChevronDown } from "lucide-react"
-import {useHotkeys} from "react-hotkeys-hook";
+import { useHotkeys } from "react-hotkeys-hook"
 
 type DropdownRadioOption = {
   id: string
