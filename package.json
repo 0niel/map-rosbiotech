@@ -48,7 +48,7 @@
     "tailwind-datepicker-react": "^1.4.2",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
-    "zod": "^3.22.1",
+    "zod": "^3.22.3",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
