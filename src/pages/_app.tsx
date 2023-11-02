@@ -5,6 +5,7 @@ import { QueryClientProvider } from "react-query"
 import Head from "next/head"
 import queryClient from "~/lib/queryClient"
 import { Toaster } from "react-hot-toast"
+import Script from "next/script"
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -119,6 +120,17 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0" />
       </Head>
       <main>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-93EBGLKRLW" />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-93EBGLKRLW');
+        `}
+        </Script>
+
         <QueryClientProvider client={queryClient}>
           <Toaster position="bottom-center" />
           <Component {...pageProps} />
