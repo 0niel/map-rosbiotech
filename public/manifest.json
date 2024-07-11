@@ -1,6 +1,6 @@
 {
-  "name": "Интерактивная карта РТУ МИРЭА",
-  "short_name": "Карта РТУ МИРЭА",
+  "name": "Интерактивная карта РОСБИОТЕХ",
+  "short_name": "Карта РОСБИОТЕХ",
   "theme_color": "#1a56db",
   "background_color": "#FFFFFF",
   "start_url": "/",

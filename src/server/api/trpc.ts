@@ -7,12 +7,12 @@
  * need to use are documented accordingly near the end.
  */
 
-import { initTRPC, TRPCError } from "@trpc/server"
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next"
-import { type Session } from "next-auth"
-import superjson from "superjson"
-import { ZodError } from "zod"
-import { prisma } from "~/server/db"
+import { initTRPC, TRPCError } from '@trpc/server'
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { type Session } from 'next-auth'
+import superjson from 'superjson'
+import { ZodError } from 'zod'
+import { prisma } from '~/server/db'
 
 /**
  * 1. CONTEXT
@@ -35,9 +35,9 @@ type CreateContextOptions = unknown
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
-  return {
-    prisma,
-  }
+    return {
+        prisma
+    }
 }
 
 /**
@@ -47,9 +47,9 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
-  const { req, res } = opts
+    const { req, res } = opts
 
-  return createInnerTRPCContext({})
+    return createInnerTRPCContext({})
 }
 
 /**
@@ -61,16 +61,19 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+        return {
+            ...shape,
+            data: {
+                ...shape.data,
+                zodError:
+                    error.cause instanceof ZodError
+                        ? error.cause.flatten()
+                        : null
+            }
+        }
     }
-  },
 })
 
 /**

@@ -1,87 +1,89 @@
-import React from "react"
-import Datepicker from "tailwind-datepicker-react"
+import React from 'react'
+import Datepicker from 'tailwind-datepicker-react'
 
 interface DateAndTimePickerProps {
-  dateTimePickerShow: boolean
-  setDateTimePickerShow: (show: boolean) => void
-  selectedDateTime: Date
-  setSelectedDateTime: (date: Date) => void
+    dateTimePickerShow: boolean
+    setDateTimePickerShow: (show: boolean) => void
+    selectedDateTime: Date
+    setSelectedDateTime: (date: Date) => void
 }
 
 const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
-  dateTimePickerShow,
-  setDateTimePickerShow,
-  selectedDateTime,
-  setSelectedDateTime,
+    dateTimePickerShow,
+    setDateTimePickerShow,
+    selectedDateTime,
+    setSelectedDateTime
 }) => {
-  const [value, setValue] = React.useState("")
+    const [value, setValue] = React.useState('')
 
-  React.useEffect(() => {
-    setValue(`${selectedDateTime.getHours()}:${selectedDateTime.getMinutes()}`)
-  }, [selectedDateTime])
+    React.useEffect(() => {
+        setValue(
+            `${selectedDateTime.getHours()}:${selectedDateTime.getMinutes()}`
+        )
+    }, [selectedDateTime])
 
-  return (
-    <div className="flex w-full max-w-xl flex-row space-x-4">
-      <Datepicker
-        options={{
-          datepickerClassNames: "z-50 ",
-          theme: {
-            background: "",
-            todayBtn: "",
-            clearBtn: "",
-            icons: "",
-            text: "",
-            disabledText: "",
-            input: "cursor-pointer",
-            inputIcon: "cursor-pointer",
-            selected: "",
-          },
+    return (
+        <div className="flex w-full max-w-xl flex-row space-x-4">
+            <Datepicker
+                options={{
+                    datepickerClassNames: 'z-50 ',
+                    theme: {
+                        background: '',
+                        todayBtn: '',
+                        clearBtn: '',
+                        icons: '',
+                        text: '',
+                        disabledText: '',
+                        input: 'cursor-pointer',
+                        inputIcon: 'cursor-pointer',
+                        selected: ''
+                    },
 
-          weekDays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+                    weekDays: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
 
-          language: "ru",
-          dateFormat: "dd.mm.yyyy",
+                    language: 'ru',
+                    dateFormat: 'dd.mm.yyyy',
 
-          autoHide: true,
-          todayBtn: false,
-          clearBtn: false,
-        }}
-        show={dateTimePickerShow}
-        setShow={setDateTimePickerShow}
-        selected={selectedDateTime}
-        onChange={(date: Date) => {
-          if (date) {
-            setSelectedDateTime(date)
-          }
-        }}
-      />
+                    autoHide: true,
+                    todayBtn: false,
+                    clearBtn: false
+                }}
+                show={dateTimePickerShow}
+                setShow={setDateTimePickerShow}
+                selected={selectedDateTime}
+                onChange={(date: Date) => {
+                    if (date) {
+                        setSelectedDateTime(date)
+                    }
+                }}
+            />
 
-      <label htmlFor="time" className="text-sm text-gray-900">
-        <input
-          type="time"
-          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 сursor-pointer focus:outline-none"
-          min="08:00"
-          max="20:00"
-          step="900"
-          value={value}
-          id="time"
-          onChange={(e) => {
-            setValue(e.target.value)
-            const [hours, minutes] = e.target.value.split(":")
+            <label htmlFor="time" className="text-sm text-gray-900">
+                <input
+                    type="time"
+                    className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 сursor-pointer focus:outline-none"
+                    min="08:00"
+                    max="20:00"
+                    step="900"
+                    value={value}
+                    id="time"
+                    onChange={e => {
+                        setValue(e.target.value)
+                        const [hours, minutes] = e.target.value.split(':')
 
-            let date = new Date()
-            if (selectedDateTime) {
-              date = selectedDateTime
-            }
+                        let date = new Date()
+                        if (selectedDateTime) {
+                            date = selectedDateTime
+                        }
 
-            date.setHours(Number(hours))
-            date.setMinutes(Number(minutes))
-            setSelectedDateTime(date)
-          }}
-        />
-      </label>
-    </div>
-  )
+                        date.setHours(Number(hours))
+                        date.setMinutes(Number(minutes))
+                        setSelectedDateTime(date)
+                    }}
+                />
+            </label>
+        </div>
+    )
 }
 
 export default DateAndTimePicker
