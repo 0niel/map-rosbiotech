@@ -10,17 +10,18 @@ export const useRoomsQuery = (
 
   return useQuery<components['schemas']['Room'][], Error>(['rooms', campus], {
     queryFn: async () => {
-      const { data, error } = await scheduleAPI.getCampuses()
-      if (error || !data) throw error
+      // const { data, error } = await scheduleAPI.getCampuses()
+      // if (error || !data) throw error
 
-      const currentCampusId = data.find(c => c.short_name === campus)?.id
-      if (!currentCampusId) throw new Error('Кампус не найден')
+      // const currentCampusId = data.find(c => c.short_name === campus)?.id
+      // if (!currentCampusId) throw new Error('Кампус не найден')
 
-      const { data: rooms, error: roomsError } =
-        await scheduleAPI.getRooms(currentCampusId)
-      if (roomsError || !rooms) throw roomsError
+      // const { data: rooms, error: roomsError } =
+      //   await scheduleAPI.getRooms(currentCampusId)
+      // if (roomsError || !rooms) throw roomsError
 
-      return rooms
+      // return rooms
+      return [];
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,

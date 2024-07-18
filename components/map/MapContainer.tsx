@@ -426,7 +426,7 @@ const MapContainer = () => {
         )}
 
         {!isLoading && mapData && (
-          <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
+          <div className="relative z-0 mb-4 h-full w-full overflow-hidden bg-gray-50 dark:bg-gray-900">
             <NavigationDialog
               isOpen={routesModalShow}
               onClose={() => setRoutesModalShow(false)}

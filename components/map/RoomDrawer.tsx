@@ -1,6 +1,5 @@
 import React from 'react'
 import { type components } from '@/lib/schedule/schema'
-import Tabs from '../Tabs'
 import { Calendar, Info, QrCodeIcon, Link } from 'lucide-react'
 import { RiRouteLine } from 'react-icons/ri'
 import RoomInfoTabContent from './RoomInfoTabContent'
@@ -38,6 +37,9 @@ import {
 } from '@/lib/employees/api'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { Spinner } from '../ui/spinner'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
 
 interface RoomDrawerProps {
   isOpen: boolean
@@ -122,13 +124,13 @@ const FastNavigateButton: React.FC<{ onClick: () => void; title: string }> = ({
   title
 }) => {
   return (
-    <button
-      type="button"
-      className="w-full rounded-lg bg-blue-200 px-2 py-1.5 text-center text-xs font-medium text-blue-700 hover:bg-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto sm:whitespace-nowrap"
+    <Badge
+      className="w-full cursor-pointer px-2 py-1.5 sm:w-auto sm:whitespace-nowrap"
       onClick={onClick}
+      variant={'secondary'}
     >
       {title}
-    </button>
+    </Badge>
   )
 }
 
@@ -193,237 +195,256 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetTitle>
-        <div className="flex flex-row items-center">
-          <h5
-            id="drawer-right-label"
-            className="inline-flex items-center text-base font-bold text-gray-900 dark:text-gray-400"
-          >
-            Аудитория {roomMapObject.name}
-          </h5>
-          <SheetDescription>
-            <div className="ml-4 flex flex-row items-center space-x-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <QrCodeIcon className="h-5 w-5" />
-                </DropdownMenuTrigger>
+      <SheetContent>
+        <SheetTitle>
+          <div className="flex flex-row items-center">
+            <h5
+              id="drawer-right-label"
+              className="inline-flex items-center text-base font-bold text-gray-900 dark:text-gray-400"
+            >
+              Аудитория {roomMapObject.name}
+            </h5>
+            <SheetDescription>
+              <div className="ml-4 flex flex-row items-center space-x-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <QrCodeIcon className="h-5 w-5" />
+                  </DropdownMenuTrigger>
 
-                <DropdownMenuContent>
-                  <DropdownMenuItem className="pointer-events-none">
-                    <div className="flex flex-col items-center">
-                      <QRCode
-                        value={generateLink(roomMapObject.id)}
-                        size={256}
-                        bgColor="#FFFFFF"
-                        fgColor="#000000"
-                        includeMargin={false}
-                        renderAs="svg"
-                      />
+                  <DropdownMenuContent>
+                    <DropdownMenuItem className="pointer-events-none">
+                      <div className="flex flex-col items-center">
+                        <QRCode
+                          value={generateLink(roomMapObject.id)}
+                          size={256}
+                          bgColor="#FFFFFF"
+                          fgColor="#000000"
+                          includeMargin={false}
+                          renderAs="svg"
+                        />
 
-                      <p className="mt-2 text-sm text-gray-900">
-                        Этот QR-код можно отсканировать, чтобы открыть эту
-                        аудиторию на карте
-                      </p>
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                        <p className="mt-2 text-sm text-gray-900">
+                          Этот QR-код можно отсканировать, чтобы открыть эту
+                          аудиторию на карте
+                        </p>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-              <CopyToClipboard
-                text={generateLink(roomMapObject.id)}
-                onCopy={() => {
-                  toast.success('Ссылка скопирована в буфер обмена')
-                }}
-              >
-                <button
-                  type="button"
-                  className="rounded-lg bg-gray-100 p-1.5 text-sm text-gray-900 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                <CopyToClipboard
+                  text={generateLink(roomMapObject.id)}
+                  onCopy={() => {
+                    toast.success('Ссылка скопирована в буфер обмена')
+                  }}
                 >
-                  <Link className="h-5 w-5" />
-                </button>
-              </CopyToClipboard>
-            </div>
-          </SheetDescription>
-        </div>
-      </SheetTitle>
+                  <button
+                    type="button"
+                    className="rounded-lg bg-gray-100 p-1.5 text-sm text-gray-900 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  >
+                    <Link className="h-5 w-5" />
+                  </button>
+                </CopyToClipboard>
+              </div>
+            </SheetDescription>
+          </div>
+        </SheetTitle>
 
-      <div className="flex flex-col">
-        <Tabs>
-          <Tabs.Tab name="Информация" icon={<Info />}>
-            <div className="mb-4 flex p-2">
-              <button
-                type="button"
-                className="mb-2 mr-2 flex w-full items-center justify-center rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                onClick={() => {
-                  onClickNavigateFromHere(roomMapObject)
-                }}
-              >
-                <RiRouteLine className="mr-2 h-5 w-5" />
-                Отсюда
-              </button>
-              <button
-                className="mb-2 flex w-full items-center justify-center rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                onClick={() => {
-                  onClickNavigateToHere(roomMapObject)
-                }}
-              >
-                <RiRouteLine className="mr-2 h-5 w-5 rotate-180 transform" />
-                Сюда
-              </button>
-            </div>
-            <div className="mb-4 flex flex-col p-2">
-              <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
-                Найти ближайшие
-              </p>
-              <div className="flex w-full flex-row flex-nowrap space-x-2 overflow-x-auto sm:flex sm:flex-wrap sm:gap-2 sm:space-x-1 sm:space-y-0">
-                <FastNavigateButton
-                  onClick={() =>
-                    findNearestObject(MapObjectType.TOILET, [
-                      'Туалет М',
-                      'Туалет МЖ'
-                    ])
-                  }
-                  title="Туалет М"
-                />
-                <FastNavigateButton
-                  onClick={() =>
-                    findNearestObject(MapObjectType.TOILET, [
-                      'Туалет Ж',
-                      'Туалет МЖ'
-                    ])
-                  }
-                  title="Туалет Ж"
-                />
-                <FastNavigateButton
-                  onClick={() => findNearestObject(MapObjectType.CANTEEN, [])}
-                  title="Буфет"
-                />
-              </div>
-            </div>
-            {(isLoading || employeeIsLoading) && (
-              <div className="flex h-full items-center justify-center">
-                <Spinner />
-              </div>
-            )}
-            {isError && (
-              <div className="flex h-full items-center justify-center">
-                <p>Ошибка загрузки данных</p>
-              </div>
-            )}
-            {isFetched &&
-              !data &&
-              isEmployeeFetched &&
-              employeeData?.data?.length === 0 && (
-                <div className="flex h-full flex-col items-center justify-center">
-                  <Image
-                    src="assets/ghost.svg"
-                    width={200}
-                    height={200}
-                    alt={''}
+        <div className="mt-4 flex flex-col">
+          <Tabs defaultValue="info">
+            <TabsList className="w-full">
+              <TabsTrigger value="info" className="w-full">
+                Информация
+              </TabsTrigger>
+              <TabsTrigger value="schedule" className="w-full">
+                Расписание
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="info">
+              <div className="mb-4 flex flex-col p-2">
+                <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                  Найти ближайшие
+                </p>
+                <div className="flex w-full flex-row flex-nowrap space-x-2 overflow-x-auto sm:flex sm:flex-wrap sm:gap-2 sm:space-x-1 sm:space-y-0">
+                  <FastNavigateButton
+                    onClick={() =>
+                      findNearestObject(MapObjectType.TOILET, [
+                        'Туалет М',
+                        'Туалет МЖ'
+                      ])
+                    }
+                    title="Туалет М"
                   />
-                  <p className="text-center text-gray-500">
-                    Нет данных по этой аудитории
-                  </p>
+                  <FastNavigateButton
+                    onClick={() =>
+                      findNearestObject(MapObjectType.TOILET, [
+                        'Туалет Ж',
+                        'Туалет МЖ'
+                      ])
+                    }
+                    title="Туалет Ж"
+                  />
+                  <FastNavigateButton
+                    onClick={() => findNearestObject(MapObjectType.CANTEEN, [])}
+                    title="Буфет"
+                  />
+                </div>
+              </div>
+              <div className="mb-4 flex flex-col p-2">
+                <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                  Построить маршрут
+                </p>
+                <div className="mb-4 flex justify-between space-x-2">
+                  <Button
+                    className="w-full"
+                    variant={'secondary'}
+                    onClick={() => {
+                      onClickNavigateFromHere(roomMapObject)
+                    }}
+                  >
+                    <RiRouteLine className="mr-2 h-5 w-5" />
+                    Отсюда
+                  </Button>
+                  <Button
+                    className="w-full"
+                    variant={'secondary'}
+                    onClick={() => {
+                      onClickNavigateToHere(roomMapObject)
+                    }}
+                  >
+                    <RiRouteLine className="mr-2 h-5 w-5 rotate-180 transform" />
+                    Сюда
+                  </Button>
+                </div>
+              </div>
+              {(isLoading || employeeIsLoading) && (
+                <div className="flex h-full items-center justify-center">
+                  <Spinner />
                 </div>
               )}
-
-            {!isLoading && data && (
-              <RoomInfoTabContent
-                workload={data?.info?.workload || 0}
-                status={data?.status === 'free' ? 'Свободна' : 'Занята'}
-                purpose={data?.info?.purpose || ''}
-                eventName={
-                  getCurrentEvent(data?.lessons || [], timeToDisplay)
-                    ?.discipline || ''
-                }
-                teacher={
-                  getCurrentEvent(data?.lessons || [], timeToDisplay)
-                    ?.teachers || ''
-                }
-              />
-            )}
-
-            {!employeeIsLoading &&
-            employeeData?.data &&
-            employeeData?.data.length > 0 ? (
-              <div className="flex flex-col">
-                <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
-                  Сотрудники, которые работают в этой аудитории
-                </p>
-                <div className="flex flex-col space-y-4">
-                  {employeeData?.data.map(employee => (
-                    <div
-                      key={employee.id}
-                      className="tems-center flex flex-row space-x-2"
-                    >
-                      {employee.attributes.photo ? (
-                        <Image
-                          src={employee.attributes.photo.data.attributes.url}
-                          alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
-                          className="h-20 w-20 flex-shrink-0 rounded-full object-cover"
-                          width={80}
-                          height={80}
-                        />
-                      ) : (
-                        <div className="h-20 w-20 rounded-full bg-gray-200" />
-                      )}
-
-                      <div className="flex flex-col">
-                        <p className="text-sm font-medium text-gray-900">
-                          {employee.attributes.lastName}{' '}
-                          {employee.attributes.firstName}{' '}
-                          {employee.attributes.patronymic}
-                        </p>
-
-                        {employee.attributes.positions
-                          .filter(
-                            position =>
-                              position.contacts.filter(
-                                contact =>
-                                  contact.room?.data.attributes.name ===
-                                  roomMapObject.name
-                              ).length > 0
-                          )
-                          .map((position, index) => (
-                            <div key={index} className="text-xs text-gray-600">
-                              <p>{position.department}</p>
-                              <p>{position.post}</p>
-                              {position.contacts.map((contact, i) => (
-                                <div key={i}>
-                                  {contact.phone && (
-                                    <p>Телефон: {contact.phone}</p>
-                                  )}
-                                  {contact.IP && <p>IP: {contact.IP}</p>}
-                                  {contact.email && (
-                                    <p>Email: {contact.email}</p>
-                                  )}
-                                  {/* {contact.receptionTime && <p>Время приема: {contact.receptionTime}</p>} */}
-                                </div>
-                              ))}
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  ))}
+              {isError && (
+                <div className="flex h-full items-center justify-center">
+                  <p>Ошибка загрузки данных</p>
                 </div>
-              </div>
-            ) : null}
-          </Tabs.Tab>
-          <Tabs.Tab name="Расписание" icon={<Calendar />}>
-            {isLoading && (
-              <div className="flex h-full items-center justify-center">
-                <Spinner />
-              </div>
-            )}
-            {!isLoading && (
-              <ScheduleCalendar
-                date={timeToDisplay}
-                lessons={data?.lessons || []}
-              />
-            )}
-          </Tabs.Tab>
-        </Tabs>
-      </div>
+              )}
+              {isFetched &&
+                !data &&
+                isEmployeeFetched &&
+                employeeData?.data?.length === 0 && (
+                  <div className="flex h-full flex-col items-center justify-center">
+                    <Image
+                      src="assets/ghost.svg"
+                      width={200}
+                      height={200}
+                      alt={''}
+                    />
+                    <p className="text-center text-gray-500">
+                      Нет данных по этой аудитории
+                    </p>
+                  </div>
+                )}
+
+              {!isLoading && data && (
+                <RoomInfoTabContent
+                  workload={data?.info?.workload || 0}
+                  status={data?.status === 'free' ? 'Свободна' : 'Занята'}
+                  purpose={data?.info?.purpose || ''}
+                  eventName={
+                    getCurrentEvent(data?.lessons || [], timeToDisplay)
+                      ?.discipline || ''
+                  }
+                  teacher={
+                    getCurrentEvent(data?.lessons || [], timeToDisplay)
+                      ?.teachers || ''
+                  }
+                />
+              )}
+
+              {!employeeIsLoading &&
+              employeeData?.data &&
+              employeeData?.data.length > 0 ? (
+                <div className="flex flex-col">
+                  <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                    Сотрудники, которые работают в этой аудитории
+                  </p>
+                  <div className="flex flex-col space-y-4">
+                    {employeeData?.data.map(employee => (
+                      <div
+                        key={employee.id}
+                        className="tems-center flex flex-row space-x-2"
+                      >
+                        {employee.attributes.photo ? (
+                          <Image
+                            src={employee.attributes.photo.data.attributes.url}
+                            alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
+                            className="h-20 w-20 flex-shrink-0 rounded-full object-cover"
+                            width={80}
+                            height={80}
+                          />
+                        ) : (
+                          <div className="h-20 w-20 rounded-full bg-gray-200" />
+                        )}
+
+                        <div className="flex flex-col">
+                          <p className="text-sm font-medium text-gray-900">
+                            {employee.attributes.lastName}{' '}
+                            {employee.attributes.firstName}{' '}
+                            {employee.attributes.patronymic}
+                          </p>
+
+                          {employee.attributes.positions
+                            .filter(
+                              position =>
+                                position.contacts.filter(
+                                  contact =>
+                                    contact.room?.data.attributes.name ===
+                                    roomMapObject.name
+                                ).length > 0
+                            )
+                            .map((position, index) => (
+                              <div
+                                key={index}
+                                className="text-xs text-gray-600"
+                              >
+                                <p>{position.department}</p>
+                                <p>{position.post}</p>
+                                {position.contacts.map((contact, i) => (
+                                  <div key={i}>
+                                    {contact.phone && (
+                                      <p>Телефон: {contact.phone}</p>
+                                    )}
+                                    {contact.IP && <p>IP: {contact.IP}</p>}
+                                    {contact.email && (
+                                      <p>Email: {contact.email}</p>
+                                    )}
+                                    {/* {contact.receptionTime && <p>Время приема: {contact.receptionTime}</p>} */}
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </TabsContent>
+            <TabsContent value="schedule">
+              {isLoading && (
+                <div className="flex h-full items-center justify-center">
+                  <Spinner />
+                </div>
+              )}
+              {!isLoading && (
+                <ScheduleCalendar
+                  date={timeToDisplay}
+                  lessons={data?.lessons || []}
+                />
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </SheetContent>
     </Sheet>
   )
 }

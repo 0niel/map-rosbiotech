@@ -39,7 +39,7 @@ export const Sidebar = () => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTitle className="sr-only">Боковое меню</SheetTitle>
       <SheetTrigger asChild>
-        <Button size="icon" variant="outline">
+        <Button size="icon" variant="outline" className="mr-2 p-2">
           <Menu className="h-5 w-5" aria-hidden="true" />
           <span className="sr-only">Открыть боковое меню</span>
         </Button>

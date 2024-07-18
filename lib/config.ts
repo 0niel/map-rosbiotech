@@ -13,8 +13,8 @@ const config: Config = {
             floors: [1],
             initialFloor: 2,
             initialScale: 0.2,
-            initialPositionX: -600,
-            initialPositionY: -134,
+            initialPositionX: 600,
+            initialPositionY: 0,
         },
     ],
     svgMaps: {
