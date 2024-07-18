@@ -54,9 +54,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <CustomQueryClientProvider>
-            <Header />
-            {children}
-            <Toaster />
+            <main className="flex h-screen flex-col">
+              <Header />
+              {children}
+              <Toaster />
+            </main>
           </CustomQueryClientProvider>
         </ThemeProvider>
       </body>
