@@ -18,7 +18,7 @@ const config: Config = {
         },
     ],
     svgMaps: {
-        Floor1: '/svg-maps/v78/floor_1.svg',
+        Floor1: '/svg-maps/floor_1.svg',
     },
 };
 

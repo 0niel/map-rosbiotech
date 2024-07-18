@@ -103,108 +103,113 @@ export const Header = () => {
           }}
         />
         <nav className="select-none border-gray-200 bg-white px-4 py-2.5 dark:bg-gray-800 lg:px-6">
-          <div className="flex flex-wrap items-center justify-between">
-            <div className="flex items-center justify-start">
-              <Sidebar />
+          <div className="flex items-center justify-between md:justify-start">
+            <div className="flex items-center">
+              <div className="flex items-center">
+                <Sidebar />
 
-              <div className="mr-4 flex">
-                <Image
-                  src="rbt-logo-dark.svg"
-                  className="mr-3 h-12"
-                  alt="РОСБИОТЕХ Герб"
-                  width={210}
-                  height={150}
-                />
+                <div className="mr-4 flex">
+                  <Image
+                    src="rbt-logo-dark.svg"
+                    className="mr-3 h-12"
+                    alt="РОСБИОТЕХ Герб"
+                    width={210}
+                    height={150}
+                  />
+                </div>
               </div>
-
-              <CommandMenu />
             </div>
-            <div className="flex items-center lg:order-2">
-              <div className="mr-4">
-                <DropdownRadio
-                  title={campus.shortName}
-                  options={Array.from(campuses, (campus, i) => ({
-                    label: campus.shortName,
-                    description: campus.description,
-                    id: i.toString()
-                  }))}
-                  onSelectionChange={selectedOption => {
-                    if (!selectedOption) {
-                      return
-                    }
-                    const newCampus = campuses[parseInt(selectedOption.id)]
-                    if (newCampus && newCampus !== campus) {
-                      setCampus(newCampus)
-                    }
-                  }}
-                  defaultSelectedOptionId="0"
-                />
+            <div className="flex items-center md:w-full md:justify-between">
+              <CommandMenu />
+              <div className="ml-auto flex items-center">
+                <div className="mr-4">
+                  <DropdownRadio
+                    title={campus.shortName}
+                    options={Array.from(campuses, (campus, i) => ({
+                      label: campus.shortName,
+                      description: campus.description,
+                      id: i.toString()
+                    }))}
+                    onSelectionChange={selectedOption => {
+                      if (!selectedOption) {
+                        return
+                      }
+                      const newCampus = campuses[parseInt(selectedOption.id)]
+                      if (newCampus && newCampus !== campus) {
+                        setCampus(newCampus)
+                      }
+                    }}
+                    defaultSelectedOptionId="0"
+                  />
+                </div>
+
+                {/* <!-- Apps -->  */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <TbApps className="h-6 w-6" aria-hidden="true" />
+                      <span className="sr-only">
+                        Дополнительные возможности
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Дополнительно</DropdownMenuLabel>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <DropdownMenuItem>
+                        <MapDisplayButton
+                          mode={MapDisplayMode.HEATMAP}
+                          currentMode={displayModeStore.mode}
+                          handleClick={handleDisplayModeFeatureClick}
+                          icon={
+                            <Map
+                              className={cn(
+                                'mx-auto mb-1 h-7 w-7',
+                                displayModeStore.mode == MapDisplayMode.HEATMAP
+                                  ? 'text-green-500'
+                                  : 'text-gray-400 group-hover:text-gray-500'
+                              )}
+                            />
+                          }
+                          text="нагрузка аудиторий"
+                        />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <MapDisplayButton
+                          mode={MapDisplayMode.ROOMS_STATUSES}
+                          currentMode={displayModeStore.mode}
+                          handleClick={handleDisplayModeFeatureClick}
+                          icon={
+                            <CalendarDays
+                              className={cn(
+                                'mx-auto mb-1 h-7 w-7',
+                                displayModeStore.mode ==
+                                  MapDisplayMode.ROOMS_STATUSES
+                                  ? 'text-green-500'
+                                  : 'text-gray-400 group-hover:text-gray-500'
+                              )}
+                            />
+                          }
+                          text="свободные аудитории"
+                        />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <button
+                          className="rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
+                          onClick={() => setDisplayModeSettingsDialogOpen(true)}
+                        >
+                          <Timer className="mx-auto mb-1 h-7 w-7 text-gray-400 group-hover:text-gray-500" />
+                          <div className="text-sm text-gray-900 dark:text-white">
+                            дата и время
+                          </div>
+                        </button>
+                      </DropdownMenuItem>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-
-              {/* <!-- Apps -->  */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <TbApps className="h-6 w-6" aria-hidden="true" />
-                    <span className="sr-only">Дополнительные возможности</span>
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Дополнительно</DropdownMenuLabel>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <DropdownMenuItem>
-                      <MapDisplayButton
-                        mode={MapDisplayMode.HEATMAP}
-                        currentMode={displayModeStore.mode}
-                        handleClick={handleDisplayModeFeatureClick}
-                        icon={
-                          <Map
-                            className={cn(
-                              'mx-auto mb-1 h-7 w-7',
-                              displayModeStore.mode == MapDisplayMode.HEATMAP
-                                ? 'text-green-500'
-                                : 'text-gray-400 group-hover:text-gray-500'
-                            )}
-                          />
-                        }
-                        text="нагрузка аудиторий"
-                      />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <MapDisplayButton
-                        mode={MapDisplayMode.ROOMS_STATUSES}
-                        currentMode={displayModeStore.mode}
-                        handleClick={handleDisplayModeFeatureClick}
-                        icon={
-                          <CalendarDays
-                            className={cn(
-                              'mx-auto mb-1 h-7 w-7',
-                              displayModeStore.mode ==
-                                MapDisplayMode.ROOMS_STATUSES
-                                ? 'text-green-500'
-                                : 'text-gray-400 group-hover:text-gray-500'
-                            )}
-                          />
-                        }
-                        text="свободные аудитории"
-                      />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <button
-                        className="rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
-                        onClick={() => setDisplayModeSettingsDialogOpen(true)}
-                      >
-                        <Timer className="mx-auto mb-1 h-7 w-7 text-gray-400 group-hover:text-gray-500" />
-                        <div className="text-sm text-gray-900 dark:text-white">
-                          дата и время
-                        </div>
-                      </button>
-                    </DropdownMenuItem>
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
         </nav>

@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/command'
 import { MapObjectType } from '@/lib/map/MapObject'
 import { Search } from 'lucide-react'
+import { DialogTitle } from './ui/dialog'
 
 export function CommandMenu({ ...props }: DialogProps) {
   const router = useRouter()
@@ -141,21 +142,22 @@ export function CommandMenu({ ...props }: DialogProps) {
       <Button
         variant="outline"
         className={cn(
-          'w-70 relative hidden w-full justify-start bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 lg:block lg:pl-2'
+          'relative hidden w-80 justify-start bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 lg:block lg:pl-2'
         )}
         onClick={() => setOpen(true)}
         {...props}
       >
         <span className="hidden lg:inline-flex">
-          Поиск аудитоирй или сотрудников...
+          Поиск аудиторий или сотрудников...
         </span>
         <span className="inline-flex lg:hidden">Поиск...</span>
         <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.6rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
+
       <Button
-        className="lg:hidden"
+        className="mr-2 lg:hidden"
         onClick={() => setOpen(true)}
         variant={'ghost'}
       >
@@ -163,6 +165,9 @@ export function CommandMenu({ ...props }: DialogProps) {
         <Search className="h-6 w-6" aria-hidden="true" />
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
+        <DialogTitle className="sr-only">
+          Поиск аудиторий или сотрудников...
+        </DialogTitle>
         <CommandInput
           placeholder="Введите или выберите команду..."
           onValueChange={setQuery}

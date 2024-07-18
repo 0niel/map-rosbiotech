@@ -12,7 +12,7 @@ import {
   SheetDescription
 } from '@/components/ui/sheet'
 import { Badge } from '@/components/ui/badge'
-import { Menu, X } from 'lucide-react'
+import { Home, Menu, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from './ui/button'
@@ -37,6 +37,7 @@ export const Sidebar = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTitle className="sr-only">Боковое меню</SheetTitle>
       <SheetTrigger asChild>
         <Button size="icon" variant="outline">
           <Menu className="h-5 w-5" aria-hidden="true" />
@@ -55,30 +56,22 @@ export const Sidebar = () => {
             />
           </div>
         </SheetHeader>
-        <div>
-          {/* {sidebarItems.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-200"
-            >
-              <item.icon className="h-6 w-6" aria-hidden="true" />
-              <span className="ml-3">{item.label}</span>
-            </Link>
-          ))} */}
-          <nav className="grid gap-6 text-lg font-medium">
+
+        <div className="mt-4 flex-1">
+          <nav className="text-md grid items-start gap-2 font-medium lg:px-4">
             {sidebarItems.map(item => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary"
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
             ))}
           </nav>
         </div>
+
         <SheetFooter className="mt-4">
           <Card>
             <CardHeader className="flex items-start px-4 pb-2 pt-4">
