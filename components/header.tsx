@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import DropdownRadio from './DropdownRadio'
+import DropdownRadio from './dropdown-radio'
 import SearchButton from './SearchButton'
 import { useState } from 'react'
 import DisplayModeSettingsDialog from './DisplayModeSettingsDialog'
@@ -116,26 +116,10 @@ export const Header = () => {
                   height={150}
                 />
               </div>
-              <div className="hidden lg:block lg:pl-2">
-                {/* <SearchButton
-                  onClick={() => {
-                    setSearchOpen(true)
-                  }}
-                /> */}
-                <CommandMenu />
-              </div>
+
+              <CommandMenu />
             </div>
             <div className="flex items-center lg:order-2">
-              <button
-                type="button"
-                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 lg:hidden"
-                onClick={() => {
-                  setSearchOpen(true)
-                }}
-              >
-                <span className="sr-only">Поиск</span>
-                <Search className="h-6 w-6" aria-hidden="true" />
-              </button>
               <div className="mr-4">
                 <DropdownRadio
                   title={campus.shortName}

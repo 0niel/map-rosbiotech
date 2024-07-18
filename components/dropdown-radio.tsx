@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { useHotkeys } from 'react-hotkeys-hook'
-
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
   NavigationMenuViewport
 } from '@/components/ui/navigation-menu'
 import { cva } from 'class-variance-authority'
@@ -67,61 +66,53 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
     }
   })
 
-  const navigationMenuTriggerStyle = cva(
-    'group inline-flex h-10 w-max items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium transition-colors hover:bg-primary hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-primary/50'
-  )
-
   return (
     <div className="pointer-events-auto">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+            <NavigationMenuTrigger
+              className="bg-primary text-white hover:bg-primary/80 hover:text-gray-100
+             focus:bg-primary/80 focus:text-white data-[active]:bg-primary/80 data-[state=open]:bg-primary/80"
+            >
               {title}
             </NavigationMenuTrigger>
 
             <NavigationMenuContent>
-              <ul
+              <RadioGroup
+                value={selectedOption?.id}
+                onValueChange={id => {
+                  const option = options.find(option => option.id === id)
+                  if (option) {
+                    handleOptionClick(option)
+                  }
+                }}
                 className="space-y-1 p-3 text-sm text-gray-700"
                 aria-labelledby="dropdownRadioHelperButton"
               >
                 {options.map(option => (
-                  <li key={option.id}>
-                    <div
-                      className="flex rounded p-2 hover:bg-gray-100"
-                      onClick={() => handleOptionClick(option)}
+                  <div
+                    key={option.id}
+                    className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100"
+                  >
+                    <RadioGroupItem
+                      value={option.id}
+                      id={`helper-radio-${option.id}`}
+                    />
+                    <Label
+                      htmlFor={`helper-radio-${option.id}`}
+                      className="flex flex-col"
                     >
-                      <div className="flex h-5 items-center">
-                        <input
-                          id={`helper-radio-${option.id}`}
-                          name="helper-radio"
-                          type="radio"
-                          value=""
-                          checked={selectedOption?.id === option.id}
-                          readOnly
-                          className="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div className="ml-2 text-sm">
-                        <label
-                          htmlFor={`helper-radio-${option.id}`}
-                          className="font-medium text-gray-900"
-                        >
-                          <div className="text-sm font-medium text-blue-500">
-                            {option.label}
-                          </div>
-                          <p
-                            id={`helper-radio-text-${option.id}`}
-                            className="text-xs font-normal text-gray-500"
-                          >
-                            {option.description}
-                          </p>
-                        </label>
-                      </div>
-                    </div>
-                  </li>
+                      <span className="text-sm font-medium">
+                        {option.label}
+                      </span>
+                      <span className="text-xs font-normal text-gray-500">
+                        {option.description}
+                      </span>
+                    </Label>
+                  </div>
                 ))}
-              </ul>
+              </RadioGroup>
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
