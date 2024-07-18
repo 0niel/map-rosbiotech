@@ -7,6 +7,7 @@ import { MapData, type SearchableObject } from '@/lib/map/MapData'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { toast } from 'react-hot-toast'
+import { CommandMenu } from '../command-menu'
 
 interface RoutesModalProps {
   isOpen: boolean

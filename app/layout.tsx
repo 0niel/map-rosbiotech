@@ -7,7 +7,6 @@ import { Sidebar } from '@/components/sidebar'
 import { Header } from '@/components/header'
 import { ThemeProvider } from '@/components/theme-provider'
 import { CustomQueryClientProvider } from '@/components/query-client-provider'
-import { ConfigProvider } from '@/components/config-provider'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -54,14 +53,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ConfigProvider>
-            <CustomQueryClientProvider>
-              <Header />
-              {children}
-              <Sidebar />
-              <Toaster />
-            </CustomQueryClientProvider>
-          </ConfigProvider>
+          <CustomQueryClientProvider>
+            <Header />
+            {children}
+            <Toaster />
+          </CustomQueryClientProvider>
         </ThemeProvider>
       </body>
     </html>
