@@ -11,7 +11,7 @@ const config: Config = {
             shortName: 'Сокол',
             description: 'Волоколамское шоссе, 11',
             floors: [1],
-            initialFloor: 2,
+            initialFloor: 1,
             initialScale: 0.2,
             initialPositionX: 600,
             initialPositionY: 0,
