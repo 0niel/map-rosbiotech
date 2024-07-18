@@ -44,3 +44,6 @@ yarn-error.log*
 # IDE
 .idea/
 .vscode/
+
+# Million Lint
+.million
