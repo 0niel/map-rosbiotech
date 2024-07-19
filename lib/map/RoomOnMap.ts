@@ -1,4 +1,4 @@
-import { type components } from 'lib/schedule/schema'
+import { type components } from '@/lib/schedule/schema'
 import { MapObject } from './MapObject'
 
 export interface RoomOnMap {

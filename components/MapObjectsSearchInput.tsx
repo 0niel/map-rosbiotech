@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
-import { type SearchableObject } from 'lib/map/MapData'
+import { type SearchableObject } from '@/lib/map/MapData'
 import { Combobox } from '@headlessui/react'
 
 interface MapObjectsSearchInputProps {
