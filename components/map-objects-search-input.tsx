@@ -74,7 +74,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
           type="search"
           id="default-search"
           placeholder={placeholder ?? 'Поиск...'}
-          className="w-full rounded-md border border-input bg-background px-4 py-2 pr-10 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full"
           autoComplete="off"
           required
           value={search}

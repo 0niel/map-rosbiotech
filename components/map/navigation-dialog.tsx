@@ -98,10 +98,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
         </DialogHeader>
         <div className="space-y-6 py-4">
           <div className="w-full">
-            <Label
-              htmlFor="start-point"
-              className="mb-2 ml-10 block text-sm font-medium text-gray-900"
-            >
+            <Label htmlFor="start-point" className="mb-2 ml-10">
               Начальная точка
             </Label>
             <div className="flex flex-row items-center">
@@ -130,22 +127,20 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
               </div>
             </div>
             {!startInputRef.current?.value && !startMapObject && (
-              <p
-                className="ml-10 mt-2 cursor-pointer text-left text-sm font-medium text-blue-700 hover:underline"
+              <Button
+                variant={'link'}
+                className="ml-8"
                 onClick={() => {
                   setWaitForSelectStart()
                 }}
               >
                 выбрать на карте
-              </p>
+              </Button>
             )}
           </div>
 
           <div className="w-full">
-            <Label
-              htmlFor="end-point"
-              className="mb-2 ml-10 block text-sm font-medium text-gray-900"
-            >
+            <Label htmlFor="end-point" className="mb-2 ml-10">
               Конечная точка
             </Label>
             <div className="flex flex-row items-center">
@@ -174,14 +169,15 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
               </div>
             </div>
             {!endInputRef.current?.value && !endMapObject && (
-              <p
-                className="ml-10 mt-2 cursor-pointer text-left text-sm font-medium text-blue-700 hover:underline"
+              <Button
+                variant={'link'}
+                className="ml-8"
                 onClick={() => {
                   setWaitForSelectEnd()
                 }}
               >
                 выбрать на карте
-              </p>
+              </Button>
             )}
           </div>
         </div>

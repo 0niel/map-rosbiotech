@@ -21,7 +21,7 @@ import {
   getMapObjectElementByIdAsync
 } from '@/lib/map/domUtils'
 import MapControls from './MapControls'
-import RoomDrawer from './RoomDrawer'
+import RoomDrawer from './room-drawer'
 import NavigationDialog from './navigation-dialog'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { MapObjectType, type MapObject } from '@/lib/map/MapObject'

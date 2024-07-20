@@ -36,7 +36,7 @@ import {
   searchEmployeesByRoom
 } from '@/lib/employees/api'
 import { useMapStore } from '@/lib/stores/mapStore'
-import { Spinner } from '../ui/spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
@@ -318,8 +318,12 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                 </div>
               </div>
               {(isLoading || employeeIsLoading) && (
-                <div className="flex h-full items-center justify-center">
-                  <Spinner />
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[20px] w-[100px] rounded" />
+                  <Skeleton className="h-[20px] w-[80px] rounded" />
+                  <Skeleton className="h-[20px] w-[80px] rounded" />
+                  <Skeleton className="h-[20px] w-[150px] rounded" />
+                  <Skeleton className="h-[20px] w-[120px] rounded" />
                 </div>
               )}
               {isError && (
@@ -371,7 +375,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     {employeeData?.data.map(employee => (
                       <div
                         key={employee.id}
-                        className="tems-center flex flex-row space-x-2"
+                        className="flex flex-row items-center space-x-2"
                       >
                         {employee.attributes.photo ? (
                           <Image
@@ -417,7 +421,6 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                                     {contact.email && (
                                       <p>Email: {contact.email}</p>
                                     )}
-                                    {/* {contact.receptionTime && <p>Время приема: {contact.receptionTime}</p>} */}
                                   </div>
                                 ))}
                               </div>
@@ -431,8 +434,12 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
             </TabsContent>
             <TabsContent value="schedule">
               {isLoading && (
-                <div className="flex h-full items-center justify-center">
-                  <Spinner />
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[20px] w-[100px] rounded" />
+                  <Skeleton className="h-[20px] w-[80px] rounded" />
+                  <Skeleton className="h-[20px] w-[80px] rounded" />
+                  <Skeleton className="h-[20px] w-[150px] rounded" />
+                  <Skeleton className="h-[20px] w-[120px] rounded" />
                 </div>
               )}
               {!isLoading && (
