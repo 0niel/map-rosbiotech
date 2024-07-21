@@ -1,24 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter } from 'next/navigation'
-import { type DialogProps } from '@radix-ui/react-dialog'
-import {
-  CircleIcon,
-  FileIcon,
-  LaptopIcon,
-  MoonIcon,
-  SunIcon
-} from '@radix-ui/react-icons'
-import { useTheme } from 'next-themes'
-import Highlighter from 'react-highlight-words'
 import Image from 'next/image'
-import { toast } from 'react-hot-toast'
-import { useQuery } from 'react-query'
-import { useMapStore } from '@/lib/stores/mapStore'
-import { searchEmployees } from '@/lib/employees/api'
-import { type StrapiResponse } from '@/lib/employees/api'
-import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { DialogTitle } from './ui/dialog'
 import { Button } from '@/components/ui/button'
 import {
   CommandDialog,
@@ -29,9 +14,24 @@ import {
   CommandList,
   CommandSeparator
 } from '@/components/ui/command'
+import { searchEmployees } from '@/lib/employees/api'
+import { type StrapiResponse } from '@/lib/employees/api'
 import { MapObjectType } from '@/lib/map/MapObject'
+import { useMapStore } from '@/lib/stores/mapStore'
+import { cn } from '@/lib/utils'
+import { type DialogProps } from '@radix-ui/react-dialog'
+import {
+  CircleIcon,
+  FileIcon,
+  LaptopIcon,
+  MoonIcon,
+  SunIcon
+} from '@radix-ui/react-icons'
 import { Search } from 'lucide-react'
-import { DialogTitle } from './ui/dialog'
+import { useTheme } from 'next-themes'
+import Highlighter from 'react-highlight-words'
+import { toast } from 'react-hot-toast'
+import { useQuery } from 'react-query'
 
 export function CommandMenu({ ...props }: DialogProps) {
   const router = useRouter()

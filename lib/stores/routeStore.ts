@@ -1,6 +1,6 @@
-import { create } from 'zustand'
 import { type Vertex } from '../map/Graph'
 import { type MapObject } from '../map/MapObject'
+import { create } from 'zustand'
 
 interface RouteStore {
   path: Vertex[][] | null

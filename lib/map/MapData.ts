@@ -1,5 +1,5 @@
 import { type Graph, type Vertex } from './Graph'
-import { MapObjectType, type MapObject } from './MapObject'
+import { type MapObject, MapObjectType } from './MapObject'
 
 export interface SearchableObject {
   floor: string

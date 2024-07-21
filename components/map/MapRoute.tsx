@@ -1,15 +1,16 @@
 import React, {
-  useRef,
-  useState,
-  useImperativeHandle,
   forwardRef,
-  useEffect
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
 } from 'react'
-import * as d3 from 'd3'
-import { type MapData } from '@/lib/map/MapData'
 import { type Graph, type Vertex } from '@/lib/map/Graph'
-import { MapObjectType, type MapObject } from '@/lib/map/MapObject'
+import { type MapData } from '@/lib/map/MapData'
+import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { useRouteStore } from '@/lib/stores/routeStore'
+import * as d3 from 'd3'
+import * as d3 from 'd3'
 
 interface MapRouteProps {
   mapData: MapData

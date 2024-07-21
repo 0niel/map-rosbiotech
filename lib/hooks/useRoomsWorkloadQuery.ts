@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { type UseQueryOptions, useQuery } from 'react-query'
+import ScheduleAPI from '@/lib/schedule/api'
 import { type components } from '@/lib/schedule/schema'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
-import ScheduleAPI from '@/lib/schedule/api'
+import { type UseQueryOptions, useQuery } from 'react-query'
 
 export const useRoomsWorkloadQuery = (
   campusId: number,

@@ -1,27 +1,9 @@
 import React from 'react'
-import { type components } from '@/lib/schedule/schema'
-import { Calendar, Info, QrCodeIcon, Link } from 'lucide-react'
-import { RiRouteLine } from 'react-icons/ri'
-import RoomInfoTabContent from './RoomInfoTabContent'
-import { useQuery } from 'react-query'
-import type ScheduleAPI from '@/lib/schedule/api'
-import { getAcademicWeek } from '@/lib/schedule/utils'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet'
-
-import ScheduleCalendar from './ScheduleCalendar'
 import Image from 'next/image'
-import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
-import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
-import QRCode from 'qrcode.react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { toast } from 'react-hot-toast'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import RoomInfoTabContent from './RoomInfoTabContent'
+import ScheduleCalendar from './ScheduleCalendar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,20 +13,36 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
-  type StrapiResponse,
-  searchEmployees,
-  searchEmployeesByRoom
-} from '@/lib/employees/api'
-import { useMapStore } from '@/lib/stores/mapStore'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '../ui/button'
-import { Badge } from '../ui/badge'
+import config from '@/lib/config'
+import { MapObject, MapObjectType } from '@/lib/map/MapObject'
+import {
+  DataSourceConfig,
+  createDataSource
+} from '@/lib/schedule/data-source-factory'
+import { getAcademicWeek } from '@/lib/schedule/utils'
+import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
+import { useMapStore } from '@/lib/stores/mapStore'
+import { LessonSchedulePart, Teacher } from '@/models/lessonSchedulePart'
+import axios from 'axios'
+import { Calendar, Info, Link, QrCodeIcon } from 'lucide-react'
+import QRCode from 'qrcode.react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { toast } from 'react-hot-toast'
+import { RiRouteLine } from 'react-icons/ri'
+import { useQuery } from 'react-query'
 
 interface RoomDrawerProps {
   isOpen: boolean
   onClose: () => void
-  scheduleAPI: ScheduleAPI
   room: components['schemas']['Room'] | null
   roomMapObject: MapObject
 
@@ -57,66 +55,19 @@ interface RoomDrawerProps {
   ) => void
 }
 
-const getCurrentEvent = (
-  lessons: components['schemas']['Lesson'][],
-  dateTime: Date
-) => {
-  const date = new Date(dateTime)
-  const week = getAcademicWeek(date)
-  // weekday 1 - понедельник, 2 - вторник, ...
-  const weekday = date.getDay() === 0 ? 7 : date.getDay()
+const getCurrentEvent = (lessons: LessonSchedulePart[], dateTime: Date) => {
+  const academicWeek = getAcademicWeek(dateTime)
+  const currentDay = dateTime.getDay()
+  const currentTime = dateTime.getHours() * 60 + dateTime.getMinutes()
 
-  const currentLessons = lessons.filter(lesson => {
-    const lessonWeeks = lesson.weeks
-    const lessonWeekday = lesson.weekday
-
-    const isWeekday = lessonWeekday === weekday
-    const isWeek = lessonWeeks.includes(week)
-
-    const lessonStartTime = lesson.calls.time_start.slice(0, 5)
-    const lessonEndTime = lesson.calls.time_end.slice(0, 5)
-
-    const lessonStartDateTime = new Date(dateTime)
-    const lessonEndDateTime = new Date(dateTime)
-
-    const [lessonStartHours, lessonStartMinutes] = lessonStartTime.split(':')
-    const [lessonEndHours, lessonEndMinutes] = lessonEndTime.split(':')
-
-    if (
-      !lessonStartHours ||
-      !lessonStartMinutes ||
-      !lessonEndHours ||
-      !lessonEndMinutes
-    ) {
-      return false
-    }
-
-    lessonStartDateTime.setHours(parseInt(lessonStartHours))
-    lessonStartDateTime.setMinutes(parseInt(lessonStartMinutes))
-    lessonEndDateTime.setHours(parseInt(lessonEndHours))
-    lessonEndDateTime.setMinutes(parseInt(lessonEndMinutes))
-
-    const isTime = date >= lessonStartDateTime && date <= lessonEndDateTime
-
-    return isWeekday && isWeek && isTime
-  })
-
-  if (currentLessons.length === 0) {
-    return null
-  }
-
-  const currentLesson = currentLessons[0]
-
-  if (!currentLesson) {
-    return null
-  }
-
-  const discipline = currentLesson.discipline.name
-  const teachers = currentLesson.teachers
-    .map(teacher => teacher.name)
-    .join(', ')
-
-  return { discipline, teachers }
+  return lessons.find(
+    lesson =>
+      lesson.academicWeek === academicWeek &&
+      lesson.dayOfWeek === currentDay &&
+      lesson.lessonBells.some(
+        bell => currentTime >= bell.startTime && currentTime <= bell.endTime
+      )
+  )
 }
 
 const FastNavigateButton: React.FC<{ onClick: () => void; title: string }> = ({
@@ -141,7 +92,6 @@ const generateLink = (mapObjectId: string) => {
 const RoomDrawer: React.FC<RoomDrawerProps> = ({
   isOpen,
   onClose,
-  scheduleAPI,
   room,
   roomMapObject,
   onClickNavigateFromHere,
@@ -158,40 +108,21 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
         if (!room) {
           return
         }
-        const roomLessons = await scheduleAPI.getRoomLessons(room.id)
-        const roomInfo = await scheduleAPI.getRoomInfo(room.id)
-        const roomStatus = await scheduleAPI.getRoomStatus(
-          timeToDisplay,
-          room?.id || 0
-        )
 
-        if (roomLessons.error || roomInfo.error || roomStatus.error) {
-          throw new Error('Ошибка загрузки данных')
-        }
+        const res = await axios.get<LessonSchedulePart[]>('/api/schedule')
+        const lessons = res.data
 
         return {
-          lessons: roomLessons.data,
-          info: roomInfo.data,
-          status: roomStatus.data?.status
+          lessons,
+          status: 'free',
+          info: {
+            workload: 0,
+            purpose: ''
+          }
         }
       }
     }
   )
-
-  const {
-    data: employeeData,
-    isLoading: employeeIsLoading,
-    isFetched: isEmployeeFetched
-  } = useQuery<StrapiResponse>(['employees', roomMapObject], {
-    queryFn: async () => {
-      const employees = await searchEmployeesByRoom(
-        roomMapObject.name,
-        campus.shortName
-      )
-      return employees
-    },
-    refetchOnWindowFocus: false
-  })
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -317,7 +248,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   </Button>
                 </div>
               </div>
-              {(isLoading || employeeIsLoading) && (
+              {isLoading && (
                 <div className="flex flex-col space-y-3">
                   <Skeleton className="h-[20px] w-[100px] rounded" />
                   <Skeleton className="h-[20px] w-[80px] rounded" />
@@ -331,22 +262,19 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <p>Ошибка загрузки данных</p>
                 </div>
               )}
-              {isFetched &&
-                !data &&
-                isEmployeeFetched &&
-                employeeData?.data?.length === 0 && (
-                  <div className="flex h-full flex-col items-center justify-center">
-                    <Image
-                      src="assets/ghost.svg"
-                      width={200}
-                      height={200}
-                      alt={''}
-                    />
-                    <p className="text-center text-gray-500">
-                      Нет данных по этой аудитории
-                    </p>
-                  </div>
-                )}
+              {isFetched && !data && (
+                <div className="flex h-full flex-col items-center justify-center">
+                  <Image
+                    src="assets/ghost.svg"
+                    width={200}
+                    height={200}
+                    alt={''}
+                  />
+                  <p className="text-center text-gray-500">
+                    Нет данных по этой аудитории
+                  </p>
+                </div>
+              )}
 
               {!isLoading && data && (
                 <RoomInfoTabContent
@@ -363,74 +291,6 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   }
                 />
               )}
-
-              {!employeeIsLoading &&
-              employeeData?.data &&
-              employeeData?.data.length > 0 ? (
-                <div className="flex flex-col">
-                  <p className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
-                    Сотрудники, которые работают в этой аудитории
-                  </p>
-                  <div className="flex flex-col space-y-4">
-                    {employeeData?.data.map(employee => (
-                      <div
-                        key={employee.id}
-                        className="flex flex-row items-center space-x-2"
-                      >
-                        {employee.attributes.photo ? (
-                          <Image
-                            src={employee.attributes.photo.data.attributes.url}
-                            alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
-                            className="h-20 w-20 flex-shrink-0 rounded-full object-cover"
-                            width={80}
-                            height={80}
-                          />
-                        ) : (
-                          <div className="h-20 w-20 rounded-full bg-gray-200" />
-                        )}
-
-                        <div className="flex flex-col">
-                          <p className="text-sm font-medium text-gray-900">
-                            {employee.attributes.lastName}{' '}
-                            {employee.attributes.firstName}{' '}
-                            {employee.attributes.patronymic}
-                          </p>
-
-                          {employee.attributes.positions
-                            .filter(
-                              position =>
-                                position.contacts.filter(
-                                  contact =>
-                                    contact.room?.data.attributes.name ===
-                                    roomMapObject.name
-                                ).length > 0
-                            )
-                            .map((position, index) => (
-                              <div
-                                key={index}
-                                className="text-xs text-gray-600"
-                              >
-                                <p>{position.department}</p>
-                                <p>{position.post}</p>
-                                {position.contacts.map((contact, i) => (
-                                  <div key={i}>
-                                    {contact.phone && (
-                                      <p>Телефон: {contact.phone}</p>
-                                    )}
-                                    {contact.IP && <p>IP: {contact.IP}</p>}
-                                    {contact.email && (
-                                      <p>Email: {contact.email}</p>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
             </TabsContent>
             <TabsContent value="schedule">
               {isLoading && (

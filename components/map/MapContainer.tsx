@@ -1,41 +1,41 @@
 'use client'
 
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import MapWrapper from '../svg-maps/MapWrapper'
+import { Spinner } from '../ui/spinner'
+import MapControls from './MapControls'
+import MapNavigationButton from './MapNavigationButton'
+import MapRoute, { type MapRouteRef } from './MapRoute'
+import RouteDetails, { type DetailsSlide } from './RouteDetails'
+import NavigationDialog from './navigation-dialog'
+import RoomDrawer from './room-drawer'
+import campuses from '@/lib/campuses'
+import { useRoomsQuery } from '@/lib/hooks/useRoomsQuery'
+import { MapData } from '@/lib/map/MapData'
+import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
+import { type RoomOnMap } from '@/lib/map/RoomOnMap'
+import {
+  fillRoom,
+  getAllMapObjectsElements,
+  getMapObjectElementById,
+  getMapObjectElementByIdAsync,
+  getMapObjectIdByElement,
+  getMapObjectTypeByElemet,
+  mapObjectSelector
+} from '@/lib/map/domUtils'
+import ScheduleAPI from '@/lib/schedule/api'
+import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
+import { useMapStore } from '@/lib/stores/mapStore'
+import { useRouteStore } from '@/lib/stores/routeStore'
+import useScheduleDataStore from '@/lib/stores/scheduleDataStore'
+import mapDataJson from '@/public/routes.json'
+import toast from 'react-hot-toast'
 import {
   type ReactZoomPanPinchRef,
   TransformComponent,
   TransformWrapper
 } from 'react-zoom-pan-pinch'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import mapDataJson from '@/public/routes.json'
-import MapRoute, { type MapRouteRef } from './MapRoute'
-import ScheduleAPI from '@/lib/schedule/api'
-import { type RoomOnMap } from '@/lib/map/RoomOnMap'
-import {
-  fillRoom,
-  getAllMapObjectsElements,
-  getMapObjectIdByElement,
-  getMapObjectTypeByElemet,
-  mapObjectSelector,
-  getMapObjectElementById,
-  getMapObjectElementByIdAsync
-} from '@/lib/map/domUtils'
-import MapControls from './MapControls'
-import RoomDrawer from './room-drawer'
-import NavigationDialog from './navigation-dialog'
-import { useMapStore } from '@/lib/stores/mapStore'
-import { MapObjectType, type MapObject } from '@/lib/map/MapObject'
-import { MapData } from '@/lib/map/MapData'
-import { useRouteStore } from '@/lib/stores/routeStore'
-import RouteDetails, { type DetailsSlide } from './RouteDetails'
-import { useRoomsQuery } from '@/lib/hooks/useRoomsQuery'
-import toast from 'react-hot-toast'
-import useScheduleDataStore from '@/lib/stores/scheduleDataStore'
-import MapNavigationButton from './MapNavigationButton'
-import campuses from '@/lib/campuses'
-import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
-import { Spinner } from '../ui/spinner'
-import MapWrapper from '../svg-maps/MapWrapper'
 
 const scheduleAPI = new ScheduleAPI()
 
@@ -357,7 +357,6 @@ const MapContainer = () => {
             isOpen={drawerOpened}
             onClose={handleCloseDrawer}
             room={selectedRoomOnMap?.remote || null}
-            scheduleAPI={scheduleAPI}
             roomMapObject={selectedRoomOnMap.mapObject}
             onClickNavigateFromHere={mapObject => {
               setRouteStartAndEnd({
@@ -506,7 +505,10 @@ const MapContainer = () => {
               initialPositionX={campus?.initialPositionX ?? 0}
               initialPositionY={campus?.initialPositionY ?? 0}
               maxScale={1}
-              panning={{ disabled: false, velocityDisabled: false }}
+              panning={{
+                disabled: false,
+                velocityDisabled: false
+              }}
               velocityAnimation={{
                 sensitivity: 1,
                 animationTime: 100,

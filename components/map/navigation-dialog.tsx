@@ -1,16 +1,12 @@
 import React, {
   type FormEvent,
-  useRef,
-  useEffect,
   Fragment,
+  useEffect,
+  useRef,
   useState
 } from 'react'
-import { X } from 'lucide-react'
 import MapObjectsSearchInput from '../map-objects-search-input'
-import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
-import { type SearchableObject } from '@/lib/map/MapData'
-import { useMapStore } from '@/lib/stores/mapStore'
-import { toast } from 'react-hot-toast'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -20,9 +16,13 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { type SearchableObject } from '@/lib/map/MapData'
+import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
+import { useMapStore } from '@/lib/stores/mapStore'
+import { X } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 interface RoutesModalProps {
   isOpen: boolean

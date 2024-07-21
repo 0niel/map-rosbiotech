@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
-import { useHotkeys } from 'react-hotkeys-hook'
 import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,7 +9,10 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport
 } from '@/components/ui/navigation-menu'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cva } from 'class-variance-authority'
+import { ChevronDown } from 'lucide-react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 type DropdownRadioOption = {
   id: string

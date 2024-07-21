@@ -1,14 +1,14 @@
+import { useCallback } from 'react'
 import { type Vertex } from '@/lib/map/Graph'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useRouteStore } from '@/lib/stores/routeStore'
-import { BiWalk } from 'react-icons/bi'
-import { TbStairsUp, TbStairsDown } from 'react-icons/tb'
-import { useCallback } from 'react'
 import { X } from 'lucide-react'
-import { FaShare } from 'react-icons/fa'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { toast } from 'react-hot-toast'
+import { BiWalk } from 'react-icons/bi'
+import { FaShare } from 'react-icons/fa'
+import { TbStairsDown, TbStairsUp } from 'react-icons/tb'
 
 interface RouteDetailsProps {
   onDetailsSlideChange: (detailsSlide: DetailsSlide) => void

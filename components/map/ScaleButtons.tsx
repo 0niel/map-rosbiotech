@@ -1,6 +1,6 @@
-import { Plus, Minus } from 'lucide-react'
-import { useHotkeys } from 'react-hotkeys-hook'
 import { Button } from '../ui/button'
+import { Minus, Plus } from 'lucide-react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 interface ScaleButtonsProps {
   onZoomIn: () => void

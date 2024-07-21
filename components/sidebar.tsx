@@ -1,21 +1,10 @@
 'use client'
 
 import React from 'react'
-import {
-  Sheet,
-  SheetTrigger,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription
-} from '@/components/ui/sheet'
-import { Badge } from '@/components/ui/badge'
-import { Home, Menu, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from './ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
@@ -24,6 +13,18 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet'
+import { Home, Menu, X } from 'lucide-react'
+
 const sidebarItems = [
   {
     icon: Menu,

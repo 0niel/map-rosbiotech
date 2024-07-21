@@ -1,6 +1,6 @@
-import { useQuery, type UseQueryOptions } from 'react-query'
-import ScheduleAPI from '@/lib/schedule/api'
 import { type components } from '../schedule/schema'
+import ScheduleAPI from '@/lib/schedule/api'
+import { type UseQueryOptions, useQuery } from 'react-query'
 
 export const useRoomsQuery = (
   campus: string,
@@ -21,7 +21,7 @@ export const useRoomsQuery = (
       // if (roomsError || !rooms) throw roomsError
 
       // return rooms
-      return [];
+      return []
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,

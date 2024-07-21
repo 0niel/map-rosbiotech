@@ -1,13 +1,13 @@
-import { ChevronLeft, ChevronRight, User2, Paperclip } from 'lucide-react'
 import { useState } from 'react'
+import { type components } from '@/lib/schedule/schema'
 import {
-  getWeekDaysByDate,
+  MAX_WEEKS,
   getAcademicWeek,
   getDaysInWeek,
   getNormalizedWeekday,
-  MAX_WEEKS
+  getWeekDaysByDate
 } from '@/lib/schedule/utils'
-import { type components } from '@/lib/schedule/schema'
+import { ChevronLeft, ChevronRight, Paperclip, User2 } from 'lucide-react'
 import { PiStudentFill } from 'react-icons/pi'
 
 interface ScheduleCalendarProps {

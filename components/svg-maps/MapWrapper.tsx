@@ -1,9 +1,7 @@
 import { memo } from 'react'
-
-import { useMapStore } from '@/lib/stores/mapStore'
-import config from '@/lib/config'
-
 import Map from './Map'
+import config from '@/lib/config'
+import { useMapStore } from '@/lib/stores/mapStore'
 
 const MapWrapper = () => {
   const { floor } = useMapStore()

@@ -1,5 +1,5 @@
-import MapContainer from '@/components/map/MapContainer'
 import { Suspense } from 'react'
+import MapContainer from '@/components/map/MapContainer'
 
 export const maxDuration = 60
 

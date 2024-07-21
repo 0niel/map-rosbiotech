@@ -1,6 +1,6 @@
+import { Button } from '../ui/button'
 import { useRouteStore } from '@/lib/stores/routeStore'
 import { Navigation2Icon, Router } from 'lucide-react'
-import { Button } from '../ui/button'
 
 interface MapNavigationButtonProps {
   onClick: () => void
