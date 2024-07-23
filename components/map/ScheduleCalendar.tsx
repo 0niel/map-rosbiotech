@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { type components } from '@/lib/schedule/schema'
 import {
   MAX_WEEKS,
   getAcademicWeek,
@@ -7,12 +6,13 @@ import {
   getNormalizedWeekday,
   getWeekDaysByDate
 } from '@/lib/schedule/utils'
-import { ChevronLeft, ChevronRight, Paperclip, User2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, User2 } from 'lucide-react'
 import { PiStudentFill } from 'react-icons/pi'
+import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
 
 interface ScheduleCalendarProps {
   date: Date
-  lessons: components['schemas']['Lesson'][]
+  lessons: LessonSchedulePart[]
 }
 
 /**
@@ -20,22 +20,23 @@ interface ScheduleCalendarProps {
  * несколько занятий, то в названии группы будут перечислены все группы, у которых
  * есть занятия в это время.
  */
-const groupLessonsByGroups = (lessons: components['schemas']['Lesson'][]) => {
-  const newLessons: components['schemas']['Lesson'][] = []
+const groupLessonsByGroups = (lessons: LessonSchedulePart[]) => {
+  const newLessons: LessonSchedulePart[] = []
 
   lessons?.forEach(lesson => {
     const newLesson = newLessons.find(newLesson => {
       return (
-        newLesson.discipline.name === lesson.discipline.name &&
-        newLesson.weekday === lesson.weekday &&
-        newLesson.calls.time_start === lesson.calls.time_start
+        newLesson.subject === lesson.subject &&
+        new Date(newLesson.lessonBells.start).getDay() ===
+          new Date(lesson.lessonBells.start).getDay() &&
+        newLesson.lessonBells.start === lesson.lessonBells.start
       )
     })
 
     if (newLesson) {
-      if (newLesson.group.name.indexOf(lesson.group.name) === -1) {
-        newLesson.group.name += `, ${lesson.group.name}`
-      }
+      newLesson.groups = newLesson.groups
+        ? [...new Set([...newLesson.groups, ...(lesson.groups || [])])]
+        : lesson.groups
     } else {
       newLessons.push(lesson)
     }
@@ -43,10 +44,7 @@ const groupLessonsByGroups = (lessons: components['schemas']['Lesson'][]) => {
   return newLessons
 }
 
-const getLessonsForDate = (
-  lessons: components['schemas']['Lesson'][],
-  date: Date
-) => {
+const getLessonsForDate = (lessons: LessonSchedulePart[], date: Date) => {
   const week = getAcademicWeek(date)
   const weekday = getNormalizedWeekday(date)
 
@@ -54,54 +52,60 @@ const getLessonsForDate = (
     return []
   }
 
-  const newLessons = lessons.filter(
-    (lesson: components['schemas']['Lesson']) => {
-      return lesson.weeks.includes(week) && lesson.weekday === weekday
-    }
-  )
+  const newLessons = lessons.filter((lesson: LessonSchedulePart) => {
+    const lessonWeekday = new Date(lesson.lessonBells.start).getDay()
+    return (
+      lesson.dates.some(lessonDate => getAcademicWeek(lessonDate) === week) &&
+      lessonWeekday === weekday
+    )
+  })
 
-  return newLessons.sort((a, b) => a.calls.num - b.calls.num)
+  return newLessons.sort(
+    (a, b) =>
+      new Date(a.lessonBells.start).getTime() -
+      new Date(b.lessonBells.start).getTime()
+  )
 }
 
-export const getEventPointColor = (event: string) => {
+const getEventPointColor = (event: string) => {
   switch (event) {
-    case 'пр':
+    case 'practice':
       return 'bg-blue-400'
-    case 'лек':
+    case 'lecture':
       return 'bg-green-400'
-    case 'лаб':
+    case 'laboratoryWork':
       return 'bg-yellow-400'
-    case 'зач':
+    case 'exam':
       return 'bg-red-400'
     default:
       return 'bg-gray-400'
   }
 }
 
-function getLessonTypeColor(type: string) {
+const getLessonTypeColor = (type: string) => {
   switch (type) {
-    case 'пр':
+    case 'practice':
       return 'bg-blue-100 text-blue-800'
-    case 'лек':
+    case 'lecture':
       return 'bg-green-100 text-green-800'
-    case 'лаб':
+    case 'laboratoryWork':
       return 'bg-yellow-100 text-yellow-800'
-    case 'зач':
+    case 'exam':
       return 'bg-red-100 text-red-800'
     default:
       return 'bg-gray-100 text-gray-800'
   }
 }
 
-function getLessonTypeBackgroundColor(type: string) {
+const getLessonTypeBackgroundColor = (type: string) => {
   switch (type) {
-    case 'пр':
+    case 'practice':
       return 'bg-blue-50 hover:bg-blue-100'
-    case 'лек':
+    case 'lecture':
       return 'bg-green-50 hover:bg-green-100'
-    case 'лаб':
+    case 'laboratoryWork':
       return 'bg-yellow-50 hover:bg-yellow-100'
-    case 'зач':
+    case 'exam':
       return 'bg-red-50 hover:bg-red-100'
     default:
       return 'bg-gray-50 hover:bg-gray-100'
@@ -204,7 +208,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
                     <div
                       key={eventIdx}
                       className={`mt-1 h-1.5 w-1.5 rounded-full ${getEventPointColor(
-                        lesson.lesson_type?.name ?? 'пр'
+                        lesson.lessonType
                       )}`}
                     />
                   )
@@ -221,36 +225,40 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
           lesson => (
             <div
               className="flex w-full flex-col space-y-1 rounded-lg border border-gray-200 bg-white p-2"
-              key={lesson.id}
+              key={lesson.subject + lesson.lessonBells.start}
             >
               <div className="flex w-full flex-row items-center justify-between space-x-2">
                 <span
                   className={`mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium ${getLessonTypeColor(
-                    lesson.lesson_type?.name ?? 'пр'
+                    lesson.lessonType
                   )}`}
                 >
-                  {lesson.lesson_type?.name}
+                  {lesson.lessonType}
                 </span>
                 <span className="text-xs font-medium text-gray-500">
-                  <span className="mr-2">{lesson.calls.num} пара</span>
+                  <span className="mr-2">
+                    {new Date(lesson.lessonBells.start).getHours()} пара
+                  </span>
                   <span>
-                    {lesson.calls.time_start.slice(0, 5)} -{' '}
-                    {lesson.calls.time_end.slice(0, 5)}
+                    {lesson.lessonBells.start.slice(0, 5)} -{' '}
+                    {lesson.lessonBells.end.slice(0, 5)}
                   </span>
                 </span>
               </div>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium text-gray-700">
-                  {lesson.discipline.name}
+                  {lesson.subject}
                 </p>
                 <p className="text-xs font-medium text-gray-500">
                   <User2 size={16} className="mr-1 inline" />
                   {lesson.teachers.map(teacher => teacher.name).join(', ')}
                 </p>
-                <p className="text-xs font-medium text-gray-500">
-                  <PiStudentFill size={16} className="mr-1 inline" />
-                  {lesson.group.name}
-                </p>
+                {lesson.groups && (
+                  <p className="text-xs font-medium text-gray-500">
+                    <PiStudentFill size={16} className="mr-1 inline" />
+                    {lesson.groups.join(', ')}
+                  </p>
+                )}
               </div>
             </div>
           )

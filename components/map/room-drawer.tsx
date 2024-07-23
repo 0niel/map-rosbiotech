@@ -24,27 +24,29 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import config from '@/lib/config'
 import { MapObject, MapObjectType } from '@/lib/map/MapObject'
+import { RoomOnMap } from '@/lib/map/RoomOnMap'
 import {
   DataSourceConfig,
   createDataSource
 } from '@/lib/schedule/data-source-factory'
+import { Classroom } from '@/lib/schedule/models/classroom'
+import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
 import { getAcademicWeek } from '@/lib/schedule/utils'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
-import { LessonSchedulePart, Teacher } from '@/models/lessonSchedulePart'
 import axios from 'axios'
-import { Calendar, Info, Link, QrCodeIcon } from 'lucide-react'
-import QRCode from 'qrcode.react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { toast } from 'react-hot-toast'
-import { RiRouteLine } from 'react-icons/ri'
+import { QrCodeIcon, Link } from 'lucide-react'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import toast from 'react-hot-toast'
 import { useQuery } from 'react-query'
+
+import { RiRouteLine } from 'react-icons/ri'
+import QRCode from 'qrcode.react'
 
 interface RoomDrawerProps {
   isOpen: boolean
   onClose: () => void
-  room: components['schemas']['Room'] | null
-  roomMapObject: MapObject
+  room: RoomOnMap
 
   onClickNavigateFromHere: (mapObject: MapObject) => void
   onClickNavigateToHere: (mapObject: MapObject) => void
@@ -60,14 +62,15 @@ const getCurrentEvent = (lessons: LessonSchedulePart[], dateTime: Date) => {
   const currentDay = dateTime.getDay()
   const currentTime = dateTime.getHours() * 60 + dateTime.getMinutes()
 
-  return lessons.find(
-    lesson =>
-      lesson.academicWeek === academicWeek &&
-      lesson.dayOfWeek === currentDay &&
-      lesson.lessonBells.some(
-        bell => currentTime >= bell.startTime && currentTime <= bell.endTime
-      )
-  )
+  // return lessons.find(
+  //   lesson =>
+  //     lesson.academicWeek === academicWeek &&
+  //     lesson.dayOfWeek === currentDay &&
+  //     lesson.lessonBells.some(
+  //       bell => currentTime >= bell.startTime && currentTime <= bell.endTime
+  //     )
+  // )
+  return null as LessonSchedulePart | null
 }
 
 const FastNavigateButton: React.FC<{ onClick: () => void; title: string }> = ({
@@ -93,7 +96,6 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
   isOpen,
   onClose,
   room,
-  roomMapObject,
   onClickNavigateFromHere,
   onClickNavigateToHere,
   findNearestObject
@@ -102,7 +104,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
   const { campus } = useMapStore()
 
   const { isLoading, isError, data, isFetched } = useQuery(
-    ['room', timeToDisplay, roomMapObject],
+    ['room', timeToDisplay, room.mapObject],
     {
       queryFn: async () => {
         if (!room) {
@@ -133,7 +135,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               id="drawer-right-label"
               className="inline-flex items-center text-base font-bold text-gray-900 dark:text-gray-400"
             >
-              Аудитория {roomMapObject.name}
+              Аудитория {room.mapObject.name}
             </h5>
             <SheetDescription>
               <div className="ml-4 flex flex-row items-center space-x-2">
@@ -146,7 +148,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     <DropdownMenuItem className="pointer-events-none">
                       <div className="flex flex-col items-center">
                         <QRCode
-                          value={generateLink(roomMapObject.id)}
+                          value={generateLink(room.mapObject.id)}
                           size={256}
                           bgColor="#FFFFFF"
                           fgColor="#000000"
@@ -164,7 +166,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                 </DropdownMenu>
 
                 <CopyToClipboard
-                  text={generateLink(roomMapObject.id)}
+                  text={generateLink(room.mapObject.id)}
                   onCopy={() => {
                     toast.success('Ссылка скопирована в буфер обмена')
                   }}
@@ -230,7 +232,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     className="w-full"
                     variant={'secondary'}
                     onClick={() => {
-                      onClickNavigateFromHere(roomMapObject)
+                      onClickNavigateFromHere(room.mapObject)
                     }}
                   >
                     <RiRouteLine className="mr-2 h-5 w-5" />
@@ -240,7 +242,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     className="w-full"
                     variant={'secondary'}
                     onClick={() => {
-                      onClickNavigateToHere(roomMapObject)
+                      onClickNavigateToHere(room.mapObject)
                     }}
                   >
                     <RiRouteLine className="mr-2 h-5 w-5 rotate-180 transform" />
@@ -283,11 +285,11 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   purpose={data?.info?.purpose || ''}
                   eventName={
                     getCurrentEvent(data?.lessons || [], timeToDisplay)
-                      ?.discipline || ''
+                      ?.subject || ''
                   }
-                  teacher={
+                  teachers={
                     getCurrentEvent(data?.lessons || [], timeToDisplay)
-                      ?.teachers || ''
+                      ?.teachers || []
                   }
                 />
               )}

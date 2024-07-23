@@ -102,7 +102,10 @@ export const Header = () => {
             )
           }}
         />
-        <nav className="select-none border-gray-200 bg-white px-4 py-2.5 dark:bg-gray-800 lg:px-6">
+        <nav
+          className="select-none bg-white px-4 py-2.5 dark:bg-[#1c1c1e]
+        lg:px-6"
+        >
           <div className="flex items-center justify-between md:justify-start">
             <div className="flex items-center">
               <div className="flex items-center">

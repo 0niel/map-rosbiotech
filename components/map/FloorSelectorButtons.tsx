@@ -13,7 +13,7 @@ const FloorSelectorButtons: React.FC<FloorSelectorButtonsProps> = ({
   onFloorSelect
 }) => {
   return (
-    <div className="flex w-12 flex-col space-y-1 rounded-lg border border-gray-300 bg-gray-50 p-1.5 sm:w-full sm:space-y-2 sm:p-2">
+    <div className="dark-hover:bg-gray-700 dark-active:text-white flex w-12 flex-col space-y-1 rounded-lg border border-input bg-background p-1.5 dark:text-white sm:w-full sm:space-y-2 sm:p-2">
       {floors.map(floor => (
         <Button
           variant={floor === selectedFloor ? 'default' : 'secondary'}

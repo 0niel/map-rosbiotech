@@ -16,7 +16,7 @@ const MapNavigationButton = (props: MapNavigationButtonProps) => {
   return (
     <div className="flex flex-row justify-center">
       <Button
-        className="pointer-events-auto space-y-2 border border-gray-300 bg-gray-50 p-3 text-gray-700 hover:text-white sm:px-4 sm:py-6"
+        className="dark:border-gray-700-800 pointer-events-auto space-y-2 border border-input bg-background p-3 text-gray-700 hover:text-white dark:text-white sm:px-4 sm:py-6"
         onClick={() => {
           props.onClick()
         }}
@@ -25,19 +25,19 @@ const MapNavigationButton = (props: MapNavigationButtonProps) => {
       </Button>
 
       {(startMapObject || endMapObject) && (
-        <div className="ml-2 flex flex-row items-center rounded-lg border border-gray-300 bg-white">
+        <div className="ml-2 flex flex-row items-center rounded-lg border border-input bg-background">
           {startMapObject && endMapObject && path && path.length > 0 && (
             <>
               <button
                 type="button"
-                className="pointer-events-auto inline-flex items-center rounded-lg bg-white px-2 py-1 text-sm font-medium text-blue-700 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
+                className="pointer-events-auto inline-flex items-center rounded-lg px-2 py-1 text-sm font-medium text-blue-700 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
                 onClick={() => {
                   props.onClickShowDetails?.()
                 }}
               >
                 Детали маршрута
               </button>
-              <div className="h-12 w-px bg-gray-200" />
+              <div className="w-p h-12" />
             </>
           )}
 
@@ -45,7 +45,7 @@ const MapNavigationButton = (props: MapNavigationButtonProps) => {
             {startMapObject && (
               <Button
                 type="button"
-                className="pointer-events-auto inline-flex items-center rounded-l-lg bg-white px-2 py-1 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
+                className="pointer-events-auto inline-flex items-center rounded-l-lg px-2 py-1 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
                 onClick={() => {
                   props.onClickStart?.()
                 }}
@@ -60,7 +60,7 @@ const MapNavigationButton = (props: MapNavigationButtonProps) => {
             {endMapObject && (
               <Button
                 type="button"
-                className="pointer-events-auto inline-flex items-center rounded-r-md bg-white px-2 py-1 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
+                className="pointer-events-auto inline-flex items-center rounded-r-md px-2 py-1 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
                 onClick={() => {
                   props.onClickEnd?.()
                 }}

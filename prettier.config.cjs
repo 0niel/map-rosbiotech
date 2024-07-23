@@ -28,6 +28,7 @@ module.exports = {
   importOrderSeparation: false,
   importOrderSortSpecifiers: true,
   importOrderParserPlugins: ['typescript', 'jsx', 'decorators'],
+  parser: 'babel-ts',
   plugins: [
     'prettier-plugin-tailwindcss',
     '@trivago/prettier-plugin-sort-imports'

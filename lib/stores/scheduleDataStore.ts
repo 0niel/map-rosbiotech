@@ -1,11 +1,11 @@
 import { type MapData } from '../map/MapData'
-import { type components } from '../schedule/schema'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { Classroom } from '../schedule/models/classroom'
 
 interface ScheduleDataStore {
-  rooms: components['schemas']['Room'][]
-  setRooms: (rooms: components['schemas']['Room'][]) => void
+  rooms: Classroom[]
+  setRooms: (rooms: Classroom[]) => void
 }
 
 const useScheduleDataStore = create<ScheduleDataStore>()(

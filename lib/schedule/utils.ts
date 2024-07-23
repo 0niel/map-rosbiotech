@@ -76,7 +76,7 @@ export function getDateByWeek(week: number, weekDay: number) {
   if (week === 1) {
     return new Date(
       startDate.getTime() +
-        (weekDay - getNormalizedWeekday(startDate)) * 24 * 60 * 60 * 1000
+      (weekDay - getNormalizedWeekday(startDate)) * 24 * 60 * 60 * 1000
     )
   }
 

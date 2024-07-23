@@ -1,14 +1,12 @@
-import { type components } from '../schedule/schema'
-import ScheduleAPI from '@/lib/schedule/api'
+
 import { type UseQueryOptions, useQuery } from 'react-query'
 
 export const useRoomsQuery = (
   campus: string,
-  options?: UseQueryOptions<components['schemas']['Room'][], Error>
+  // options?: UseQueryOptions<components['schemas']['Room'][], Error>
 ) => {
-  const scheduleAPI = new ScheduleAPI()
 
-  return useQuery<components['schemas']['Room'][], Error>(['rooms', campus], {
+  return useQuery(['rooms', campus], {
     queryFn: async () => {
       // const { data, error } = await scheduleAPI.getCampuses()
       // if (error || !data) throw error
@@ -26,6 +24,6 @@ export const useRoomsQuery = (
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    ...options
+
   })
 }
