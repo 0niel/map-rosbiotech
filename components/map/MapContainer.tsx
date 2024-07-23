@@ -24,7 +24,6 @@ import {
   getMapObjectTypeByElemet,
   mapObjectSelector
 } from '@/lib/map/domUtils'
-import ScheduleAPI from '@/lib/schedule/api'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useRouteStore } from '@/lib/stores/routeStore'
@@ -36,8 +35,6 @@ import {
   TransformComponent,
   TransformWrapper
 } from 'react-zoom-pan-pinch'
-
-const scheduleAPI = new ScheduleAPI()
 
 const loadJsonToGraph = (routesJson: string) => {
   return MapData.fromJson(routesJson)
@@ -56,13 +53,6 @@ const MapContainer = () => {
     setCampus
   } = useMapStore()
   const { setTimeToDisplay } = useDisplayModeStore()
-  const { rooms, setRooms } = useScheduleDataStore()
-  const { isLoading, error, data } = useRoomsQuery(campus.shortName, {
-    onError: () =>
-      toast.error('Ошибка при загрузке информации о кабинетах из расписания'),
-    onSuccess: data => setRooms(data),
-    enabled: rooms.length === 0
-  })
 
   useEffect(() => {
     const mapData = loadJsonToGraph(JSON.stringify(mapDataJson))
@@ -145,19 +135,17 @@ const MapContainer = () => {
       fillRoom(room, '#2563EB')
       transformComponentRef.current?.zoomToElement(room as HTMLElement)
 
-      const remote = data?.find(room => room.name === mapObject.name) || null
-
       setSelectedRoomOnMap({
         element: room,
         baseElement: base,
         name: mapObject.name,
-        remote,
-        mapObject
+        mapObject,
+        remote: null
       })
 
       setDrawerOpened(true)
     },
-    [data, mapData?.objects]
+    [mapData?.objects]
   )
 
   const unselectRoomEl = useCallback(() => {
@@ -174,7 +162,9 @@ const MapContainer = () => {
   }, [])
 
   useEffect(() => {
-    if (isLoading || !transformComponentRef.current || !mapData || !data) return
+    if (!transformComponentRef.current || !mapData) {
+      return
+    }
 
     const object = searchParams.get('object')
     if (object) {
@@ -223,10 +213,8 @@ const MapContainer = () => {
       setTimeToDisplay(new Date(date))
     }
   }, [
-    isLoading,
     searchParams,
     mapData,
-    data,
     campus,
     setCampus,
     setTimeToDisplay,
@@ -356,8 +344,7 @@ const MapContainer = () => {
           <RoomDrawer
             isOpen={drawerOpened}
             onClose={handleCloseDrawer}
-            room={selectedRoomOnMap?.remote || null}
-            roomMapObject={selectedRoomOnMap.mapObject}
+            room={selectedRoomOnMap}
             onClickNavigateFromHere={mapObject => {
               setRouteStartAndEnd({
                 start: mapObject,
@@ -400,14 +387,8 @@ const MapContainer = () => {
           />
         )}
 
-        {isLoading && (
-          <div className="flex h-full items-center justify-center">
-            <Spinner />
-          </div>
-        )}
-
-        {!isLoading && mapData && (
-          <div className="relative z-0 mb-4 h-full w-full overflow-hidden bg-gray-50 dark:bg-gray-900">
+        {mapData && (
+          <div className="relative z-0 mb-4 h-full w-full overflow-hidden bg-gray-50 dark:bg-[#121212]">
             <NavigationDialog
               isOpen={routesModalShow}
               onClose={() => setRoutesModalShow(false)}

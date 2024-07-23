@@ -1,3 +1,4 @@
+import { Teacher } from '@/lib/schedule/models/teacher'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 
 interface RoomInfoTabContentProps {
@@ -5,7 +6,7 @@ interface RoomInfoTabContentProps {
   workload: number
   status: string
   eventName: string
-  teacher: string
+  teachers: Teacher[]
 }
 
 const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
@@ -13,7 +14,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
   workload,
   status,
   eventName,
-  teacher
+  teachers
 }) => {
   const { timeToDisplay } = useDisplayModeStore()
 
@@ -75,7 +76,9 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
             >
               Ответственный
             </th>
-            <td className="px-6 py-4">{teacher}</td>
+            <td className="px-6 py-4">
+              {teachers.map(teacher => teacher.name).join(', ')}
+            </td>
           </tr>
         </tbody>
       </table>
