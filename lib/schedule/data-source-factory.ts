@@ -2,7 +2,7 @@ import { DataSource } from "./data-source";
 import { LessonSchedulePart } from "./models/lesson-schedule-part";
 
 
-// type for datasource types
+
 export type DataSourceType = 'local' | 'rosbiotech';
 
 export interface DataSourceConfig {
@@ -18,7 +18,7 @@ export class LocalDataSource implements DataSource {
         this.data = data;
     }
 
-    async fetchLessons(): Promise<LessonSchedulePart[]> {
+    async fetchLessons(startDate: Date, endDate: Date, room: string, campus: string): Promise<LessonSchedulePart[]> {
         return this.data;
     }
 }

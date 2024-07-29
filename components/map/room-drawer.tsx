@@ -1,15 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import RoomInfoTabContent from './RoomInfoTabContent'
-import ScheduleCalendar from './ScheduleCalendar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
@@ -22,17 +19,9 @@ import {
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import config from '@/lib/config'
 import { MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { RoomOnMap } from '@/lib/map/RoomOnMap'
-import {
-  DataSourceConfig,
-  createDataSource
-} from '@/lib/schedule/data-source-factory'
-import { Classroom } from '@/lib/schedule/models/classroom'
 import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
-import { getAcademicWeek } from '@/lib/schedule/utils'
-import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import axios from 'axios'
 import { QrCodeIcon, Link } from 'lucide-react'
@@ -42,6 +31,7 @@ import { useQuery } from 'react-query'
 
 import { RiRouteLine } from 'react-icons/ri'
 import QRCode from 'qrcode.react'
+import ScheduleCalendar from './schedule-calendar'
 
 interface RoomDrawerProps {
   isOpen: boolean
@@ -58,18 +48,6 @@ interface RoomDrawerProps {
 }
 
 const getCurrentEvent = (lessons: LessonSchedulePart[], dateTime: Date) => {
-  const academicWeek = getAcademicWeek(dateTime)
-  const currentDay = dateTime.getDay()
-  const currentTime = dateTime.getHours() * 60 + dateTime.getMinutes()
-
-  // return lessons.find(
-  //   lesson =>
-  //     lesson.academicWeek === academicWeek &&
-  //     lesson.dayOfWeek === currentDay &&
-  //     lesson.lessonBells.some(
-  //       bell => currentTime >= bell.startTime && currentTime <= bell.endTime
-  //     )
-  // )
   return null as LessonSchedulePart | null
 }
 
@@ -100,31 +78,54 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
   onClickNavigateToHere,
   findNearestObject
 }) => {
-  const { timeToDisplay } = useDisplayModeStore()
   const { campus } = useMapStore()
+  const [timeToDisplay, setTimeToDisplay] = useState(new Date())
+  const [selectedWeek, setSelectedWeek] = useState<{ start: Date; end: Date }>()
 
-  const { isLoading, isError, data, isFetched } = useQuery(
-    ['room', timeToDisplay, room.mapObject],
+  const fetchLessonsForWeek = async (startDate: Date, endDate: Date) => {
+    const response = await axios.get<LessonSchedulePart[]>(
+      `/api/schedule?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&room=${
+        room.mapObject.name
+      }&campus=${campus.shortName}`
+    )
+
+    return response.data
+  }
+
+  const {
+    data: lessons,
+    isLoading,
+    isError,
+    refetch
+  } = useQuery(
+    ['lessons', timeToDisplay, room.mapObject.name, campus.shortName],
+    () =>
+      fetchLessonsForWeek(
+        new Date(timeToDisplay),
+        new Date(
+          new Date(timeToDisplay).setDate(new Date(timeToDisplay).getDate() + 6)
+        )
+      ),
     {
-      queryFn: async () => {
-        if (!room) {
-          return
-        }
-
-        const res = await axios.get<LessonSchedulePart[]>('/api/schedule')
-        const lessons = res.data
-
-        return {
-          lessons,
-          status: 'free',
-          info: {
-            workload: 0,
-            purpose: ''
-          }
-        }
-      }
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
     }
   )
+
+  useEffect(() => {
+    refetch()
+  }, [timeToDisplay, refetch])
+
+  const handleWeekChange = (startDate: Date, endDate: Date) => {
+    if (
+      !selectedWeek ||
+      selectedWeek.start.getTime() !== startDate.getTime() ||
+      selectedWeek.end.getTime() !== endDate.getTime()
+    ) {
+      setSelectedWeek({ start: startDate, end: endDate })
+      setTimeToDisplay(startDate)
+    }
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -252,11 +253,9 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               </div>
               {isLoading && (
                 <div className="flex flex-col space-y-3">
-                  <Skeleton className="h-[20px] w-[100px] rounded" />
-                  <Skeleton className="h-[20px] w-[80px] rounded" />
-                  <Skeleton className="h-[20px] w-[80px] rounded" />
-                  <Skeleton className="h-[20px] w-[150px] rounded" />
-                  <Skeleton className="h-[20px] w-[120px] rounded" />
+                  <Skeleton className="h-[40px] w-full rounded" />
+                  <Skeleton className="h-[40px] w-full rounded" />
+                  <Skeleton className="h-[40px] w-full rounded" />
                 </div>
               )}
               {isError && (
@@ -264,7 +263,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <p>Ошибка загрузки данных</p>
                 </div>
               )}
-              {isFetched && !data && (
+              {lessons?.length === 0 && !isLoading && !isError && (
                 <div className="flex h-full flex-col items-center justify-center">
                   <Image
                     src="assets/ghost.svg"
@@ -278,38 +277,28 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                 </div>
               )}
 
-              {!isLoading && data && (
+              {!isLoading && !isError && lessons?.length > 0 && (
                 <RoomInfoTabContent
-                  workload={data?.info?.workload || 0}
-                  status={data?.status === 'free' ? 'Свободна' : 'Занята'}
-                  purpose={data?.info?.purpose || ''}
+                  workload={0}
+                  status={'Свободна'}
+                  purpose={''}
                   eventName={
-                    getCurrentEvent(data?.lessons || [], timeToDisplay)
-                      ?.subject || ''
+                    getCurrentEvent(lessons || [], timeToDisplay)?.subject || ''
                   }
                   teachers={
-                    getCurrentEvent(data?.lessons || [], timeToDisplay)
-                      ?.teachers || []
+                    getCurrentEvent(lessons || [], timeToDisplay)?.teachers ||
+                    []
                   }
                 />
               )}
             </TabsContent>
             <TabsContent value="schedule">
-              {isLoading && (
-                <div className="flex flex-col space-y-3">
-                  <Skeleton className="h-[20px] w-[100px] rounded" />
-                  <Skeleton className="h-[20px] w-[80px] rounded" />
-                  <Skeleton className="h-[20px] w-[80px] rounded" />
-                  <Skeleton className="h-[20px] w-[150px] rounded" />
-                  <Skeleton className="h-[20px] w-[120px] rounded" />
-                </div>
-              )}
-              {!isLoading && (
-                <ScheduleCalendar
-                  date={timeToDisplay}
-                  lessons={data?.lessons || []}
-                />
-              )}
+              <ScheduleCalendar
+                initialDate={timeToDisplay}
+                lessons={lessons || []}
+                onWeekChange={handleWeekChange}
+                isLoading={isLoading}
+              />
             </TabsContent>
           </Tabs>
         </div>
