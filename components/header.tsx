@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import DisplayModeSettingsDialog from './DisplayModeSettingsDialog'
@@ -78,6 +78,14 @@ export const Header = () => {
 
   const [displayModeSettingsDialogOpen, setDisplayModeSettingsDialogOpen] =
     useState(false)
+  const [isFlutterWebView, setIsFlutterWebView] = useState(false)
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera
+    if (userAgent.includes('FlutterWebView')) {
+      setIsFlutterWebView(true)
+    }
+  }, [])
 
   const handleDisplayModeFeatureClick = (displaMode: MapDisplayMode) => {
     if (displayModeStore.mode === displaMode) {
@@ -87,8 +95,6 @@ export const Header = () => {
 
     displayModeStore.setMode(displaMode)
   }
-
-  const [searchOpen, setSearchOpen] = useState(false)
 
   return (
     <>
@@ -107,21 +113,23 @@ export const Header = () => {
         lg:px-6"
         >
           <div className="flex items-center justify-between md:justify-start">
-            <div className="flex items-center">
+            {!isFlutterWebView && (
               <div className="flex items-center">
-                <Sidebar />
+                <div className="flex items-center">
+                  <Sidebar />
 
-                <div className="mr-4 flex">
-                  <Image
-                    src="rbt-logo-dark.svg"
-                    className="mr-3 h-12"
-                    alt="РОСБИОТЕХ Герб"
-                    width={210}
-                    height={150}
-                  />
+                  <div className="mr-4 flex">
+                    <Image
+                      src="rbt-logo-dark.svg"
+                      className="mr-3 h-12"
+                      alt="РОСБИОТЕХ Герб"
+                      width={210}
+                      height={150}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             <div className="flex items-center md:w-full md:justify-between">
               <CommandMenu />
               <div className="ml-auto flex items-center">
