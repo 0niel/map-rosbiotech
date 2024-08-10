@@ -49,9 +49,16 @@ export const Sidebar = () => {
         <SheetHeader>
           <div className="flex items-center">
             <Image
-              src="/rbt-logo-dark.svg"
+              src="/logo-dark.svg"
               alt="росбиотех логотип"
-              className="w-42 mr-2"
+              className="w-42 mr-2 dark:hidden"
+              width={120}
+              height={40}
+            />
+            <Image
+              src="/logo-light.svg"
+              alt="росбиотех логотип"
+              className="w-42 mr-2 hidden dark:block"
               width={120}
               height={40}
             />

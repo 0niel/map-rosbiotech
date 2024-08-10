@@ -120,8 +120,15 @@ export const Header = () => {
 
                   <div className="mr-4 flex">
                     <Image
-                      src="rbt-logo-dark.svg"
-                      className="mr-3 h-12"
+                      src="logo-dark.svg"
+                      className="mr-3 h-12 dark:hidden"
+                      alt="РОСБИОТЕХ Герб"
+                      width={210}
+                      height={150}
+                    />
+                    <Image
+                      src="logo-light.svg"
+                      className="mr-3 hidden h-12 dark:block"
                       alt="РОСБИОТЕХ Герб"
                       width={210}
                       height={150}
