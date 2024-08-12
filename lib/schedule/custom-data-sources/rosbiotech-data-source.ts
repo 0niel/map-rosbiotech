@@ -183,7 +183,7 @@ export class RosbiotechDataSource implements DataSource {
         const lessonBells: LessonBells = {
           start: lesson._TimeS,
           end: lesson._TimeF,
-          number: this.extractLessonNumber(lesson._descPara),
+          number: this.extractLessonNumber(lesson._descPara) ?? undefined,
         };
 
         const dates: Date[] = [this.parseDate(lesson._DateOfLesson)].filter(date => date !== null);
