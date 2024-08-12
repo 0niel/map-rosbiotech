@@ -184,8 +184,9 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
     return name
   }
 
+  const firstWeekDate = currentWeek.length > 0 ? currentWeek[0] : undefined
   const weeklyLessons =
-    currentWeek.length > 0 ? getLessonsForWeek(lessons, currentWeek[0]) : []
+    firstWeekDate !== undefined ? getLessonsForWeek(lessons, firstWeekDate) : []
 
   return (
     <div className="flex flex-col rounded-lg p-2">
