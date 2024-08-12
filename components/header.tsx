@@ -81,7 +81,7 @@ export const Header = () => {
   const [isFlutterWebView, setIsFlutterWebView] = useState(false)
 
   useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera
+    const userAgent = navigator.userAgent || navigator.vendor
     if (userAgent.includes('FlutterWebView')) {
       setIsFlutterWebView(true)
     }
