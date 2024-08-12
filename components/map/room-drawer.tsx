@@ -277,7 +277,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                 </div>
               )}
 
-              {!isLoading && !isError && lessons?.length > 0 && (
+              {!isLoading && !isError && (lessons?.length ?? 0) > 0 && (
                 <RoomInfoTabContent
                   workload={0}
                   status={'Свободна'}
