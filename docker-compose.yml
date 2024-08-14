@@ -1,87 +1,16 @@
 version: "3.9"
 
 services:
-  traefik:
-    image: traefik:latest
-    command:
-      - --accesslog=true
-      - --log.level=INFO
-      - --providers.docker=true
-      - --providers.docker.exposedByDefault=false
-      - --providers.docker.constraints=Label(`traefik.constraint-label-stack`,`map`)
-      - --entrypoints.map_web.address=:80
-      - --entrypoints.map_websecure.address=:443
-      # LetsEncrypt Staging Server
-      # - --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=map_web
-      - --certificatesresolvers.letsencrypt.acme.email=${EMAIL}
-      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-    restart: unless-stopped
+  app:
     ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./data/letsencrypt:/letsencrypt
-    depends_on:
-      - app
-    networks:
-      - gateway
-      - application
+      - 3000:3000
+    environment:
+      NODE_ENV: production
 
   db:
-    image: postgres:15
-    volumes:
-      - app-db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
-    networks:
-      - application
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  app:
-    build:
-      context: .
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - application
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
-    labels:
-      - traefik.enable=true
-      - traefik.constraint-label-stack=map
-      - traefik.docker.network=application
-      - traefik.http.services.map.loadbalancer.server.port=3000
-      #http
-      - traefik.http.routers.map_http.entrypoints=map_web
-      - traefik.http.routers.map_http.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.map_http.service=map
-      - traefik.http.routers.map_http.middlewares=map_redirect_https
-      # https
-      - traefik.http.middlewares.map_redirect_https.redirectscheme.scheme=https
-      - traefik.http.middlewares.map_redirect_https.redirectscheme.permanent=true
-      - traefik.http.routers.map_https.entrypoints=map_websecure
-      - traefik.http.routers.map_https.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.map_https.service=map
-      - traefik.http.routers.map_https.tls=true
-      - traefik.http.routers.map_https.tls.certresolver=${CERT_RESOLVER}
 
 networks:
-  gateway:
   application:
-
-volumes:
-  app-db-data:
+    external: true

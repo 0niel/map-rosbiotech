@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:latest
+    command:
+      - --accesslog=true
+      - --log.level=INFO
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.constraints=Label(`traefik.constraint-label-stack`,`map`)
+      - --entrypoints.map_web.address=:80
+      - --entrypoints.map_websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=map_web
+      - --certificatesresolvers.letsencrypt.acme.email=${EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/letsencrypt:/letsencrypt
+    networks:
+      - gateway
+      - application
+
+  app:
+    labels:
+      - traefik.enable=true
+      - traefik.constraint-label-stack=map
+      - traefik.docker.network=application
+      - traefik.http.services.map.loadbalancer.server.port=3000
+      - traefik.http.routers.map_http.entrypoints=map_web
+      - traefik.http.routers.map_http.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.map_http.middlewares=map_redirect_https
+      - traefik.http.middlewares.map_redirect_https.redirectscheme.scheme=https
+      - traefik.http.middlewares.map_redirect_https.redirectscheme.permanent=true
+      - traefik.http.routers.map_https.entrypoints=map_websecure
+      - traefik.http.routers.map_https.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.map_https.tls=true
+      - traefik.http.routers.map_https.tls.certresolver=${CERT_RESOLVER}
+
+networks:
+  gateway:
+    external: true
+  application:
+    external: true
