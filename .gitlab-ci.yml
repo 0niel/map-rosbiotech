@@ -1,0 +1,42 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:latest
+  SSH_USER: $CI_SSH_USER
+  SSH_HOST: $CI_SSH_HOST
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm install
+    - npm run build
+
+test:
+  stage: test
+  image: node:18
+  script:
+    - npm install
+    - npm test
+
+docker-build:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:dind
+  script:
+    - docker build -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+
+deploy:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache openssh-client
+    - echo "$CI_SSH_KEY" | ssh-add -
+    - ssh $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE && docker-compose -f /path/to/docker-compose.yml up -d"
+  only:
+    - main
