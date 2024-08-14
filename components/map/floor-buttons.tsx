@@ -14,7 +14,7 @@ const FloorSelectorButtons: React.FC<FloorSelectorButtonsProps> = ({
   onFloorSelect
 }) => {
   return (
-    <ScrollArea className="relative max-h-60 w-12 rounded-lg border border-input bg-background p-1.5 sm:w-full sm:max-w-[60px] sm:p-2">
+    <ScrollArea className="relative h-60 w-12 overflow-auto rounded-lg border border-input bg-background p-1.5 sm:w-full sm:max-w-[60px] sm:p-2">
       <div className="pointer-events-none absolute inset-y-0 left-0 right-0">
         {/* Верхний градиент затемнения */}
         <div className="absolute left-0 right-0 top-0 h-6 bg-gradient-to-b from-background to-transparent"></div>

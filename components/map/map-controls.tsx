@@ -1,5 +1,5 @@
 import React from 'react'
-import FloorSelectorButtons from './FloorSelectorButtons'
+import FloorSelectorButtons from './floor-buttons'
 import ScaleButtons from './ScaleButtons'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useHotkeys } from 'react-hotkeys-hook'
