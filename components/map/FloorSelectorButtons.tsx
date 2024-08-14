@@ -28,7 +28,7 @@ const FloorSelectorButtons: React.FC<FloorSelectorButtonsProps> = ({
             key={floor}
             type="button"
             className={clsx(
-              'pointer-events-auto w-full transition duration-150 ease-in-out sm:w-10 sm:p-2'
+              'pointer-events-auto w-full p-2 transition duration-150 ease-in-out sm:w-10'
             )}
             onClick={() => onFloorSelect(floor)}
           >
