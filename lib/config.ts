@@ -17,8 +17,6 @@ const config: Config = {
       floors: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       initialFloor: 1,
       initialScale: 0.2,
-      initialPositionX: 600,
-      initialPositionY: 0
     }
   ],
 

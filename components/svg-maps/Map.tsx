@@ -1,18 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { MapDisplayMode } from './MapDisplayMode'
-import { type MapProps } from './MapProps'
 import { fetchSvg } from './fetchSvg'
 import { Spinner } from '@/components/ui/spinner'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
-import useScheduleDataStore from '@/lib/stores/scheduleDataStore'
 import { Dialog } from '@headlessui/react'
 import toast from 'react-hot-toast'
 import { useQuery } from 'react-query'
 
-const Map = ({ svgUrl }: MapProps) => {
+const Map = ({
+  svgUrl,
+  svgRef
+}: Readonly<{
+  svgUrl: string
+  svgRef: React.MutableRefObject<SVGElement | null>
+}>) => {
   const displayModeStore = useDisplayModeStore()
   const { mapData } = useMapStore()
+  const mapContainerRef = useRef<HTMLDivElement>(null)
 
   const { isLoading, data, refetch, status } = useQuery(
     ['map', svgUrl, displayModeStore.mode],
@@ -32,10 +37,15 @@ const Map = ({ svgUrl }: MapProps) => {
         return
       }
 
-      const svgElement = document.querySelector('#map svg') as SVGElement
-      svgElement.innerHTML = data
+      if (mapContainerRef.current) {
+        mapContainerRef.current.innerHTML = data
+        const svgElement = mapContainerRef.current.querySelector('svg')
+        if (svgElement && svgRef) {
+          svgRef.current = svgElement
+        }
+      }
     })
-  }, [displayModeStore.mode])
+  }, [displayModeStore.mode, data, refetch, svgRef])
 
   return (
     <>
@@ -46,7 +56,10 @@ const Map = ({ svgUrl }: MapProps) => {
       </Dialog>
 
       {data && mapData && (
-        <div dangerouslySetInnerHTML={{ __html: data }} id="map" />
+        <div
+          id="map"
+          ref={mapContainerRef} // Привязка рефа к div
+        />
       )}
     </>
   )

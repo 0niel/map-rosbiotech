@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import MapWrapper from '../svg-maps/MapWrapper'
 import { Spinner } from '../ui/spinner'
 import MapControls from './MapControls'
@@ -60,7 +60,6 @@ const MapContainer = () => {
   }, [setMapData])
 
   const mapRouteRef = useRef<MapRouteRef>(null)
-
   const { setStartMapObject, setEndMapObject } = useRouteStore()
 
   const [drawerOpened, setDrawerOpened] = useState(false)
@@ -69,10 +68,12 @@ const MapContainer = () => {
     end: false
   })
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null)
+  const svgRef = useRef<SVGElement | null>(null)
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
     null
   )
   const selectedRoomOnMapRef = useRef<RoomOnMap | null>(null)
+  const [scale, setScale] = useState(1)
 
   useEffect(() => {
     selectedRoomOnMapRef.current = selectedRoomOnMap
@@ -337,6 +338,39 @@ const MapContainer = () => {
 
   const [displayDetails, setDisplayDetails] = useState(false)
 
+  useEffect(() => {
+    if (svgRef.current && transformComponentRef.current) {
+      const svgElement = svgRef.current.querySelector('svg')
+      if (svgElement) {
+        const svgBBox = svgElement.getBoundingClientRect()
+        const svgWidth = svgBBox.width
+        const svgHeight = svgBBox.height
+
+        const viewportWidth = window.innerWidth
+        const viewportHeight = window.innerHeight
+
+        // Calculate scale to fit SVG within viewport
+        const scaleX = viewportWidth / svgWidth
+        const scaleY = viewportHeight / svgHeight
+        const scaleToFit = Math.min(scaleX, scaleY, 1)
+
+        // Calculate positions to center SVG
+        const positionX = (viewportWidth - svgWidth * scaleToFit) / 2
+        const positionY = (viewportHeight - svgHeight * scaleToFit) / 2
+
+        transformComponentRef.current.setTransform(
+          positionX,
+          positionY,
+          scaleToFit,
+          500,
+          'easeOut'
+        )
+
+        setScale(scaleToFit)
+      }
+    }
+  }, [mapData])
+
   return (
     <div className="flex h-full flex-col">
       <div className="h-full rounded-lg dark:border-gray-700">
@@ -482,7 +516,7 @@ const MapContainer = () => {
 
             <TransformWrapper
               minScale={0.05}
-              initialScale={campus?.initialScale ?? 1}
+              initialScale={campus?.initialScale ?? scale}
               initialPositionX={campus?.initialPositionX ?? 0}
               initialPositionY={campus?.initialPositionY ?? 0}
               maxScale={1}
@@ -521,7 +555,7 @@ const MapContainer = () => {
                   className="pointer-events-none absolute z-20 h-full w-full"
                   mapData={mapData}
                 />
-                <MapWrapper />
+                <MapWrapper ref={svgRef} />
               </TransformComponent>
             </TransformWrapper>
           </div>

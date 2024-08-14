@@ -8,8 +8,8 @@ export interface Campus {
   floors: number[]
   initialFloor: number
   initialScale: number
-  initialPositionX: number
-  initialPositionY: number
+  initialPositionX?: number | null | undefined
+  initialPositionY?: number | null | undefined
 }
 
 const campuses: Campus[] = config.campuses
