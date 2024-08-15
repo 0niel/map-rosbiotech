@@ -10,6 +10,16 @@ export interface Campus {
   initialScale: number
   initialPositionX?: number | null | undefined
   initialPositionY?: number | null | undefined
+  svgMaps: { [key: string]: string }
+
+  // Корпусы
+  buildings?: {
+    description?: string,
+    name: string,
+    floors: number[],
+    svgMaps: { [key: string]: string },
+    isInitial?: boolean
+  }[]
 }
 
 const campuses: Campus[] = config.campuses

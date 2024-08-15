@@ -44,6 +44,7 @@ const MapContainer = () => {
   const searchParams = useSearchParams()
   const {
     campus,
+    building,
     setFloor,
     floor,
     setMapData,
@@ -52,6 +53,7 @@ const MapContainer = () => {
     setSelectedFromSearchRoom,
     setCampus
   } = useMapStore()
+
   const { setTimeToDisplay } = useDisplayModeStore()
 
   useEffect(() => {
@@ -491,7 +493,7 @@ const MapContainer = () => {
                 <MapControls
                   onZoomIn={() => transformComponentRef.current?.zoomIn()}
                   onZoomOut={() => transformComponentRef.current?.zoomOut()}
-                  floors={campus.floors}
+                  floors={building?.floors || campus.floors || []}
                 />
               </div>
 

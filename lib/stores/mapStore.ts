@@ -6,13 +6,14 @@ import { devtools } from 'zustand/middleware'
 
 interface MapState {
   campus: Campus
+  building: { name: string, floors: number[], svgMaps: { [key: string]: string } } | null
   setCampus: (campus: Campus) => void
+  setBuilding: (building: { name: string, floors: number[], svgMaps: { [key: string]: string } } | null) => void
   floor: number
   setFloor: (floor: number) => void
   mapData: MapData | null
   setMapData: (mapData: MapData | null) => void
 
-  // Используется для поиска по карте в SearchDialog
   selectedFromSearchRoom: {
     name: string
     campus: string
@@ -31,9 +32,18 @@ export const useMapStore = create<MapState>()(
   devtools(
     set => ({
       campus: initialCampus,
-      floor: initialCampus.initialFloor,
+      building: initialCampus.buildings?.find(b => b.isInitial) || null,
+      floor: initialCampus.buildings?.find(b => b.isInitial)?.floors[0] ?? initialCampus.initialFloor,
       setCampus: campus => {
-        set({ campus, floor: campus.initialFloor })
+        const initialBuilding = campus.buildings?.find(b => b.isInitial) || null;
+        set({
+          campus,
+          building: initialBuilding,
+          floor: initialBuilding?.floors[0] ?? campus.initialFloor
+        });
+      },
+      setBuilding: building => {
+        set({ building, floor: building?.floors[0] ?? initialCampus.initialFloor });
       },
       setFloor: floor => set({ floor }),
       mapData: null,

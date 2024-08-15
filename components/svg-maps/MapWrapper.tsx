@@ -8,8 +8,8 @@ const MapWrapper = ({
 }: Readonly<{
   ref: React.MutableRefObject<SVGElement | null>
 }>) => {
-  const { floor } = useMapStore()
-  const currentMap = config.svgMaps[`Floor${floor}`]
+  const { floor, campus, building } = useMapStore()
+  const currentMap = building?.svgMaps[floor] || campus.svgMaps[floor]
 
   return <Map svgUrl={currentMap ?? ''} svgRef={ref} />
 }
