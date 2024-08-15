@@ -1,28 +1,176 @@
-# Create T3 App
+# 🗺️ Интерактивная Карта Кампуса
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Добро пожаловать в проект интерактивной карты кампуса! Этот проект позволяет визуализировать карту кампуса университета с возможностью отображения расписания занятий и других событий. 
 
-## What's next? How do I make an app with this?
+## 📦 Содержание
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- [Запуск проекта](#🚀-запуск-проекта)
+- [Конфигурация проекта](#⚙️-конфигурация-проекта)
+- [Создание кастомного источника данных](#🛠️-создание-кастомного-источника-данных)
+- [Дополнительная информация](#📚-дополнительная-информация)
+- [Лицензия](#📄-лицензия)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## 🚀 Запуск проекта
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Требования
 
-## Learn More
+- Docker
+- Docker Compose
+- Node.js (для разработки)
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Шаги для запуска
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+1. **Клонируйте репозиторий:**
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+   ```bash
+   git clone https://github.com/0niel/map.git
+   cd map
+   ```
 
-## How do I deploy this?
+2. **Запуск в режиме разработки:**
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+   Если вы хотите запустить проект в режиме разработки, выполните следующие команды:
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
+
+   После этого откройте [http://localhost:3000](http://localhost:3000) в вашем браузере, чтобы увидеть результат.
+
+3. **Запуск с использованием Docker:**
+
+   Для запуска проекта в Docker-контейнерах:
+
+   ```bash
+   docker-compose -f docker-compose.yml up -d
+   docker-compose -f docker-compose.traefik.yml up -d
+   ```
+
+4. **Доступ к приложению:**
+
+   Откройте браузер и перейдите по адресу `http://localhost:3000` для доступа к приложению.
+
+## ⚙️ Конфигурация проекта
+
+### Основной конфигурационный файл
+
+Файл `config.ts` содержит базовую конфигурацию приложения. Вот пример содержания:
+
+```typescript
+const config: Config = {
+  campuses: [
+    {
+      shortName: 'Сокол',
+      description: 'Волоколамское шоссе, 11',
+      floors: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      initialFloor: 1,
+      initialScale: 0.2,
+    }
+  ],
+
+  svgMaps: {
+    Floor1: '/svg-maps/corpus_b_2.svg',
+    Floor2: '/svg-maps/corpus_b_3_floor_uncodified.svg',
+    Floor3: '/svg-maps/corpus_b_4_floor.svg',
+    Floor4: '/svg-maps/corpus_b_5_floor.svg',
+    Floor5: '/svg-maps/corpus_b_6_floor.svg',
+    Floor6: '/svg-maps/corpus_b_7_floor_uncodified.svg',
+    Floor7: '/svg-maps/corpus_b_8_floor.svg',
+    Floor8: '/svg-maps/corpus_b_9_floor.svg',
+    Floor9: '/svg-maps/corpus_b_10_floor.svg',
+    Floor10: '/svg-maps/corpus_b_11_floor.svg',
+  },
+
+  schedule: {
+    defaultDataSource: 'rosbiotech'
+  }
+}
+```
+
+### Карты этажей
+
+Каждая строка в объекте `svgMaps` указывает путь к SVG-файлу, представляющему карту определенного этажа. Например:
+
+- **`Floor1: '/svg-maps/corpus_b_2.svg'`** указывает на карту первого этажа, которая должна находиться в директории `public/svg-maps` вашего проекта.
+
+#### Что нужно сделать:
+
+1. **Создайте карты этажей**: Подготовьте SVG-файлы для каждого этажа вашего кампуса.
+2. **Загрузите SVG-файлы в проект**: Поместите эти файлы в папку `public/svg-maps`.
+3. **Убедитесь, что конфигурация соответствует реальному расположению файлов**.
+
+### Использование Traefik
+
+Для маршрутизации и управления SSL используется Traefik. Конфигурация находится в файле `docker-compose.traefik.yml`.
+
+## 🛠️ Создание кастомного источника данных
+
+Чтобы создать кастомный источник данных для расписания, выполните следующие шаги:
+
+1. **Создайте новый класс источника данных:**
+
+   Пример: `custom-data-sources/your-custom-data-source.ts`.
+
+   ```typescript
+   import { DataSource } from '../data-source';
+   import { LessonSchedulePart } from '../models/lesson-schedule-part';
+
+   export class YourCustomDataSource implements DataSource {
+     // Реализуйте методы источника данных
+   }
+   ```
+
+2. **Обновите фабрику источников данных:**
+
+   В файле `data-source-factory.ts` добавьте ваш новый источник:
+
+   ```typescript
+   export const createDataSource = (config: DataSourceConfig): DataSource => {
+     switch (config.type) {
+       case 'local':
+         // ...
+       case 'your_custom_type':
+         const { YourCustomDataSource } = require('./custom-data-sources/your-custom-data-source');
+         return new YourCustomDataSource(config.endpoint);
+       default:
+         throw new Error('Invalid data source type');
+     }
+   };
+   ```
+
+3. **Настройте конфигурацию:**
+
+   Обновите `config.ts`, указав ваш новый тип источника данных:
+
+   ```typescript
+   schedule: {
+     defaultDataSource: 'your_custom_type'
+   }
+   ```
+
+## 📚 Дополнительная информация
+
+### Next.js
+
+Этот проект использует [Next.js](https://nextjs.org), популярный фреймворк для создания React-приложений.
+
+### Ресурсы для изучения
+
+- [Документация Next.js](https://nextjs.org/docs) - узнайте больше о функциях и API Next.js.
+- [Интерактивный учебник по Next.js](https://nextjs.org/learn) - научитесь использовать Next.js через интерактивное обучение.
+
+### Деплой на Vercel
+
+Самый простой способ развернуть ваше Next.js приложение — это использовать [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) от создателей Next.js.
+
+Ознакомьтесь с [документацией по деплою Next.js](https://nextjs.org/docs/deployment) для получения более подробной информации.
+
+## 📄 Лицензия
+
+Этот проект лицензирован под [MIT License](LICENSE).
