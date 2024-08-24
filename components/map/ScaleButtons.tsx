@@ -14,7 +14,7 @@ const ScaleButtons: React.FC<ScaleButtonsProps> = ({ onZoomIn, onZoomOut }) => {
   useHotkeys('-', onZoomOut)
 
   return (
-    <div className="flex w-12 flex-col space-y-2 rounded-lg border border-input bg-background  p-2 sm:w-full">
+    <div className="flex w-14 flex-col space-y-2 rounded-lg border border-input bg-background  p-2 sm:w-full">
       <Button type="button" className={buttonStyle} onClick={onZoomIn}>
         <Plus size={24} />
       </Button>
