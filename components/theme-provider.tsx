@@ -53,11 +53,21 @@ import { type ThemeProviderProps } from 'next-themes/dist/types'
  */
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return (
+    <NextThemesProvider {...props}>
+      <ThemeUpdater />
+      {children}
+    </NextThemesProvider>
+  )
+}
+
+function ThemeUpdater() {
   const { setTheme } = useTheme()
 
   React.useEffect(() => {
     const handleThemeMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === 'SET_THEME') {
+        console.log(event)
         const newTheme = event.data.theme
         setTheme(newTheme)
       }
@@ -70,5 +80,5 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     }
   }, [setTheme])
 
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+  return null
 }
