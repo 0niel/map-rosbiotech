@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import MapWrapper from '../svg-maps/MapWrapper'
-import { Spinner } from '../ui/spinner'
 import MapControls from './map-controls'
 import MapNavigationButton from './MapNavigationButton'
 import MapRoute, { type MapRouteRef } from './MapRoute'
@@ -11,7 +10,6 @@ import RouteDetails, { type DetailsSlide } from './RouteDetails'
 import NavigationDialog from './navigation-dialog'
 import RoomDrawer from './room-drawer'
 import campuses from '@/lib/campuses'
-import { useRoomsQuery } from '@/lib/hooks/useRoomsQuery'
 import { MapData } from '@/lib/map/MapData'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { type RoomOnMap } from '@/lib/map/RoomOnMap'
@@ -27,7 +25,6 @@ import {
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useRouteStore } from '@/lib/stores/routeStore'
-import useScheduleDataStore from '@/lib/stores/scheduleDataStore'
 import mapDataJson from '@/public/routes.json'
 import toast from 'react-hot-toast'
 import {
@@ -70,7 +67,6 @@ const MapContainer = () => {
     end: false
   })
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null)
-  const svgRef = useRef<SVGElement | null>(null)
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
     null
   )
@@ -340,39 +336,6 @@ const MapContainer = () => {
 
   const [displayDetails, setDisplayDetails] = useState(false)
 
-  useEffect(() => {
-    if (svgRef.current && transformComponentRef.current) {
-      const svgElement = svgRef.current.querySelector('svg')
-      if (svgElement) {
-        const svgBBox = svgElement.getBoundingClientRect()
-        const svgWidth = svgBBox.width
-        const svgHeight = svgBBox.height
-
-        const viewportWidth = window.innerWidth
-        const viewportHeight = window.innerHeight
-
-        // Calculate scale to fit SVG within viewport
-        const scaleX = viewportWidth / svgWidth
-        const scaleY = viewportHeight / svgHeight
-        const scaleToFit = Math.min(scaleX, scaleY, 1)
-
-        // Calculate positions to center SVG
-        const positionX = (viewportWidth - svgWidth * scaleToFit) / 2
-        const positionY = (viewportHeight - svgHeight * scaleToFit) / 2
-
-        transformComponentRef.current.setTransform(
-          positionX,
-          positionY,
-          scaleToFit,
-          500,
-          'easeOut'
-        )
-
-        setScale(scaleToFit)
-      }
-    }
-  }, [mapData])
-
   return (
     <div className="flex h-full flex-col">
       <div className="h-full rounded-lg dark:border-gray-700">
@@ -557,7 +520,7 @@ const MapContainer = () => {
                   className="pointer-events-none absolute z-20 h-full w-full"
                   mapData={mapData}
                 />
-                <MapWrapper ref={svgRef} />
+                <MapWrapper transformComponentRef={transformComponentRef} />
               </TransformComponent>
             </TransformWrapper>
           </div>

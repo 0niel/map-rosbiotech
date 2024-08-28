@@ -7,13 +7,14 @@ import { useMapStore } from '@/lib/stores/mapStore'
 import { Dialog } from '@headlessui/react'
 import toast from 'react-hot-toast'
 import { useQuery } from 'react-query'
+import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 
 const Map = ({
   svgUrl,
-  svgRef
+  transformComponentRef
 }: Readonly<{
   svgUrl: string
-  svgRef: React.MutableRefObject<SVGElement | null>
+  transformComponentRef: React.RefObject<ReactZoomPanPinchRef> | null
 }>) => {
   const displayModeStore = useDisplayModeStore()
   const { mapData } = useMapStore()
@@ -39,13 +40,39 @@ const Map = ({
 
       if (mapContainerRef.current) {
         mapContainerRef.current.innerHTML = data
-        const svgElement = mapContainerRef.current.querySelector('svg')
-        if (svgElement && svgRef) {
-          svgRef.current = svgElement
+
+        const svgElement = mapContainerRef.current?.querySelector('svg')
+
+        if (svgElement && transformComponentRef?.current) {
+          const svgBBox = svgElement.getBoundingClientRect()
+          const svgWidth = svgBBox.width
+          const svgHeight = svgBBox.height
+
+          const viewportWidth = window.innerWidth
+          const viewportHeight = window.innerHeight
+
+          // Calculate scale to fit SVG within viewport
+          const scaleX = viewportWidth / svgWidth
+          const scaleY = viewportHeight / svgHeight
+          const scaleToFit = Math.min(scaleX, scaleY, 1)
+
+          // Calculate positions to center SVG
+          const positionX = (viewportWidth - svgWidth * scaleToFit) / 2
+          const positionY = (viewportHeight - svgHeight * scaleToFit) / 2
+
+          transformComponentRef.current.setTransform(
+            positionX,
+            positionY,
+            scaleToFit,
+            500,
+            'easeOut'
+          )
+
+          // transformComponentRef?.current?.centerView()
         }
       }
     })
-  }, [displayModeStore.mode, data, refetch, svgRef])
+  }, [displayModeStore.mode, data, refetch, transformComponentRef])
 
   return (
     <>
@@ -55,12 +82,7 @@ const Map = ({
         </div>
       </Dialog>
 
-      {data && mapData && (
-        <div
-          id="map"
-          ref={mapContainerRef} // Привязка рефа к div
-        />
-      )}
+      {data && mapData && <div id="map" ref={mapContainerRef} />}
     </>
   )
 }

@@ -1,5 +1,3 @@
-import MillionLint from '@million/lint'
-
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -36,6 +34,5 @@ const config = {
     return config
   }
 }
-export default MillionLint.next({
-  rsc: true
-})(config)
+
+export default config
