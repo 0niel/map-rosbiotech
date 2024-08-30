@@ -6,7 +6,7 @@ import { LessonType } from '../models/lesson-type';
 import { Teacher } from '../models/teacher';
 import axios from 'axios';
 
-const ROOM_GUID_SEARCH_ENDPOINT = 'http://localhost:8000/search';
+const ROOM_GUID_SEARCH_ENDPOINT = 'http://192.168.124.16:8000/search';
 const LESSONS_API_ENDPOINT = 'https://api.cloud.mgupp.ru/events-api-mgupp/v2/rasp/Rasp_GetLesson_OfTheDays_Room';
 
 interface RosbiotechLesson {
