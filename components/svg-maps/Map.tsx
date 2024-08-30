@@ -44,6 +44,8 @@ const Map = ({
         const svgElement = mapContainerRef.current?.querySelector('svg')
 
         if (svgElement && transformComponentRef?.current) {
+          transformComponentRef?.current?.centerView()
+
           const svgBBox = svgElement.getBoundingClientRect()
           const svgWidth = svgBBox.width
           const svgHeight = svgBBox.height
@@ -67,8 +69,6 @@ const Map = ({
             500,
             'easeOut'
           )
-
-          // transformComponentRef?.current?.centerView()
         }
       }
     })
