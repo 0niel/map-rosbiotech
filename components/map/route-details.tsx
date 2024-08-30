@@ -13,9 +13,14 @@ import {
   DialogDescription
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { MapIcon, XIcon, MoveRightIcon, StepBackIcon } from 'lucide-react'
+import {
+  MapIcon,
+  XIcon,
+  MoveRightIcon,
+  StepBackIcon,
+  Route
+} from 'lucide-react'
 import { toast } from 'sonner'
-import { FaRoute } from 'react-icons/fa6'
 interface RouteDetailsProps {
   onDetailsSlideChange: (detailsSlide: DetailsSlide) => void
   onDetailsSlideClick: (detailsSlide: DetailsSlide) => void
@@ -234,7 +239,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ onDetailsSlideClick }) => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
-          <FaRoute className="h-5 w-5" />
+          <Route className="h-5 w-5" />
           <span className="sr-only">Открыть навигацию</span>
         </Button>
       </DialogTrigger>

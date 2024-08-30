@@ -5,9 +5,9 @@ import { Spinner } from '@/components/ui/spinner'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { Dialog } from '@headlessui/react'
-import toast from 'react-hot-toast'
 import { useQuery } from 'react-query'
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
+import { toast } from 'sonner'
 
 const Map = ({
   svgUrl,
