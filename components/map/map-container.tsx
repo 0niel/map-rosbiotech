@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import MapWrapper from '../svg-maps/MapWrapper'
 import MapControls from './map-controls'
-import MapNavigationButton from './MapNavigationButton'
+import MapNavigationButton from './navigation-button'
 import MapRoute, { type MapRouteRef } from './MapRoute'
 import NavigationDialog from './navigation-dialog'
 import RoomDrawer from './room-drawer'
@@ -430,6 +430,14 @@ const MapContainer = () => {
                   if (!routeStartAndEnd.end) return
 
                   zoomToMapObject(routeStartAndEnd.end)
+                }}
+                onClearRoute={() => {
+                  setRouteStartAndEnd({
+                    start: null,
+                    end: null,
+                    render: false
+                  })
+                  mapRouteRef.current?.clearRoute()
                 }}
               />
 
