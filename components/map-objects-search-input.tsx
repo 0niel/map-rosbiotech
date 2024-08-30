@@ -3,9 +3,8 @@
 import { Input } from '@/components/ui/input'
 import { type SearchableObject } from '@/lib/map/MapData'
 import { Search } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Label } from './ui/label'
-
 interface MapObjectsSearchInputProps {
   onSubmit: (searchableObject: SearchableObject) => void
   onChange?: (data: string) => void
@@ -35,6 +34,8 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   const [filteredResults, setFilteredResults] = useState<SearchableObject[]>([])
   const [showResults, setShowResults] = useState(false)
 
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (initialSearch) {
       setSearch(initialSearch)
@@ -54,6 +55,23 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
     setShowResults(results.length > 0)
   }, [search, searchResults])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
   const handleSelect = (result: SearchableObject) => {
     setShowResults(false)
     setSearch(result.mapObject.name)
@@ -66,12 +84,12 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
   }
 
   return (
-    <div className="relative w-full">
+    <div ref={wrapperRef} className="relative w-full">
       {label && <Label htmlFor="default-search">{label}</Label>}
       <div className="relative w-full">
         <Input
           ref={inputRef}
-          type="search"
+          type="text"
           id="default-search"
           placeholder={placeholder ?? 'Поиск...'}
           className="w-full"
