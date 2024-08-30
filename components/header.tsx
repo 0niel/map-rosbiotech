@@ -29,8 +29,8 @@ import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { cn } from '@/lib/utils'
 import { AppWindow, CalendarDays, Map, Menu, Search, Timer } from 'lucide-react'
-import toast from 'react-hot-toast'
 import { TbApps } from 'react-icons/tb'
+import { toast } from 'sonner'
 
 const MapDisplayButton = ({
   mode,

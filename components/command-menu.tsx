@@ -115,9 +115,8 @@ export function CommandMenu({ ...props }: DialogProps) {
 
   const onEmployeeClick = (employee: StrapiResponse['data'][0]) => {
     const employeeRooms = employee?.attributes?.positions
-      .map(
-        position =>
-          position?.contacts.map(contact => contact?.room?.data.attributes)
+      .map(position =>
+        position?.contacts.map(contact => contact?.room?.data.attributes)
       )
       .flat()
 

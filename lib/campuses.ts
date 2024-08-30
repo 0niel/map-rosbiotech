@@ -14,10 +14,10 @@ export interface Campus {
 
   // Корпусы
   buildings?: {
-    description?: string,
-    name: string,
-    floors: number[],
-    svgMaps: { [key: string]: string },
+    description?: string
+    name: string
+    floors: number[]
+    svgMaps: { [key: string]: string }
     isInitial?: boolean
   }[]
 }

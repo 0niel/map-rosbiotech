@@ -1,11 +1,9 @@
-
 import { type UseQueryOptions, useQuery } from 'react-query'
 
 export const useRoomsQuery = (
-  campus: string,
+  campus: string
   // options?: UseQueryOptions<components['schemas']['Room'][], Error>
 ) => {
-
   return useQuery(['rooms', campus], {
     queryFn: async () => {
       // const { data, error } = await scheduleAPI.getCampuses()
@@ -23,7 +21,6 @@ export const useRoomsQuery = (
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-
+    refetchOnReconnect: false
   })
 }
