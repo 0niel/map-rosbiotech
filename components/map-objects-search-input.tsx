@@ -120,7 +120,7 @@ const MapObjectsSearchInput: React.FC<MapObjectsSearchInputProps> = ({
                       </p>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {result.floor}
+                      {result.floor} этаж
                     </div>
                   </div>
                 </li>
