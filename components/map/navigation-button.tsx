@@ -4,7 +4,6 @@ import { Navigation2Icon, XIcon } from 'lucide-react'
 import RouteDetails, { DetailsSlide } from './route-details'
 
 interface MapNavigationButtonProps {
-  onClick: () => void
   onClickStart: () => void
   onClickEnd: () => void
   onClearRoute: () => void
@@ -14,16 +13,7 @@ const MapNavigationButton = (props: MapNavigationButtonProps) => {
   const { startMapObject, endMapObject, path } = useRouteStore()
 
   return (
-    <div className="pointer-events-auto flex flex-row items-center justify-center space-x-2">
-      <Button
-        className="pointer-events-auto border border-input bg-background p-3 text-gray-700 sm:px-4 sm:py-6"
-        onClick={() => {
-          props.onClick()
-        }}
-      >
-        <Navigation2Icon className="h-6 w-6" />
-      </Button>
-
+    <div className="pointer-events-auto flex flex-row items-center justify-center space-x-2 pl-4 md:pl-24">
       {(startMapObject || endMapObject) && (
         <div className="flex flex-row items-center space-x-2 rounded-lg border border-input bg-background p-2">
           {startMapObject && endMapObject && path && path.length > 0 && (

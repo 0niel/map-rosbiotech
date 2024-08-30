@@ -278,7 +278,7 @@ const MapContainer = () => {
     unselectRoomEl()
   }, [unselectRoomEl])
 
-  const [routesModalShow, setRoutesModalShow] = useState(false)
+  const [navigationDialogOpen, setNavigationDialogOpen] = useState(false)
   const [routeStartAndEnd, setRouteStartAndEnd] = useState<{
     start: MapObject | null
     end: MapObject | null
@@ -342,7 +342,7 @@ const MapContainer = () => {
                 end: routeStartAndEnd.end,
                 render: false
               })
-              setRoutesModalShow(true)
+              setNavigationDialogOpen(true)
               handleCloseDrawer()
             }}
             onClickNavigateToHere={mapObject => {
@@ -351,7 +351,7 @@ const MapContainer = () => {
                 end: mapObject,
                 render: false
               })
-              setRoutesModalShow(true)
+              setNavigationDialogOpen(true)
               handleCloseDrawer()
             }}
             findNearestObject={(
@@ -379,10 +379,10 @@ const MapContainer = () => {
         )}
 
         {mapData && (
-          <div className="relative z-0 mb-4 h-full w-full overflow-hidden bg-[#f5f5f7] dark:bg-[#121212]">
+          <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
             <NavigationDialog
-              isOpen={routesModalShow}
-              onClose={() => setRoutesModalShow(false)}
+              isOpen={navigationDialogOpen}
+              onClose={() => setNavigationDialogOpen(false)}
               onSelect={(start?: MapObject | null, end?: MapObject | null) => {
                 if (start) {
                   setRouteStartAndEnd({
@@ -399,7 +399,7 @@ const MapContainer = () => {
                 }
               }}
               onSubmit={(start: MapObject, end: MapObject) => {
-                setRoutesModalShow(false)
+                setNavigationDialogOpen(false)
                 setRouteStartAndEnd({
                   start,
                   end,
@@ -411,16 +411,15 @@ const MapContainer = () => {
               startMapObject={routeStartAndEnd.start}
               endMapObject={routeStartAndEnd.end}
               setWaitForSelectStart={() => {
-                setRoutesModalShow(false)
+                setNavigationDialogOpen(false)
               }}
               setWaitForSelectEnd={() => {
-                setRoutesModalShow(false)
+                setNavigationDialogOpen(false)
               }}
             />
 
-            <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
+            <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between py-2 md:py-4">
               <MapNavigationButton
-                onClick={() => setRoutesModalShow(true)}
                 onClickStart={() => {
                   if (!routeStartAndEnd.start) return
 
@@ -441,11 +440,12 @@ const MapContainer = () => {
                 }}
               />
 
-              <div className="fixed bottom-0 right-2 z-30 -translate-y-1/2 transform sm:fixed sm:bottom-5 sm:right-5 sm:translate-x-0 sm:translate-y-0">
+              <div className="fixed bottom-0 z-30 w-full -translate-y-1/2 transform px-2 sm:fixed sm:bottom-5 sm:translate-y-0 md:px-8">
                 <MapControls
                   onZoomIn={() => transformComponentRef.current?.zoomIn()}
                   onZoomOut={() => transformComponentRef.current?.zoomOut()}
                   floors={building?.floors || campus.floors || []}
+                  onNavigatonDialogOpen={() => setNavigationDialogOpen(true)}
                 />
               </div>
             </div>

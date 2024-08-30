@@ -9,7 +9,7 @@ interface ScaleButtonsProps {
 
 const ScaleButtons: React.FC<ScaleButtonsProps> = ({ onZoomIn, onZoomOut }) => {
   const buttonStyle =
-    'select-none sm:p-2 p-1 transition duration-150 ease-in-out active:text-white hover:text-white active:ring-primary/50 pointer-events-auto text-gray-700 bg-gray-50 dark:bg-gray-800 dark-hover:bg-gray-800 dark:text-white'
+    'select-none sm:p-2 p-1 transition duration-150 ease-in-out active:text-white hover:text-white active:ring-primary/50 pointer-events-auto text-gray-700 bg-background dark:text-white'
   useHotkeys('=', onZoomIn) // plus button
   useHotkeys('-', onZoomOut)
 
