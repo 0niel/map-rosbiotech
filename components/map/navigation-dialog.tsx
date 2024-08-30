@@ -23,10 +23,8 @@ interface RoutesModalProps {
     mapObjectStart?: MapObject | null,
     mapObjectEnd?: MapObject | null
   ) => void
-
   startMapObject?: MapObject | null
   endMapObject?: MapObject | null
-
   setWaitForSelectStart: () => void
   setWaitForSelectEnd: () => void
 }
@@ -43,10 +41,10 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
 }) => {
   const { mapData } = useMapStore()
   const [start, setStart] = useState<SearchableObject | null>(null)
+  const [end, setEnd] = useState<SearchableObject | null>(null)
   const [startSearchResults, setStartSearchResults] = useState<
     SearchableObject[]
   >([])
-  const [end, setEnd] = useState<SearchableObject | null>(null)
   const [endSearchResults, setEndSearchResults] = useState<SearchableObject[]>(
     []
   )
@@ -55,24 +53,35 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
   const endInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (isOpen && startInputRef.current) {
-      startInputRef.current.focus()
+    if (isOpen) {
+      startInputRef.current?.focus()
     }
-  }, [isOpen, startInputRef])
+  }, [isOpen])
 
-  useEffect(() => {
-    if (isOpen && endInputRef.current) {
-      endInputRef.current.focus()
+  const handleStartSearchChange = (name: string) => {
+    if (mapData) {
+      setStartSearchResults(
+        mapData.searchObjectsByName(name, [MapObjectType.ROOM])
+      )
     }
-  }, [isOpen, endInputRef])
+  }
+
+  const handleEndSearchChange = (name: string) => {
+    if (mapData) {
+      setEndSearchResults(
+        mapData.searchObjectsByName(name, [MapObjectType.ROOM])
+      )
+    }
+  }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
-    if (start && end) {
-      onSubmit(start.mapObject, end.mapObject)
-    } else if (startMapObject && endMapObject) {
-      onSubmit(startMapObject, endMapObject)
+    const selectedStart = start?.mapObject || startMapObject
+    const selectedEnd = end?.mapObject || endMapObject
+
+    if (selectedStart && selectedEnd) {
+      onSubmit(selectedStart, selectedEnd)
     } else {
       toast.error('Необходимо выбрать начальную и конечную точки')
     }
@@ -87,99 +96,102 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
             Выберите начальную и конечную точки для маршрута.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6 py-4">
-          <div className="w-full">
-            <Label htmlFor="start-point" className="mb-2 ml-10">
-              Начальная точка
-            </Label>
-            <div className="flex flex-row items-center">
-              <div className="mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-300 text-center font-bold text-blue-700">
-                А
-              </div>
-              <div className="w-full">
-                <MapObjectsSearchInput
-                  onSubmit={searchObject => {
-                    setStart(searchObject)
-                    onSelect(searchObject.mapObject, null)
-                  }}
-                  showSubmitButton={false}
-                  onChange={name => {
-                    if (mapData) {
-                      setStartSearchResults(
-                        mapData.searchObjectsByName(name, [MapObjectType.ROOM])
-                      )
-                    }
-                  }}
-                  searchResults={startSearchResults}
-                  selected={start}
-                  inputRef={startInputRef}
-                  initialSearch={startMapObject?.name}
-                />
-              </div>
-            </div>
-            {!startInputRef.current?.value && !startMapObject && (
-              <Button
-                variant={'link'}
-                className="ml-8"
-                onClick={() => {
-                  setWaitForSelectStart()
-                }}
-              >
-                выбрать на карте
-              </Button>
-            )}
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+          <SearchPointSection
+            label="Начальная точка"
+            pointLetter="А"
+            searchValue={start}
+            searchResults={startSearchResults}
+            onSearchChange={handleStartSearchChange}
+            onSelect={searchObject => {
+              setStart(searchObject)
+              onSelect(searchObject.mapObject, null)
+            }}
+            inputRef={startInputRef}
+            initialSearch={startMapObject?.name}
+            onSelectFromMap={setWaitForSelectStart}
+            showSelectButton={!startInputRef.current?.value && !startMapObject}
+          />
 
-          <div className="w-full">
-            <Label htmlFor="end-point" className="mb-2 ml-10">
-              Конечная точка
-            </Label>
-            <div className="flex flex-row items-center">
-              <div className="mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-300 text-center font-bold text-blue-700">
-                Б
-              </div>
-              <div className="w-full">
-                <MapObjectsSearchInput
-                  onSubmit={searchObject => {
-                    setEnd(searchObject)
-                    onSelect(null, searchObject.mapObject)
-                  }}
-                  selected={end}
-                  showSubmitButton={false}
-                  onChange={name => {
-                    if (mapData) {
-                      setEndSearchResults(
-                        mapData.searchObjectsByName(name, [MapObjectType.ROOM])
-                      )
-                    }
-                  }}
-                  searchResults={endSearchResults}
-                  inputRef={endInputRef}
-                  initialSearch={endMapObject?.name}
-                />
-              </div>
-            </div>
-            {!endInputRef.current?.value && !endMapObject && (
-              <Button
-                variant={'link'}
-                className="ml-8"
-                onClick={() => {
-                  setWaitForSelectEnd()
-                }}
-              >
-                выбрать на карте
-              </Button>
-            )}
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>
-            Построить
-          </Button>
-        </DialogFooter>
+          <SearchPointSection
+            label="Конечная точка"
+            pointLetter="Б"
+            searchValue={end}
+            searchResults={endSearchResults}
+            onSearchChange={handleEndSearchChange}
+            onSelect={searchObject => {
+              setEnd(searchObject)
+              onSelect(null, searchObject.mapObject)
+            }}
+            inputRef={endInputRef}
+            initialSearch={endMapObject?.name}
+            onSelectFromMap={setWaitForSelectEnd}
+            showSelectButton={!endInputRef.current?.value && !endMapObject}
+          />
+
+          <DialogFooter>
+            <Button type="submit">Построить</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )
 }
+
+interface SearchPointSectionProps {
+  label: string
+  pointLetter: string
+  searchValue: SearchableObject | null
+  searchResults: SearchableObject[]
+  onSearchChange: (name: string) => void
+  onSelect: (searchObject: SearchableObject) => void
+  inputRef: React.RefObject<HTMLInputElement>
+  initialSearch?: string
+  onSelectFromMap: () => void
+  showSelectButton: boolean
+}
+
+const SearchPointSection: React.FC<SearchPointSectionProps> = ({
+  label,
+  pointLetter,
+  searchValue,
+  searchResults,
+  onSearchChange,
+  onSelect,
+  inputRef,
+  initialSearch,
+  onSelectFromMap,
+  showSelectButton
+}) => (
+  <div className="w-full">
+    <Label
+      htmlFor={`${label.toLowerCase().replace(' ', '-')}-point`}
+      className="mb-2 ml-10"
+    >
+      {label}
+    </Label>
+    <div className="flex flex-row items-center">
+      <div className="mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/40 text-center font-bold text-primary">
+        {pointLetter}
+      </div>
+      <div className="w-full">
+        <MapObjectsSearchInput
+          onSubmit={onSelect}
+          selected={searchValue}
+          showSubmitButton={false}
+          onChange={onSearchChange}
+          searchResults={searchResults}
+          inputRef={inputRef}
+          initialSearch={initialSearch}
+        />
+      </div>
+    </div>
+    {showSelectButton && (
+      <Button variant="link" className="ml-8" onClick={onSelectFromMap}>
+        выбрать на карте
+      </Button>
+    )}
+  </div>
+)
 
 export default NavigationDialog
