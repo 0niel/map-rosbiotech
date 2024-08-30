@@ -1,14 +1,17 @@
-import { Label } from '@/components/ui/label'
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger
-} from '@/components/ui/navigation-menu'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { ChevronDown } from 'lucide-react'
 import React, { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { Button } from './ui/button'
 
 type DropdownRadioOption = {
   id: string
@@ -64,55 +67,55 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
 
   return (
     <div className="pointer-events-auto">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger
-              className="bg-primary text-white hover:bg-primary/80 hover:text-gray-100
-             focus:bg-primary/80 focus:text-white data-[active]:bg-primary/80 data-[state=open]:bg-primary/80"
-            >
-              {title}
-            </NavigationMenuTrigger>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button>
+            {title}
 
-            <NavigationMenuContent>
-              <RadioGroup
-                value={selectedOption?.id}
-                onValueChange={id => {
-                  const option = options.find(option => option.id === id)
-                  if (option) {
-                    handleOptionClick(option)
-                  }
-                }}
-                className="space-y-1 p-3 text-sm text-gray-700"
-                aria-labelledby="dropdownRadioHelperButton"
+            <ChevronDown
+              className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+              aria-hidden="true"
+            />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="p-3 text-sm">
+          <DropdownMenuLabel>Выберите кампус</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <RadioGroup
+            value={selectedOption?.id}
+            onValueChange={id => {
+              const option = options.find(option => option.id === id)
+              if (option) {
+                handleOptionClick(option)
+              }
+            }}
+            className="space-y-1"
+            aria-labelledby="dropdownRadioHelperButton"
+          >
+            {options.map(option => (
+              <DropdownMenuItem
+                key={option.id}
+                className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100"
+                onSelect={() => handleOptionClick(option)}
               >
-                {options.map(option => (
-                  <div
-                    key={option.id}
-                    className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100"
-                  >
-                    <RadioGroupItem
-                      value={option.id}
-                      id={`helper-radio-${option.id}`}
-                    />
-                    <Label
-                      htmlFor={`helper-radio-${option.id}`}
-                      className="flex flex-col"
-                    >
-                      <span className="text-sm font-medium">
-                        {option.label}
-                      </span>
-                      <span className="text-xs font-normal text-gray-500">
-                        {option.description}
-                      </span>
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+                <RadioGroupItem
+                  value={option.id}
+                  id={`helper-radio-${option.id}`}
+                />
+                <Label
+                  htmlFor={`helper-radio-${option.id}`}
+                  className="flex flex-col"
+                >
+                  <span className="text-sm font-medium">{option.label}</span>
+                  <span className="text-xs font-normal text-gray-500">
+                    {option.description}
+                  </span>
+                </Label>
+              </DropdownMenuItem>
+            ))}
+          </RadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }
