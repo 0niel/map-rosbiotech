@@ -7,7 +7,6 @@ interface MapNavigationButtonProps {
 
   onClickStart: () => void
   onClickEnd: () => void
-  onClickShowDetails: () => void
 }
 
 const MapNavigationButton = (props: MapNavigationButtonProps) => {
@@ -32,7 +31,7 @@ const MapNavigationButton = (props: MapNavigationButtonProps) => {
                 type="button"
                 className="pointer-events-auto inline-flex items-center rounded-lg px-2 py-1 text-sm font-medium text-blue-700 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 sm:px-4 sm:py-2"
                 onClick={() => {
-                  props.onClickShowDetails?.()
+                  // TODO: Сделать модалку с деталями маршрута
                 }}
               >
                 Детали маршрута

@@ -6,7 +6,6 @@ import MapWrapper from '../svg-maps/MapWrapper'
 import MapControls from './map-controls'
 import MapNavigationButton from './MapNavigationButton'
 import MapRoute, { type MapRouteRef } from './MapRoute'
-import RouteDetails, { type DetailsSlide } from './RouteDetails'
 import NavigationDialog from './navigation-dialog'
 import RoomDrawer from './room-drawer'
 import campuses from '@/lib/campuses'
@@ -16,7 +15,6 @@ import { type RoomOnMap } from '@/lib/map/RoomOnMap'
 import {
   fillRoom,
   getAllMapObjectsElements,
-  getMapObjectElementById,
   getMapObjectElementByIdAsync,
   getMapObjectIdByElement,
   getMapObjectTypeByElemet,
@@ -26,7 +24,7 @@ import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useRouteStore } from '@/lib/stores/routeStore'
 import mapDataJson from '@/public/routes.json'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import {
   type ReactZoomPanPinchRef,
   TransformComponent,
@@ -62,10 +60,6 @@ const MapContainer = () => {
   const { setStartMapObject, setEndMapObject } = useRouteStore()
 
   const [drawerOpened, setDrawerOpened] = useState(false)
-  const waitForSelectRoomRef = useRef<{ start: boolean; end: boolean }>({
-    start: false,
-    end: false
-  })
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null)
   const [selectedRoomOnMap, setSelectedRoomOnMap] = useState<RoomOnMap | null>(
     null
@@ -334,8 +328,6 @@ const MapContainer = () => {
     [handleRoomClick]
   )
 
-  const [displayDetails, setDisplayDetails] = useState(false)
-
   return (
     <div className="flex h-full flex-col">
       <div className="h-full rounded-lg dark:border-gray-700">
@@ -419,17 +411,9 @@ const MapContainer = () => {
               startMapObject={routeStartAndEnd.start}
               endMapObject={routeStartAndEnd.end}
               setWaitForSelectStart={() => {
-                waitForSelectRoomRef.current = {
-                  start: true,
-                  end: false
-                }
                 setRoutesModalShow(false)
               }}
               setWaitForSelectEnd={() => {
-                waitForSelectRoomRef.current = {
-                  start: false,
-                  end: true
-                }
                 setRoutesModalShow(false)
               }}
             />
@@ -437,9 +421,6 @@ const MapContainer = () => {
             <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between px-4 py-2 md:px-8 md:py-4">
               <MapNavigationButton
                 onClick={() => setRoutesModalShow(true)}
-                onClickShowDetails={() => {
-                  setDisplayDetails(true)
-                }}
                 onClickStart={() => {
                   if (!routeStartAndEnd.start) return
 
@@ -459,24 +440,6 @@ const MapContainer = () => {
                   floors={building?.floors || campus.floors || []}
                 />
               </div>
-
-              {displayDetails && (
-                <div className="fixed bottom-24 z-10">
-                  <RouteDetails
-                    onDetailsSlideChange={detailsSlide => {
-                      if (detailsSlide.mapObjectToZoom) {
-                        zoomToMapObject(detailsSlide.mapObjectToZoom)
-                      }
-                    }}
-                    onDetailsSlideClick={detailsSlide => {
-                      if (detailsSlide.mapObjectToZoom) {
-                        zoomToMapObject(detailsSlide.mapObjectToZoom)
-                      }
-                    }}
-                    onClose={() => setDisplayDetails(false)}
-                  />
-                </div>
-              )}
             </div>
 
             <TransformWrapper
