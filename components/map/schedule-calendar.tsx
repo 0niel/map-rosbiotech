@@ -1,8 +1,3 @@
-import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, User2 } from 'lucide-react'
-import { PiStudentFill } from 'react-icons/pi'
-import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
-import { Skeleton } from '../ui/skeleton'
 import {
   Card,
   CardContent,
@@ -10,8 +5,12 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
 import { LessonType } from '@/lib/schedule/models/lesson-type'
+import { ChevronLeft, ChevronRight, User2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { PiStudentFill } from 'react-icons/pi'
+import { Skeleton } from '../ui/skeleton'
 
 interface ScheduleCalendarProps {
   initialDate: Date

@@ -1,11 +1,3 @@
-import React, {
-  type FormEvent,
-  Fragment,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
-import MapObjectsSearchInput from '../map-objects-search-input'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,16 +5,15 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { type SearchableObject } from '@/lib/map/MapData'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { useMapStore } from '@/lib/stores/mapStore'
-import { X } from 'lucide-react'
-import { toast } from 'react-hot-toast'
+import React, { type FormEvent, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import MapObjectsSearchInput from '../map-objects-search-input'
 
 interface RoutesModalProps {
   isOpen: boolean

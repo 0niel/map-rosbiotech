@@ -1,10 +1,10 @@
+import axios from 'axios'
 import { DataSource } from '../data-source'
 import { Classroom } from '../models/classroom'
 import { LessonBells } from '../models/lesson-bells'
 import { LessonSchedulePart } from '../models/lesson-schedule-part'
 import { LessonType } from '../models/lesson-type'
 import { Teacher } from '../models/teacher'
-import axios from 'axios'
 
 const ROOM_GUID_SEARCH_ENDPOINT = 'http://192.168.124.16:8000/search'
 const LESSONS_API_ENDPOINT =

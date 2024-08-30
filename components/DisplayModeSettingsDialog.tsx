@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect } from 'react'
-import DateAndTimePicker from './DateAndTimePicker'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { Dialog, Transition } from '@headlessui/react'
 import { X } from 'lucide-react'
+import React, { Fragment } from 'react'
+import DateAndTimePicker from './DateAndTimePicker'
 
 interface DisplayModeSettingsDialogProps {
   isOpen: boolean

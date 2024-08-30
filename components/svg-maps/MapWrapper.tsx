@@ -1,8 +1,7 @@
-import { memo, useRef } from 'react'
-import Map from './Map'
-import config from '@/lib/config'
 import { useMapStore } from '@/lib/stores/mapStore'
+import { memo } from 'react'
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
+import Map from './Map'
 
 const MapWrapper = ({
   transformComponentRef

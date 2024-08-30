@@ -1,4 +1,4 @@
-import { MapObject, MapObjectType } from './MapObject'
+import { MapObjectType } from './MapObject'
 
 export const fillRoom = (room: Element, color: string) => {
   const rect = room.querySelectorAll('rect')

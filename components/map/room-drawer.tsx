@@ -1,8 +1,3 @@
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
-import RoomInfoTabContent from './RoomInfoTabContent'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +8,7 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
+  SheetTitle
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -24,13 +17,18 @@ import { RoomOnMap } from '@/lib/map/RoomOnMap'
 import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
 import { useMapStore } from '@/lib/stores/mapStore'
 import axios from 'axios'
-import { QrCodeIcon, Link } from 'lucide-react'
+import { Link, QrCodeIcon } from 'lucide-react'
+import Image from 'next/image'
+import React, { useEffect, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import toast from 'react-hot-toast'
 import { useQuery } from 'react-query'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import RoomInfoTabContent from './RoomInfoTabContent'
 
-import { RiRouteLine } from 'react-icons/ri'
 import QRCode from 'qrcode.react'
+import { RiRouteLine } from 'react-icons/ri'
+import { toast } from 'sonner'
 import ScheduleCalendar from './schedule-calendar'
 
 interface RoomDrawerProps {

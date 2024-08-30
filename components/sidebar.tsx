@@ -1,29 +1,25 @@
 'use client'
 
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from './ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
+  CardHeader
 } from '@/components/ui/card'
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet'
-import { Home, Menu, X } from 'lucide-react'
+import { Menu } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import React from 'react'
+import { Button } from './ui/button'
 
 const sidebarItems = [
   {

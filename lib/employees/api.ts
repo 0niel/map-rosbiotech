@@ -1,5 +1,4 @@
-import axios, { type AxiosError, type AxiosInstance } from 'axios'
-import createClient from 'openapi-fetch'
+import axios from 'axios'
 
 export interface StrapiResponse {
   data: {

@@ -1,36 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import DisplayModeSettingsDialog from './DisplayModeSettingsDialog'
-import SearchButton from './SearchButton'
-import { CommandMenu } from './command-menu'
-import DropdownRadio from './dropdown-radio'
-import { Sidebar } from './sidebar'
-import { MapDisplayMode } from './svg-maps/MapDisplayMode'
-import { Button } from './ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import campuses from '@/lib/campuses'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { cn } from '@/lib/utils'
-import { AppWindow, CalendarDays, Map, Menu, Search, Timer } from 'lucide-react'
-import { TbApps } from 'react-icons/tb'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import DisplayModeSettingsDialog from './DisplayModeSettingsDialog'
+import { CommandMenu } from './command-menu'
+import DropdownRadio from './dropdown-radio'
+import { Sidebar } from './sidebar'
+import { MapDisplayMode } from './svg-maps/MapDisplayMode'
 
 const MapDisplayButton = ({
   mode,

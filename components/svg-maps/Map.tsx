@@ -1,13 +1,13 @@
-import { useEffect, useRef } from 'react'
-import { MapDisplayMode } from './MapDisplayMode'
-import { fetchSvg } from './fetchSvg'
 import { Spinner } from '@/components/ui/spinner'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { Dialog } from '@headlessui/react'
+import { useEffect, useRef } from 'react'
 import { useQuery } from 'react-query'
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { toast } from 'sonner'
+import { MapDisplayMode } from './MapDisplayMode'
+import { fetchSvg } from './fetchSvg'
 
 const Map = ({
   svgUrl,

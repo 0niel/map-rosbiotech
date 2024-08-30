@@ -1,13 +1,5 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import MapWrapper from '../svg-maps/MapWrapper'
-import MapControls from './map-controls'
-import MapNavigationButton from './navigation-button'
-import MapRoute, { type MapRouteRef } from './MapRoute'
-import NavigationDialog from './navigation-dialog'
-import RoomDrawer from './room-drawer'
 import campuses from '@/lib/campuses'
 import { MapData } from '@/lib/map/MapData'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
@@ -24,12 +16,20 @@ import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useRouteStore } from '@/lib/stores/routeStore'
 import mapDataJson from '@/public/routes.json'
-import { toast } from 'sonner'
+import { useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   type ReactZoomPanPinchRef,
   TransformComponent,
   TransformWrapper
 } from 'react-zoom-pan-pinch'
+import { toast } from 'sonner'
+import MapWrapper from '../svg-maps/MapWrapper'
+import MapRoute, { type MapRouteRef } from './MapRoute'
+import MapControls from './map-controls'
+import MapNavigationButton from './navigation-button'
+import NavigationDialog from './navigation-dialog'
+import RoomDrawer from './room-drawer'
 
 const loadJsonToGraph = (routesJson: string) => {
   return MapData.fromJson(routesJson)

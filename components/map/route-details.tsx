@@ -1,25 +1,19 @@
-import { useCallback } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Edge, type Vertex } from '@/lib/map/Graph'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { useRouteStore } from '@/lib/stores/routeStore'
+import { Route } from 'lucide-react'
+import { useCallback } from 'react'
 import { BiWalk } from 'react-icons/bi'
 import { TbStairsDown, TbStairsUp } from 'react-icons/tb'
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import {
-  MapIcon,
-  XIcon,
-  MoveRightIcon,
-  StepBackIcon,
-  Route
-} from 'lucide-react'
 import { toast } from 'sonner'
 interface RouteDetailsProps {
   onDetailsSlideChange: (detailsSlide: DetailsSlide) => void

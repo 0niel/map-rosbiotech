@@ -31,6 +31,7 @@ module.exports = {
   parser: 'babel-ts',
   plugins: [
     'prettier-plugin-tailwindcss',
-    '@trivago/prettier-plugin-sort-imports'
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-organize-imports'
   ]
 }

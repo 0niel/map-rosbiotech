@@ -1,10 +1,10 @@
+import { useMapStore } from '@/lib/stores/mapStore'
 import React from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { PiMapPinPlus } from 'react-icons/pi'
+import { Button } from '../ui/button'
 import FloorSelectorButtons from './floor-buttons'
 import ScaleButtons from './scale-buttons'
-import { useMapStore } from '@/lib/stores/mapStore'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { Button } from '../ui/button'
-import { PiMapPinPlus } from 'react-icons/pi'
 
 interface MapControlsProps {
   floors: number[]

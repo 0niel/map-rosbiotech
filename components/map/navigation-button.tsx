@@ -1,6 +1,6 @@
-import { Button } from '../ui/button'
 import { useRouteStore } from '@/lib/stores/routeStore'
-import { Navigation2Icon, XIcon } from 'lucide-react'
+import { XIcon } from 'lucide-react'
+import { Button } from '../ui/button'
 import RouteDetails, { DetailsSlide } from './route-details'
 
 interface MapNavigationButtonProps {

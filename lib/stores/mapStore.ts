@@ -1,8 +1,8 @@
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
 import { Campus, initialCampus } from '../campuses'
 import { type MapData } from '../map/MapData'
 import { type MapObject } from '../map/MapObject'
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
 
 interface MapState {
   campus: Campus

@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { Label } from './ui/label'
 import { Input } from '@/components/ui/input'
 import { type SearchableObject } from '@/lib/map/MapData'
 import { Search } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Label } from './ui/label'
 
 interface MapObjectsSearchInputProps {
   onSubmit: (searchableObject: SearchableObject) => void

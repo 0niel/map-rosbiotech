@@ -1,4 +1,4 @@
-import { type UseQueryOptions, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 
 export const useRoomsQuery = (
   campus: string

@@ -1,4 +1,3 @@
-import { type MapData } from '../map/MapData'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { Classroom } from '../schedule/models/classroom'

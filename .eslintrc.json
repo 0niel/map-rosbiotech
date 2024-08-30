@@ -1,7 +1,12 @@
 {
   "extends": "next/core-web-vitals",
-  "plugins": ["import"],
+  "plugins": ["import", "unused-imports"],
   "rules": {
-    "import/no-duplicates": "error"
+    "import/no-duplicates": "error",
+     "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ]
   }
 }
