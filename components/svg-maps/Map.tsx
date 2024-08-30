@@ -17,7 +17,7 @@ const Map = ({
   transformComponentRef: React.RefObject<ReactZoomPanPinchRef> | null
 }>) => {
   const displayModeStore = useDisplayModeStore()
-  const { mapData } = useMapStore()
+  const { mapData, floor } = useMapStore()
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
   const { isLoading, data, refetch, status } = useQuery(
@@ -44,30 +44,11 @@ const Map = ({
         const svgElement = mapContainerRef.current?.querySelector('svg')
 
         if (svgElement && transformComponentRef?.current) {
-          transformComponentRef?.current?.centerView()
-
-          const svgBBox = svgElement.getBoundingClientRect()
-          const svgWidth = svgBBox.width
-          const svgHeight = svgBBox.height
-
-          const viewportWidth = window.innerWidth
-          const viewportHeight = window.innerHeight
-
-          // Calculate scale to fit SVG within viewport
-          const scaleX = viewportWidth / svgWidth
-          const scaleY = viewportHeight / svgHeight
-          const scaleToFit = Math.min(scaleX, scaleY, 1)
-
-          // Calculate positions to center SVG
-          const positionX = (viewportWidth - svgWidth * scaleToFit) / 2
-          const positionY = (viewportHeight - svgHeight * scaleToFit) / 2
-
-          transformComponentRef.current.setTransform(
-            positionX,
-            positionY,
-            scaleToFit,
-            500,
-            'easeOut'
+          transformComponentRef.current.resetTransform()
+          transformComponentRef.current.centerView()
+          transformComponentRef.current.zoomToElement(
+            svgElement as unknown as HTMLElement,
+            0.1
           )
         }
       }
