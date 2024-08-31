@@ -21,7 +21,7 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-left text-sm text-gray-500">
-        <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800">
+        <caption className="p-5 text-left text-lg font-semibold text-gray-900 dark:text-gray-400 dark:bg-gray-800">
           <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
             Информация о кабинете отображается для{' '}
             {timeToDisplay.toLocaleDateString('ru')} в{' '}
@@ -33,46 +33,46 @@ const RoomInfoTabContent: React.FC<RoomInfoTabContentProps> = ({
         </caption>
 
         <tbody>
-          <tr className="border-b bg-white">
+          <tr className="border-b">
             <th
               scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
+              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-gray-400"
             >
               Назначение
             </th>
             <td className="px-6 py-4">{purpose}</td>
           </tr>
-          <tr className="border-b bg-white">
+          <tr className="border-b">
             <th
               scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
+              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-gray-400"
             >
               Загруженность
             </th>
             <td className="px-6 py-4">{workload}%</td>
           </tr>
-          <tr className="border-b bg-white">
+          <tr className="border-b">
             <th
               scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
+              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-gray-400"
             >
               Статус
             </th>
             <td className="px-6 py-4">{status}</td>
           </tr>
-          <tr className="border-b bg-white">
+          <tr className="border-b">
             <th
               scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
+              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-gray-400"
             >
               Мероприятие
             </th>
             <td className="px-6 py-4">{eventName}</td>
           </tr>
-          <tr className="border-b bg-white">
+          <tr className="border-b">
             <th
               scope="row"
-              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900"
+              className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-gray-400"
             >
               Ответственный
             </th>
