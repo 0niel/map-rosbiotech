@@ -268,8 +268,9 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       </div>
 
       {/* Расписание */}
-      <div className="flex w-full flex-col space-y-2">
-        <ScrollArea>
+
+      <ScrollArea>
+        <div className="flex w-full flex-col space-y-2">
           {groupLessonsByGroups(
             weeklyLessons.find(
               day => day.date.toISOString() === selectedDate.toISOString()
@@ -326,17 +327,17 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
               </CardContent>
             </Card>
           ))}
-          <ScrollBar orientation="vertical" />
-        </ScrollArea>
-        {isLoading && (
-          <div className="flex flex-col space-y-3">
-            <Skeleton className="h-[100px] rounded-md" />
-            <Skeleton className="h-[100px] rounded-md" />
-            <Skeleton className="h-[100px] rounded-md" />
-            <Skeleton className="h-[100px] rounded-md" />
-          </div>
-        )}
-      </div>
+        </div>
+        <ScrollBar orientation="vertical" />
+      </ScrollArea>
+      {isLoading && (
+        <div className="flex flex-col space-y-3">
+          <Skeleton className="h-[100px] rounded-md" />
+          <Skeleton className="h-[100px] rounded-md" />
+          <Skeleton className="h-[100px] rounded-md" />
+          <Skeleton className="h-[100px] rounded-md" />
+        </div>
+      )}
     </div>
   )
 }

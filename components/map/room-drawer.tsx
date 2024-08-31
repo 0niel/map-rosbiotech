@@ -270,7 +270,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     height={200}
                     alt={''}
                   />
-                  <p className="text-center text-gray-500">
+                  <p className="text-center text-gray-500 dark:text-gray-400">
                     Нет данных по этой аудитории
                   </p>
                 </div>
