@@ -10,6 +10,7 @@ import { LessonType } from '@/lib/schedule/models/lesson-type'
 import { ChevronLeft, ChevronRight, User2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { PiStudentFill } from 'react-icons/pi'
+import { Button } from '../ui/button'
 import { Skeleton } from '../ui/skeleton'
 
 interface ScheduleCalendarProps {
@@ -170,17 +171,21 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   }
 
   const getMonthName = (date: Date) => {
-    let name = date.toLocaleDateString('ru-RU', {
-      month: 'long',
-      year: 'numeric'
-    })
-
-    name = name[0]?.toUpperCase() + name.slice(1)
-
-    // Обрезаем " г." в конце
-    name = name.slice(0, name.length - 3)
-
-    return name
+    const months = [
+      'января',
+      'февраля',
+      'марта',
+      'апреля',
+      'мая',
+      'июня',
+      'июля',
+      'августа',
+      'сентября',
+      'октября',
+      'ноября',
+      'декабря'
+    ]
+    return `${months[date.getMonth()]} ${date.getFullYear()}`
   }
 
   const firstWeekDate = currentWeek.length > 0 ? currentWeek[0] : undefined
@@ -190,23 +195,25 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   return (
     <div className="flex flex-col rounded-lg p-2">
       <div className="flex flex-row items-center justify-between">
-        <button
+        <Button
           type="button"
-          className="rounded-lg p-2 text-sm font-medium transition duration-150 ease-in-out hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-700 active:text-white active:ring-blue-500"
+          variant={'ghost'}
+          className="rounded-lg p-2 text-sm font-medium"
           onClick={handleClickPrevWeek}
         >
           <ChevronLeft size={24} />
-        </button>
-        <h3 className="flex flex-row items-center space-x-2 text-base font-semibold text-gray-700">
-          {getMonthName(selectedDate)} • {selectedDate.getDate()}
+        </Button>
+        <h3 className="text-base font-semibold">
+          {selectedDate.getDate()} {getMonthName(selectedDate)}
         </h3>
-        <button
+        <Button
           type="button"
-          className="rounded-lg p-2 text-sm font-medium transition duration-150 ease-in-out hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-700 active:text-white active:ring-blue-500"
+          variant={'ghost'}
+          className="rounded-lg p-2 text-sm font-medium"
           onClick={handleClickNextWeek}
         >
           <ChevronRight size={24} />
-        </button>
+        </Button>
       </div>
       {/* Кнопки дней недели */}
       <div className="mb-4 flex w-full flex-row space-x-2">
@@ -216,7 +223,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             key={date.toISOString()}
             onClick={() => setSelectedDate(date)}
           >
-            <p className="text-sm font-medium text-gray-600">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
               {date.toLocaleDateString('ru-RU', {
                 weekday: 'short'
               })}
@@ -225,7 +232,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
               className={`flex h-8 w-8 items-center justify-center rounded-md ${
                 date.getDate() === selectedDate.getDate()
                   ? 'bg-primary/95 text-white'
-                  : 'bg-gray-100 text-gray-900'
+                  : 'bg-gray-100 text-gray-900 dark:bg-secondary dark:text-white'
               }`}
             >
               <p className="text-sm font-medium">{date.getDate()}</p>

@@ -106,7 +106,8 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
       ),
     {
       refetchOnWindowFocus: false,
-      refetchOnMount: false
+      refetchOnMount: false,
+      retry: 2
     }
   )
 
