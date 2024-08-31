@@ -422,8 +422,8 @@ const MapContainer = () => {
                 equalToMove: true
               }}
               ref={transformComponentRef}
-              smooth
-              limitToBounds={false}
+              smooth={true}
+              limitToBounds={true}
               centerZoomedOut={false}
               disablePadding={false}
               onPanningStart={(ref, event) => {
@@ -433,6 +433,11 @@ const MapContainer = () => {
                 }
               }}
               onPanningStop={handlePanningStop}
+              centerOnInit={true}
+              zoomAnimation={{
+                animationTime: 0.5,
+                animationType: 'easeOut'
+              }}
             >
               <TransformComponent
                 wrapperStyle={{
