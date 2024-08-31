@@ -22,113 +22,107 @@ interface ScheduleCalendarProps {
   isLoading?: boolean
 }
 
-const groupLessonsByGroups = (lessons: LessonSchedulePart[]) => {
-  const newLessons: LessonSchedulePart[] = []
-
-  lessons?.forEach(lesson => {
-    const newLesson = newLessons.find(newLesson => {
-      return (
+const groupLessonsByGroups = (
+  lessons: LessonSchedulePart[]
+): LessonSchedulePart[] => {
+  return lessons.reduce((groupedLessons, lesson) => {
+    const existingLesson = groupedLessons.find(
+      newLesson =>
         newLesson.subject === lesson.subject &&
         newLesson.lessonBells.start === lesson.lessonBells.start &&
         newLesson.lessonBells.end === lesson.lessonBells.end &&
         newLesson.dates.some(date => lesson.dates.includes(date))
-      )
-    })
+    )
 
-    if (newLesson) {
-      newLesson.groups = newLesson.groups
-        ? [...new Set([...newLesson.groups, ...(lesson.groups || [])])]
-        : lesson.groups
+    if (existingLesson) {
+      existingLesson.groups = [
+        ...new Set([...(existingLesson.groups || []), ...(lesson.groups || [])])
+      ]
     } else {
-      newLessons.push({ ...lesson })
+      groupedLessons.push({ ...lesson })
     }
-  })
-  return newLessons
+
+    return groupedLessons
+  }, [] as LessonSchedulePart[])
 }
 
 const getLessonsForWeek = (
   lessons: LessonSchedulePart[],
   startOfWeek: Date
 ) => {
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
+  return Array.from({ length: 7 }, (_, i) => {
     const day = new Date(startOfWeek)
     day.setDate(startOfWeek.getDate() + i)
-    return day
-  })
 
-  return daysOfWeek.map(day => ({
-    date: day,
-    lessons: lessons
-      .filter((lesson: LessonSchedulePart) => {
-        return lesson.dates.some(lessonDate => {
-          const lessonDateObj = new Date(lessonDate)
-          return (
-            lessonDateObj.toISOString().split('T')[0] ===
+    const dailyLessons = lessons
+      .filter(lesson =>
+        lesson.dates.some(
+          date =>
+            new Date(date).toISOString().split('T')[0] ===
             day.toISOString().split('T')[0]
-          )
-        })
-      })
+        )
+      )
       .sort(
         (a, b) =>
           new Date(`1970-01-01T${a.lessonBells.start}Z`).getTime() -
           new Date(`1970-01-01T${b.lessonBells.start}Z`).getTime()
       )
-  }))
+
+    return { date: day, lessons: dailyLessons }
+  })
 }
 
 const getEventPointColor = (event: LessonType) => {
-  switch (event) {
-    case LessonType.Practice:
-      return 'bg-blue-400'
-    case LessonType.Lecture:
-      return 'bg-green-400'
-    case LessonType.LaboratoryWork:
-      return 'bg-yellow-400'
-    case LessonType.Exam:
-      return 'bg-red-400'
-    default:
-      return 'bg-gray-400'
+  const colors = {
+    [LessonType.Practice]: 'bg-blue-400',
+    [LessonType.Lecture]: 'bg-green-400',
+    [LessonType.LaboratoryWork]: 'bg-yellow-400',
+    [LessonType.Exam]: 'bg-red-400',
+    [LessonType.IndividualWork]: 'bg-gray-400',
+    [LessonType.PhysicalEducation]: 'bg-purple-400',
+    [LessonType.Consultation]: 'bg-gray-400',
+    [LessonType.Unknown]: 'bg-gray-400',
+    [LessonType.Credit]: 'bg-gray-400',
+    [LessonType.CourseWork]: 'bg-gray-400',
+    [LessonType.CourseProject]: 'bg-gray-400'
   }
+
+  return colors[event] || 'bg-gray-400'
 }
 
 const getLessonTypeColor = (type: LessonType) => {
-  switch (type) {
-    case LessonType.Practice:
-      return 'bg-blue-100 text-blue-800'
-    case LessonType.Lecture:
-      return 'bg-green-100 text-green-800'
-    case LessonType.LaboratoryWork:
-      return 'bg-yellow-100 text-yellow-800'
-    case LessonType.Exam:
-      return 'bg-red-100 text-red-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
+  const colors = {
+    [LessonType.Practice]: 'bg-blue-100 text-blue-800',
+    [LessonType.Lecture]: 'bg-green-100 text-green-800',
+    [LessonType.LaboratoryWork]: 'bg-yellow-100 text-yellow-800',
+    [LessonType.Exam]: 'bg-red-100 text-red-800',
+    [LessonType.IndividualWork]: 'bg-gray-100 text-gray-800',
+    [LessonType.PhysicalEducation]: 'bg-purple-100 text-purple-800',
+    [LessonType.Consultation]: 'bg-gray-100 text-gray-800',
+    [LessonType.Unknown]: 'bg-gray-100 text-gray-800',
+    [LessonType.Credit]: 'bg-gray-100 text-gray-800',
+    [LessonType.CourseWork]: 'bg-gray-100 text-gray-800',
+    [LessonType.CourseProject]: 'bg-gray-100 text-gray-800'
   }
+
+  return colors[type] || 'bg-gray-100 text-gray-800'
 }
 
 const getReadableLessonType = (type: LessonType) => {
-  switch (type) {
-    case LessonType.Practice:
-      return 'Практика'
-    case LessonType.Lecture:
-      return 'Лекция'
-    case LessonType.LaboratoryWork:
-      return 'Лаб. работа'
-    case LessonType.IndividualWork:
-      return 'Сам. работа'
-    case LessonType.Consultation:
-      return 'Консультация'
-    case LessonType.Exam:
-      return 'Экзамен'
-    case LessonType.Credit:
-      return 'Зачет'
-    case LessonType.CourseWork:
-      return 'Курс. работа'
-    case LessonType.CourseProject:
-      return 'Курс. проект'
-    default:
-      return 'Неизвестно'
+  const types: { [key in LessonType]: string } = {
+    [LessonType.Practice]: 'Практика',
+    [LessonType.Lecture]: 'Лекция',
+    [LessonType.LaboratoryWork]: 'Лаб. работа',
+    [LessonType.IndividualWork]: 'Сам. работа',
+    [LessonType.Consultation]: 'Консультация',
+    [LessonType.Exam]: 'Экзамен',
+    [LessonType.Credit]: 'Зачет',
+    [LessonType.CourseWork]: 'Курс. работа',
+    [LessonType.CourseProject]: 'Курс. проект',
+    [LessonType.PhysicalEducation]: 'Физическая культура',
+    [LessonType.Unknown]: 'Неизвестно'
   }
+  return types[type] || 'Неизвестно'
 }
 
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
@@ -142,7 +136,10 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
 
   useEffect(() => {
     const startOfWeek = new Date(selectedDate)
-    startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay())
+    const dayOfWeek = startOfWeek.getDay()
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek // Смещаем на понедельник
+    startOfWeek.setDate(startOfWeek.getDate() + diff)
+
     const newWeek = Array.from({ length: 7 }, (_, i) => {
       const day = new Date(startOfWeek)
       day.setDate(startOfWeek.getDate() + i)
@@ -190,9 +187,10 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
     return `${months[date.getMonth()]} ${date.getFullYear()}`
   }
 
-  const firstWeekDate = currentWeek.length > 0 ? currentWeek[0] : undefined
-  const weeklyLessons =
-    firstWeekDate !== undefined ? getLessonsForWeek(lessons, firstWeekDate) : []
+  const firstWeekDate = currentWeek[0]
+  const weeklyLessons = firstWeekDate
+    ? getLessonsForWeek(lessons, firstWeekDate)
+    : []
 
   return (
     <div className="flex flex-col rounded-lg p-2">
@@ -219,31 +217,33 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       </div>
       {/* Кнопки дней недели */}
       <div className="mb-4 flex w-full flex-row space-x-2">
-        {currentWeek.map(date => (
-          <button
-            className="flex w-full flex-col items-center justify-around ease-in-out"
-            key={date.toISOString()}
-            onClick={() => setSelectedDate(date)}
-          >
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-              {date.toLocaleDateString('ru-RU', {
-                weekday: 'short'
-              })}
-            </p>
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-md ${
-                date.getDate() === selectedDate.getDate()
-                  ? 'bg-primary/95 text-white'
-                  : 'bg-gray-100 text-gray-900 dark:bg-secondary dark:text-white'
-              }`}
+        {currentWeek.map(date => {
+          const dailyLessons =
+            weeklyLessons.find(
+              day => day.date.toISOString() === date.toISOString()
+            )?.lessons || []
+          const hiddenLessons = dailyLessons.length - 6
+
+          return (
+            <button
+              className="flex w-full flex-col items-center justify-around ease-in-out"
+              key={date.toISOString()}
+              onClick={() => setSelectedDate(date)}
             >
-              <p className="text-sm font-medium">{date.getDate()}</p>
-            </div>
-            <div className="flex flex-row justify-center space-x-0.5">
-              {weeklyLessons
-                .find(day => day.date.toISOString() === date.toISOString())
-                ?.lessons.slice(0, 6)
-                .map((lesson, index, array) => (
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                {date.toLocaleDateString('ru-RU', { weekday: 'short' })}
+              </p>
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-md ${
+                  date.getDate() === selectedDate.getDate()
+                    ? 'bg-primary/95 text-white'
+                    : 'bg-gray-100 text-gray-900 dark:bg-secondary dark:text-white'
+                }`}
+              >
+                <p className="text-sm font-medium">{date.getDate()}</p>
+              </div>
+              <div className="flex flex-row justify-center space-x-0.5">
+                {dailyLessons.slice(0, 6).map((lesson, index) => (
                   <div
                     key={lesson.subject + lesson.lessonBells.start}
                     className={`mt-1 h-1.5 w-1.5 rounded-full ${getEventPointColor(
@@ -251,26 +251,20 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
                     )}`}
                   />
                 ))}
-              {(weeklyLessons.find(
-                day => day.date.toISOString() === date.toISOString()
-              )?.lessons.length ||
-                0 > 6) && (
-                <p className="ml-1 text-[11px] font-medium text-gray-600 dark:text-gray-400">
-                  {'+'}
-                  {(weeklyLessons.find(
-                    day => day.date.toISOString() === date.toISOString()
-                  )?.lessons.length || 0) - 6}
-                </p>
-              )}
-            </div>
-          </button>
-        ))}
+                {hiddenLessons > 0 && (
+                  <p className="ml-1 text-[11px] font-medium text-gray-600 dark:text-gray-400">
+                    {`+${hiddenLessons}`}
+                  </p>
+                )}
+              </div>
+            </button>
+          )
+        })}
       </div>
 
       {/* Расписание */}
-
-      <ScrollArea>
-        <div className="flex w-full flex-col space-y-2">
+      <ScrollArea className="h-screen">
+        <div className="flex flex-col space-y-2">
           {groupLessonsByGroups(
             weeklyLessons.find(
               day => day.date.toISOString() === selectedDate.toISOString()
@@ -328,16 +322,15 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             </Card>
           ))}
         </div>
+        {isLoading && (
+          <div className="flex flex-col space-y-3">
+            <Skeleton className="h-[100px] rounded-md" />
+            <Skeleton className="h-[100px] rounded-md" />
+            <Skeleton className="h-[100px] rounded-md" />
+          </div>
+        )}
         <ScrollBar orientation="vertical" />
       </ScrollArea>
-      {isLoading && (
-        <div className="flex flex-col space-y-3">
-          <Skeleton className="h-[100px] rounded-md" />
-          <Skeleton className="h-[100px] rounded-md" />
-          <Skeleton className="h-[100px] rounded-md" />
-          <Skeleton className="h-[100px] rounded-md" />
-        </div>
-      )}
     </div>
   )
 }
