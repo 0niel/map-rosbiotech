@@ -252,9 +252,9 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               </div>
               {isLoading && (
                 <div className="flex flex-col space-y-3">
-                  <Skeleton className="h-[40px] w-full rounded" />
-                  <Skeleton className="h-[40px] w-full rounded" />
-                  <Skeleton className="h-[40px] w-full rounded" />
+                  <Skeleton className="w-[100px] h-[20px] rounded-md" />
+                  <Skeleton className="h-[40px] w-full rounded-md" />
+                  <Skeleton className="h-[80px] w-full rounded-md" />
                 </div>
               )}
               {isError && (

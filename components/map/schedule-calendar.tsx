@@ -7,10 +7,12 @@ import {
 } from '@/components/ui/card'
 import { LessonSchedulePart } from '@/lib/schedule/models/lesson-schedule-part'
 import { LessonType } from '@/lib/schedule/models/lesson-type'
+
 import { ChevronLeft, ChevronRight, User2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { PiStudentFill } from 'react-icons/pi'
 import { Button } from '../ui/button'
+import { ScrollArea, ScrollBar } from '../ui/scroll-area'
 import { Skeleton } from '../ui/skeleton'
 
 interface ScheduleCalendarProps {
@@ -255,68 +257,71 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
 
       {/* Расписание */}
       <div className="flex w-full flex-col space-y-2">
-        {groupLessonsByGroups(
-          weeklyLessons.find(
-            day => day.date.toISOString() === selectedDate.toISOString()
-          )?.lessons || []
-        ).map(lesson => (
-          <Card
-            key={lesson.subject + lesson.lessonBells.start}
-            className="w-full"
-          >
-            <CardHeader>
-              <CardTitle className="text-md font-semibold">
-                {lesson.subject}
-              </CardTitle>
-              <CardDescription className="flex flex-row items-center space-x-3">
-                <div>
-                  <span className="mr-2">
-                    {lesson.lessonBells.number
-                      ? `${lesson.lessonBells.number} пара`
-                      : ''}
-                  </span>
-                  <span>
-                    {lesson.lessonBells.start.slice(0, 5)} -{' '}
-                    {lesson.lessonBells.end.slice(0, 5)}
-                  </span>
-                </div>
-                <div className="flex space-x-1">
-                  <span
-                    className={`flex h-2 w-2 translate-y-1.5 items-center rounded-full ${getLessonTypeColor(
-                      lesson.lessonType
-                    )}`}
-                  />
-
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">
-                      {getReadableLessonType(lesson.lessonType)}
-                    </p>
+        <ScrollArea>
+          {groupLessonsByGroups(
+            weeklyLessons.find(
+              day => day.date.toISOString() === selectedDate.toISOString()
+            )?.lessons || []
+          ).map(lesson => (
+            <Card
+              key={lesson.subject + lesson.lessonBells.start}
+              className="w-full"
+            >
+              <CardHeader>
+                <CardTitle className="text-md font-semibold">
+                  {lesson.subject}
+                </CardTitle>
+                <CardDescription className="flex flex-row items-center space-x-3">
+                  <div>
+                    <span className="mr-2">
+                      {lesson.lessonBells.number
+                        ? `${lesson.lessonBells.number} пара`
+                        : ''}
+                    </span>
+                    <span>
+                      {lesson.lessonBells.start.slice(0, 5)} -{' '}
+                      {lesson.lessonBells.end.slice(0, 5)}
+                    </span>
                   </div>
-                </div>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground">
-                  <User2 size={16} className="mr-1 inline" />
-                  {lesson.teachers.map(teacher => teacher.name).join(', ')}
-                </p>
-                {lesson.groups && (
+                  <div className="flex space-x-1">
+                    <span
+                      className={`flex h-2 w-2 translate-y-1.5 items-center rounded-full ${getLessonTypeColor(
+                        lesson.lessonType
+                      )}`}
+                    />
+
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">
+                        {getReadableLessonType(lesson.lessonType)}
+                      </p>
+                    </div>
+                  </div>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">
-                    <PiStudentFill size={16} className="mr-1 inline" />
-                    {lesson.groups.join(', ')}
+                    <User2 size={16} className="mr-1 inline" />
+                    {lesson.teachers.map(teacher => teacher.name).join(', ')}
                   </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  {lesson.groups && (
+                    <p className="text-xs font-medium text-muted-foreground">
+                      <PiStudentFill size={16} className="mr-1 inline" />
+                      {lesson.groups.join(', ')}
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
         {isLoading && (
           <div className="flex flex-col space-y-3">
-            <Skeleton className="h-[100px]" />
-            <Skeleton className="h-[100px]" />
-            <Skeleton className="h-[100px]" />
-            <Skeleton className="h-[100px]" />
+            <Skeleton className="h-[100px] rounded-md" />
+            <Skeleton className="h-[100px] rounded-md" />
+            <Skeleton className="h-[100px] rounded-md" />
+            <Skeleton className="h-[100px] rounded-md" />
           </div>
         )}
       </div>
