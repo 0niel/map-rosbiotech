@@ -218,10 +218,11 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       {/* Кнопки дней недели */}
       <div className="mb-4 flex w-full flex-row space-x-2">
         {currentWeek.map(date => {
-          const dailyLessons =
+          const dailyLessons = groupLessonsByGroups(
             weeklyLessons.find(
               day => day.date.toISOString() === date.toISOString()
             )?.lessons || []
+          )
           const hiddenLessons = dailyLessons.length - 6
 
           return (
