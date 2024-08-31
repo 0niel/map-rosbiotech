@@ -57,7 +57,7 @@ const MapControlsWrapper = ({
         }}
       />
 
-      <div className="fixed bottom-0 z-30 w-full -translate-y-1/2 transform px-2 sm:fixed sm:bottom-5 sm:translate-y-0 md:px-8">
+      <div className="fixed bottom-0 z-30 w-full -translate-y-1/4 transform px-4 sm:fixed sm:bottom-5 md:translate-y-0 md:px-8">
         <MapControls
           onZoomIn={() => transformComponentRef.current?.zoomIn()}
           onZoomOut={() => transformComponentRef.current?.zoomOut()}
