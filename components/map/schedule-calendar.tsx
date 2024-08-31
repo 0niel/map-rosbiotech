@@ -242,13 +242,25 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             <div className="flex flex-row justify-center space-x-0.5">
               {weeklyLessons
                 .find(day => day.date.toISOString() === date.toISOString())
-                ?.lessons.map(lesson => (
+                ?.lessons.slice(0, 6)
+                .map((lesson, index, array) => (
                   <div
                     key={lesson.subject + lesson.lessonBells.start}
                     className={`mt-1 h-1.5 w-1.5 rounded-full ${getEventPointColor(
                       lesson.lessonType
                     )}`}
                   />
+                ))}
+              {weeklyLessons.find(
+                day => day.date.toISOString() === date.toISOString()
+              )?.lessons.length ||
+                (0 > 6 && (
+                  <p className="ml-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                    +
+                    {weeklyLessons.find(
+                      day => day.date.toISOString() === date.toISOString()
+                    )?.lessons.length || 0 - 6}
+                  </p>
                 ))}
             </div>
           </button>
