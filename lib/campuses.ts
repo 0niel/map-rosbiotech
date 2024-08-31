@@ -2,6 +2,14 @@
 
 import config from './config'
 
+export interface Building {
+  description?: string
+  name: string
+  floors: number[]
+  svgMaps: { [key: string]: string }
+  isInitial?: boolean
+}
+
 export interface Campus {
   shortName: string
   description: string
@@ -13,13 +21,7 @@ export interface Campus {
   svgMaps: { [key: string]: string }
 
   // Корпусы
-  buildings?: {
-    description?: string
-    name: string
-    floors: number[]
-    svgMaps: { [key: string]: string }
-    isInitial?: boolean
-  }[]
+  buildings?: Building[] | null | undefined
 }
 
 const campuses: Campus[] = config.campuses

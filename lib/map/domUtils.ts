@@ -111,9 +111,9 @@ export const getMapObjectElementById = (
   name: string,
   document: Document | Element = window.document
 ) => {
-  const roomsEls = getAllMapObjectsElements(document)
+  const roomElements = getAllMapObjectsElements(document)
 
-  for (const room of roomsEls) {
+  for (const room of roomElements) {
     const roomName = getMapObjectIdByElement(room)
     if (roomName?.trim().toLowerCase() == name.trim().toLowerCase()) {
       return room
@@ -125,9 +125,9 @@ export const getMapObjectElementById = (
 
 export const getMapObjectElementByIdAsync = async (
   id: string,
-  document: Document | Element = window.document
-) => {
-  const maxAttempts = 50
+  document: Document | Element = window.document,
+  maxAttempts = 50
+): Promise<Element | null> => {
   let currentAttempt = 0
 
   const getRoom = () => {
@@ -149,10 +149,12 @@ export const getMapObjectElementByIdAsync = async (
     })
   }
 
-  return getRoom()
+  return getRoom() as Promise<Element | null>
 }
 
-export const getMapObjectTypeByElemet = (el: Element): MapObjectType | null => {
+export const getMapObjectTypeByElement = (
+  el: Element
+): MapObjectType | null => {
   const name = el.getAttribute('data-object')
   if (!name) return null
 

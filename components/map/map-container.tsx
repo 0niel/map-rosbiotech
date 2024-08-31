@@ -1,15 +1,14 @@
 'use client'
 
 import campuses from '@/lib/campuses'
+import { usePanningStop } from '@/lib/hooks/use-panning-stop'
 import { MapData } from '@/lib/map/MapData'
 import { type MapObject, MapObjectType } from '@/lib/map/MapObject'
 import { type RoomOnMap } from '@/lib/map/RoomOnMap'
 import {
   fillRoom,
-  getAllMapObjectsElements,
   getMapObjectElementByIdAsync,
   getMapObjectIdByElement,
-  getMapObjectTypeByElemet,
   mapObjectSelector
 } from '@/lib/map/domUtils'
 import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
@@ -26,8 +25,7 @@ import {
 import { toast } from 'sonner'
 import MapWrapper from '../svg-maps/MapWrapper'
 import MapRoute, { type MapRouteRef } from './MapRoute'
-import MapControls from './map-controls'
-import MapNavigationButton from './navigation-button'
+import MapControlsWrapper from './map-controls-wrapper'
 import NavigationDialog from './navigation-dialog'
 import RoomDrawer from './room-drawer'
 
@@ -301,32 +299,10 @@ const MapContainer = () => {
     }
   }, [routeStartAndEnd, floor, setStartMapObject, setEndMapObject])
 
-  const handlePanningStop = useCallback(
-    (ref: ReactZoomPanPinchRef, event: TouchEvent | MouseEvent) => {
-      if (isPanningRef.current.prevEvent) {
-        const timeDiff =
-          event?.timeStamp - isPanningRef.current.prevEvent?.timeStamp
-        if (timeDiff < 200) {
-          const { clientX, clientY } = isPanningRef.current.prevEvent
-          const element = document.elementFromPoint(clientX, clientY)
-          const elementWithMapObject = element?.closest(mapObjectSelector)
-          const mapObjectElement = getAllMapObjectsElements(document).find(
-            el => el === elementWithMapObject
-          )
-
-          if (
-            mapObjectElement &&
-            getMapObjectTypeByElemet(mapObjectElement) === MapObjectType.ROOM
-          ) {
-            handleRoomClick(isPanningRef.current.prevEvent)
-          }
-        }
-      }
-
-      isPanningRef.current = { isPanning: false, prevEvent: null }
-    },
-    [handleRoomClick]
-  )
+  const handlePanningStop = usePanningStop({
+    isPanningRef,
+    handleRoomClick
+  })
 
   return (
     <div className="flex h-full flex-col">
@@ -418,37 +394,16 @@ const MapContainer = () => {
               }}
             />
 
-            <div className="pointer-events-none fixed bottom-0 z-10 flex w-full flex-row items-end justify-between py-2 md:py-4">
-              <MapNavigationButton
-                onClickStart={() => {
-                  if (!routeStartAndEnd.start) return
-
-                  zoomToMapObject(routeStartAndEnd.start)
-                }}
-                onClickEnd={() => {
-                  if (!routeStartAndEnd.end) return
-
-                  zoomToMapObject(routeStartAndEnd.end)
-                }}
-                onClearRoute={() => {
-                  setRouteStartAndEnd({
-                    start: null,
-                    end: null,
-                    render: false
-                  })
-                  mapRouteRef.current?.clearRoute()
-                }}
-              />
-
-              <div className="fixed bottom-0 z-30 w-full -translate-y-1/2 transform px-2 sm:fixed sm:bottom-5 sm:translate-y-0 md:px-8">
-                <MapControls
-                  onZoomIn={() => transformComponentRef.current?.zoomIn()}
-                  onZoomOut={() => transformComponentRef.current?.zoomOut()}
-                  floors={building?.floors || campus.floors || []}
-                  onNavigatonDialogOpen={() => setNavigationDialogOpen(true)}
-                />
-              </div>
-            </div>
+            <MapControlsWrapper
+              transformComponentRef={transformComponentRef}
+              building={building}
+              campus={campus}
+              setNavigationDialogOpen={setNavigationDialogOpen}
+              routeStartAndEnd={routeStartAndEnd}
+              zoomToMapObject={zoomToMapObject}
+              setRouteStartAndEnd={setRouteStartAndEnd}
+              mapRouteRef={mapRouteRef}
+            />
 
             <TransformWrapper
               minScale={0.05}

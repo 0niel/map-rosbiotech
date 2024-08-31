@@ -1,24 +1,14 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { Campus, initialCampus } from '../campuses'
+import { Building, Campus, initialCampus } from '../campuses'
 import { type MapData } from '../map/MapData'
 import { type MapObject } from '../map/MapObject'
 
 interface MapState {
   campus: Campus
-  building: {
-    name: string
-    floors: number[]
-    svgMaps: { [key: string]: string }
-  } | null
+  building: Building | null
   setCampus: (campus: Campus) => void
-  setBuilding: (
-    building: {
-      name: string
-      floors: number[]
-      svgMaps: { [key: string]: string }
-    } | null
-  ) => void
+  setBuilding: (building: Building | null) => void
   floor: number
   setFloor: (floor: number) => void
   mapData: MapData | null
