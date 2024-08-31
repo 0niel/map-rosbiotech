@@ -55,7 +55,7 @@ const FastNavigateButton: React.FC<{ onClick: () => void; title: string }> = ({
 }) => {
   return (
     <Badge
-      className="w-full cursor-pointer px-2 py-1.5 sm:w-auto sm:whitespace-nowrap"
+      className="cursor-pointer px-2 py-1.5 w-auto whitespace-nowrap"
       onClick={onClick}
       variant={'secondary'}
     >
@@ -128,7 +128,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="max-[400px]:w-4/5 w-3/4 sm:max-w-sm">
+      <SheetContent className="max-[400px]:w-full w-3/4 sm:max-w-sm">
         <SheetTitle>
           <div className="flex flex-row items-center">
             <h5
@@ -141,7 +141,9 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
               <div className="ml-4 flex flex-row items-center space-x-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <QrCodeIcon className="h-5 w-5" />
+                    <Button variant={'ghost'}>
+                      <QrCodeIcon className="h-5 w-5" />
+                    </Button>
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent>
@@ -171,12 +173,9 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                     toast.success('Ссылка скопирована в буфер обмена')
                   }}
                 >
-                  <button
-                    type="button"
-                    className="rounded-lg bg-gray-100 p-1.5 text-sm text-gray-900 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                  >
+                  <Button type="button" variant={'ghost'}>
                     <Link className="h-5 w-5" />
-                  </button>
+                  </Button>
                 </CopyToClipboard>
               </div>
             </SheetDescription>
