@@ -251,17 +251,17 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
                     )}`}
                   />
                 ))}
-              {weeklyLessons.find(
+              {(weeklyLessons.find(
                 day => day.date.toISOString() === date.toISOString()
               )?.lessons.length ||
-                (0 > 6 && (
-                  <p className="ml-1 text-xs font-medium text-gray-600 dark:text-gray-400">
-                    +
-                    {weeklyLessons.find(
-                      day => day.date.toISOString() === date.toISOString()
-                    )?.lessons.length || 0 - 6}
-                  </p>
-                ))}
+                0 > 6) && (
+                <p className="ml-1 text-[11px] font-medium text-gray-600 dark:text-gray-400">
+                  {'+'}
+                  {(weeklyLessons.find(
+                    day => day.date.toISOString() === date.toISOString()
+                  )?.lessons.length || 0) - 6}
+                </p>
+              )}
             </div>
           </button>
         ))}
