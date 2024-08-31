@@ -11,7 +11,6 @@ import { toast } from 'sonner'
 import DisplayModeSettingsDialog from './DisplayModeSettingsDialog'
 import { CommandMenu } from './command-menu'
 import DropdownRadio from './dropdown-radio'
-import { Sidebar } from './sidebar'
 import { MapDisplayMode } from './svg-maps/MapDisplayMode'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
@@ -106,7 +105,7 @@ export const Header = () => {
             {!isFlutterWebView && (
               <div className="flex items-center">
                 <div className="flex items-center">
-                  <Sidebar />
+                  {/* <Sidebar /> */}
 
                   <div className="mr-4 flex">
                     <Image
@@ -126,31 +125,6 @@ export const Header = () => {
                   </div>
                 </div>
               </div>
-            )}
-
-            {isFlutterWebView && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Badge variant="secondary" className="block md:hidden">
-                      Бета
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent className="w-80">
-                    <p className="text-sm">
-                      Карта и навигация находится в постоянной разработке. Мы
-                      стараемся сделать её лучше.
-                    </p>
-                    <div className="text-left">
-                      <Link href="https://t.me/pulse_rosbiotech/4">
-                        <Button variant="link" className="p-0">
-                          Сообщить об ошибке
-                        </Button>
-                      </Link>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
             )}
 
             <div className="flex items-center md:w-full md:justify-between">
@@ -199,6 +173,27 @@ export const Header = () => {
                 )}
               </div>
             </div>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Badge variant="secondary">Бета</Badge>
+                </TooltipTrigger>
+                <TooltipContent className="w-80">
+                  <p className="text-sm">
+                    Карта и навигация находится в постоянной разработке. Мы
+                    стараемся сделать её лучше.
+                  </p>
+                  <div className="text-left">
+                    <Link href="https://t.me/pulse_rosbiotech/4">
+                      <Button variant="link" className="p-0">
+                        Сообщить об ошибке
+                      </Button>
+                    </Link>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </nav>
       </header>
