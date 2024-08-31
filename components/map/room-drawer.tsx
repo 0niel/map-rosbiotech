@@ -24,7 +24,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { useQuery } from 'react-query'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
-import RoomInfoTabContent from './RoomInfoTabContent'
+import RoomInfoTabContent from './room-info-tab-content'
 
 import QRCode from 'qrcode.react'
 import { RiRouteLine } from 'react-icons/ri'

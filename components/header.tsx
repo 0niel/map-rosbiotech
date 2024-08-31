@@ -1,17 +1,12 @@
 'use client'
 
 import campuses from '@/lib/campuses'
-import { useDisplayModeStore } from '@/lib/stores/displayModeStore'
 import { useMapStore } from '@/lib/stores/mapStore'
-import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import DisplayModeSettingsDialog from './DisplayModeSettingsDialog'
 import { CommandMenu } from './command-menu'
 import DropdownRadio from './dropdown-radio'
-import { MapDisplayMode } from './svg-maps/MapDisplayMode'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import {
@@ -21,52 +16,8 @@ import {
   TooltipTrigger
 } from './ui/tooltip'
 
-const MapDisplayButton = ({
-  mode,
-  currentMode,
-  handleClick,
-  icon,
-  text
-}: {
-  mode: MapDisplayMode
-  currentMode: MapDisplayMode
-  text: string
-  icon: React.ReactNode
-  handleClick: (mode: MapDisplayMode) => void
-}) => {
-  return (
-    <button
-      onClick={() => {
-        handleClick(mode)
-      }}
-      className={cn(
-        'group block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600',
-        mode === currentMode
-          ? 'hover-bg-green-200 bg-green-100'
-          : 'hover:bg-gray-100 dark:hover:bg-gray-600'
-      )}
-    >
-      {icon}
-      <div
-        className={cn(
-          'text-sm',
-          mode === currentMode
-            ? 'text-green-500'
-            : 'text-gray-900 dark:text-white'
-        )}
-      >
-        {text}
-      </div>
-    </button>
-  )
-}
-
 export const Header = () => {
   const { campus, building, setCampus, setBuilding } = useMapStore()
-  const displayModeStore = useDisplayModeStore()
-
-  const [displayModeSettingsDialogOpen, setDisplayModeSettingsDialogOpen] =
-    useState(false)
   const [isFlutterWebView, setIsFlutterWebView] = useState(false)
 
   useEffect(() => {
@@ -76,27 +27,9 @@ export const Header = () => {
     }
   }, [])
 
-  const handleDisplayModeFeatureClick = (displaMode: MapDisplayMode) => {
-    if (displayModeStore.mode === displaMode) {
-      displayModeStore.setMode(MapDisplayMode.DEFAULT)
-      return
-    }
-
-    displayModeStore.setMode(displaMode)
-  }
-
   return (
     <>
       <header className="sticky top-0 z-10">
-        <DisplayModeSettingsDialog
-          isOpen={displayModeSettingsDialogOpen}
-          onClose={function (): void {
-            setDisplayModeSettingsDialogOpen(false)
-            toast.success(
-              'Время и дата отображения статусов аудиторий изменены'
-            )
-          }}
-        />
         <nav
           className="select-none bg-white px-4 py-2.5 dark:bg-[#1c1c1e]
         lg:px-6"

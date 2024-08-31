@@ -24,8 +24,8 @@ import {
 } from 'react-zoom-pan-pinch'
 import { toast } from 'sonner'
 import MapWrapper from '../svg-maps/MapWrapper'
-import MapRoute, { type MapRouteRef } from './MapRoute'
 import MapControlsWrapper from './map-controls-wrapper'
+import MapRoute, { type MapRouteRef } from './map-route'
 import NavigationDialog from './navigation-dialog'
 import RoomDrawer from './room-drawer'
 

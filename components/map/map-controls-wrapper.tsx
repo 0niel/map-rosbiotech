@@ -2,7 +2,7 @@ import { Building, Campus } from '@/lib/campuses'
 import { MapObject } from '@/lib/map/MapObject'
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import MapControls from './map-controls'
-import { MapRouteRef } from './MapRoute'
+import { MapRouteRef } from './map-route'
 import MapNavigationButton from './navigation-button'
 
 type MapControlsWrapperProps = {
