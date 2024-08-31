@@ -127,7 +127,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent>
+      <SheetContent className="max-[400px]:w-4/5 w-3/4 sm:max-w-sm">
         <SheetTitle>
           <div className="flex flex-row items-center">
             <h5
