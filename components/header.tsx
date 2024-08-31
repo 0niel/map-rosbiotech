@@ -112,7 +112,7 @@ export const Header = () => {
                 <TooltipTrigger>
                   <Badge variant="secondary">Бета</Badge>
                 </TooltipTrigger>
-                <TooltipContent className="w-80">
+                <TooltipContent className="w-80 rounded-md border p-4">
                   <p className="text-sm">
                     Карта и навигация находится в постоянной разработке. Мы
                     стараемся сделать её лучше.
