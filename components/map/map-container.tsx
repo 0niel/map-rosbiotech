@@ -156,9 +156,9 @@ const MapContainer = () => {
     if (!transformComponentRef.current || !mapData) {
       return
     }
-
     const object = searchParams.get('object')
     if (object) {
+      console.log('object', object)
       const mapObject = mapData.getMapObjectById(object)
       if (!mapObject) {
         toast.error('Не найден объект на карте по вашей ссылке')
@@ -190,6 +190,7 @@ const MapContainer = () => {
     const room = searchParams.get('room')
     const date = searchParams.get('date')
     if (room && campus && date) {
+      console.log('room', room)
       if (c && c !== campus.shortName) {
         setCampus(campuses.find(campus => campus.shortName === c) ?? campus)
       }
@@ -203,14 +204,7 @@ const MapContainer = () => {
       zoomToMapObject(mapObject, true)
       setTimeToDisplay(new Date(date))
     }
-  }, [
-    searchParams,
-    mapData,
-    campus,
-    setCampus,
-    setTimeToDisplay,
-    zoomToMapObject
-  ])
+  }, [searchParams, mapData, campus, setCampus, zoomToMapObject])
 
   const handleRoomClick = useCallback(
     (e: Event) => {
@@ -236,7 +230,7 @@ const MapContainer = () => {
   useEffect(() => {
     unselectRoomEl()
     mapRouteRef.current?.clearRoute()
-  }, [campus, setFloor, unselectRoomEl])
+  }, [campus, unselectRoomEl])
 
   useEffect(() => {
     if (!selectedFromSearchRoom) return
@@ -274,7 +268,8 @@ const MapContainer = () => {
   const handleCloseDrawer = useCallback(() => {
     setDrawerOpened(false)
     unselectRoomEl()
-  }, [unselectRoomEl])
+    setSelectedFromSearchRoom(null)
+  }, [setSelectedFromSearchRoom, unselectRoomEl])
 
   const [navigationDialogOpen, setNavigationDialogOpen] = useState(false)
   const [routeStartAndEnd, setRouteStartAndEnd] = useState<{
