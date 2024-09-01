@@ -9,12 +9,7 @@ import { CommandMenu } from './command-menu'
 import DropdownRadio from './dropdown-radio'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from './ui/tooltip'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 export const Header = () => {
   const { campus, building, setCampus, setBuilding } = useMapStore()
@@ -107,26 +102,24 @@ export const Header = () => {
               </div>
             </div>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <Badge variant="secondary">Бета</Badge>
-                </TooltipTrigger>
-                <TooltipContent className="w-80 rounded-md border">
-                  <p className="text-sm">
-                    Карта и навигация находится в постоянной разработке. Мы
-                    стараемся сделать её лучше.
-                  </p>
-                  <div className="text-left">
-                    <Link href="https://t.me/pulse_rosbiotech/4">
-                      <Button variant="link" className="p-0">
-                        Сообщить об ошибке
-                      </Button>
-                    </Link>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Popover>
+              <PopoverTrigger>
+                <Badge variant="secondary">Бета</Badge>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 rounded-md border">
+                <p className="text-sm">
+                  Карта и навигация находится в постоянной разработке. Мы
+                  стараемся сделать её лучше.
+                </p>
+                <div className="text-left">
+                  <Link href="https://t.me/pulse_rosbiotech/4">
+                    <Button variant="link" className="p-0">
+                      Сообщить об ошибке
+                    </Button>
+                  </Link>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </nav>
       </header>
