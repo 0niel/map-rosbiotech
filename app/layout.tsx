@@ -53,7 +53,7 @@ export default function RootLayout({
             <main className="flex h-screen flex-col">
               <Header />
               {children}
-              <Toaster />
+              <Toaster position="bottom-center" expand />
             </main>
           </CustomQueryClientProvider>
         </ThemeProvider>

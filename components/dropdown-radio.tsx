@@ -13,7 +13,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ChevronDown } from 'lucide-react'
 import React, { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { Button } from './ui/button'
 
 type DropdownRadioOption = {
   id: string
@@ -71,14 +70,14 @@ const DropdownRadio: React.FC<DropdownRadioProps> = ({
     <div className="pointer-events-auto">
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button>
+          <div className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2">
             {title}
 
             <ChevronDown
               className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
               aria-hidden="true"
             />
-          </Button>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="p-3 text-sm">
           <DropdownMenuLabel>Выберите кампус</DropdownMenuLabel>
