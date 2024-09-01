@@ -64,7 +64,7 @@ export class MapData {
           if (
             !current ||
             dist.get(vertex.id)! + this.heuristic(vertex, end) <
-              dist.get(current.id)! + this.heuristic(current, end)
+            dist.get(current.id)! + this.heuristic(current, end)
           ) {
             current = vertex
           }
@@ -148,7 +148,7 @@ export class MapData {
       const prevVert = path[i - 1] as Vertex
 
       if (!vert.mapObjectId && !prevVert.mapObjectId) {
-        ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+        ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
         continue
       }
 
@@ -167,7 +167,7 @@ export class MapData {
           prevMapObj.type !== MapObjectType.STAIRS
         ) {
           // Если текущий объект лестница, а предыдущий нет, то добавить текущий объект в последний сегмент пути
-          ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+          ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
         } else if (
           mapObj.type !== MapObjectType.STAIRS &&
           prevMapObj.type === MapObjectType.STAIRS
@@ -179,10 +179,10 @@ export class MapData {
           prevMapObj.type !== MapObjectType.STAIRS
         ) {
           // Если оба объекта не лестницы, то добавить текущий объект в последний сегмент пути
-          ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+          ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
         }
       } else {
-        ;(pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+        ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
       }
     }
 
@@ -317,67 +317,63 @@ export class MapData {
     const roomNumberPattern =
       /(?<building>[А-Яа-я]+)?-? ?(?<number>\d+)(?<letter>[А-Яа-я])?([-.]?(?<postfix>[А-Яа-я0-9]+))?/
 
-    return searchObjects
-      .filter(o => {
-        if (
-          o.mapObject.type === MapObjectType.ROOM &&
-          mapTypesToSearch.includes(MapObjectType.ROOM)
-        ) {
-          const matchObject = o.mapObject.name.match(roomNumberPattern)
-          const matchName = name.match(roomNumberPattern)
+    const normalizedQuery = name.toLowerCase().replace('-', '').replace(' ', '')
 
-          if (matchObject && matchName) {
-            const buildingObject = matchObject.groups?.building
-            const numberObject = matchObject.groups?.number
-            const letterObject = matchObject.groups?.letter
-            const postfixObject = matchObject.groups?.postfix
+    const objectsByRoomName = new Map<string, SearchableObject[]>()
 
-            const buildingName = matchName.groups?.building
-            const numberName = matchName.groups?.number
-            const letterName = matchName.groups?.letter
-            const postfixName = matchName.groups?.postfix
+    searchObjects.forEach(o => {
+      const roomName = o.mapObject.name
+        .toLowerCase()
+        .replace('-', '')
+        .replace(' ', '')
+      if (objectsByRoomName.has(roomName)) {
+        objectsByRoomName.get(roomName)?.push(o)
+      } else {
+        objectsByRoomName.set(roomName, [o])
+      }
+    })
 
-            if (numberName) {
+    const results: SearchableObject[] = []
+
+    for (const [roomName, objects] of objectsByRoomName) {
+      if (roomName.includes(normalizedQuery)) {
+        for (const o of objects) {
+          if (
+            mapTypesToSearch.includes(o.mapObject.type) &&
+            (!roomName || roomName.includes(normalizedQuery))
+          ) {
+            const matchObject = o.mapObject.name.match(roomNumberPattern)
+            const matchName = name.match(roomNumberPattern)
+
+            if (matchObject && matchName) {
+              const buildingObject = matchObject.groups?.building?.toLowerCase()
+              const numberObject = matchObject.groups?.number?.toLowerCase()
+              const letterObject = matchObject.groups?.letter?.toLowerCase()
+              const postfixObject = matchObject.groups?.postfix?.toLowerCase()
+
+              const buildingName = matchName.groups?.building?.toLowerCase()
+              const numberName = matchName.groups?.number?.toLowerCase()
+              const letterName = matchName.groups?.letter?.toLowerCase()
+              const postfixName = matchName.groups?.postfix?.toLowerCase()
+
               if (
-                !numberObject?.toLowerCase().includes(numberName.toLowerCase())
+                (numberName && numberObject?.includes(numberName)) ||
+                (buildingName && buildingObject?.includes(buildingName)) ||
+                (letterName && letterObject === letterName) ||
+                (postfixName && postfixObject === postfixName)
               ) {
-                return false
+                results.push(o)
+                continue
               }
             }
 
-            if (buildingName) {
-              if (
-                !buildingObject
-                  ?.toLowerCase()
-                  .includes(buildingName.toLowerCase())
-              ) {
-                return false
-              }
-            }
-
-            if (letterName) {
-              if (letterObject?.toLowerCase() !== letterName.toLowerCase()) {
-                return false
-              }
-            }
-
-            if (postfixName) {
-              if (postfixObject?.toLowerCase() !== postfixName.toLowerCase()) {
-                return false
-              }
-            }
+            results.push(o)
           }
         }
+      }
+    }
 
-        return (
-          o.mapObject.name
-            .toLowerCase()
-            .replace('-', '')
-            .replace(' ', '')
-            .includes(name.toLowerCase().replace('-', '').replace(' ', '')) &&
-          mapTypesToSearch.includes(o.mapObject.type)
-        )
-      })
+    return results
       .map(o => ({
         floor:
           this.getObjectFloorByMapObjectId(o.mapObject.id)?.toString() || '',
@@ -389,7 +385,7 @@ export class MapData {
         if (b.mapObject.name === name) return 1
 
         if (a.mapObject.name < b.mapObject.name) return -1
-        if (a.mapObject.name > b.mapObject.name) return 1
+        if (b.mapObject.name > a.mapObject.name) return 1
 
         return 0
       })

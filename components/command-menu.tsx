@@ -10,11 +10,11 @@ import {
   CommandList,
   CommandSeparator
 } from '@/components/ui/command'
-import { searchEmployees, type StrapiResponse } from '@/lib/employees/api'
+import { type StrapiResponse } from '@/lib/employees/api'
 import { MapObjectType } from '@/lib/map/MapObject'
 import { useMapStore } from '@/lib/stores/mapStore'
 import { cn } from '@/lib/utils'
-import { type DialogProps } from '@radix-ui/react-dialog'
+import { DialogProps } from '@radix-ui/react-dialog'
 import {
   CircleIcon,
   LaptopIcon,
@@ -23,69 +23,66 @@ import {
 } from '@radix-ui/react-icons'
 import { Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import * as React from 'react'
-import { useQuery } from 'react-query'
+import React from 'react'
 import { toast } from 'sonner'
 import { DialogTitle } from './ui/dialog'
 
-export function CommandMenu({ ...props }: DialogProps) {
-  const router = useRouter()
+export const CommandMenu = React.memo(function CommandMenu({
+  ...props
+}: DialogProps) {
   const [open, setOpen] = React.useState(false)
   const { setTheme } = useTheme()
   const [query, setQuery] = React.useState('')
 
   const { mapData, setSelectedFromSearchRoom } = useMapStore()
 
-  const { data: employeeData, isLoading: employeeIsLoading } =
-    useQuery<StrapiResponse>(
-      ['searchEmployees', query],
-      async () => {
-        const employees = await searchEmployees(query)
-        const employeesByPositions = []
-        for (const employee of employees.data) {
-          for (const position of employee.attributes.positions) {
-            employeesByPositions.push({
-              id: employee.id,
-              attributes: {
-                ...employee.attributes,
-                positions: [position]
-              }
-            })
-          }
-        }
-        return { data: employeesByPositions }
-      },
-      { enabled: query !== '' && query.length > 3 }
-    )
+  const calculateMatchPercentage = (name: string, query: string): number => {
+    const nameLower = name.toLowerCase()
+    const queryLower = query.toLowerCase()
+    let matchCount = 0
 
-  const [results, setResults] = React.useState<Record<string, any[]>[]>([])
-
-  React.useEffect(() => {
-    if (query.length < 2) return
-
-    const searchResults =
-      mapData?.searchObjectsByName(query, [MapObjectType.ROOM]) ?? []
-    const newRes = []
-    const visitedFloors = new Set()
-    for (const res of searchResults) {
-      if (!visitedFloors.has(res.floor)) {
-        const elementsForThisFloor = searchResults.filter(
-          result => result.floor === res.floor
-        )
-        visitedFloors.add(res.floor)
-        newRes.push({ [res.floor]: elementsForThisFloor })
+    for (let i = 0; i < queryLower.length; i++) {
+      if (nameLower.includes(queryLower[i]!)) {
+        matchCount++
       }
     }
 
-    if (newRes !== results) {
-      setResults(newRes)
-    }
+    return (matchCount / queryLower.length) * 100
+  }
+
+  const results = React.useMemo(() => {
+    if (query.length < 2) return []
+
+    const searchResults =
+      mapData?.searchObjectsByName(query, [MapObjectType.ROOM]) ?? []
+
+    const rankedResults = searchResults
+      .map(res => ({
+        ...res,
+        matchPercentage: calculateMatchPercentage(res.mapObject.name, query)
+      }))
+      .sort((a, b) => b.matchPercentage - a.matchPercentage)
+      .slice(0, 30) // Обрезаем до 30 результатов
+
+    const groupedResults = rankedResults.reduce(
+      (acc, res) => {
+        if (!acc[res.floor]) acc[res.floor] = []
+        if (acc[res.floor]) {
+          acc[res.floor]!.push(res)
+        }
+        return acc
+      },
+      {} as Record<string, any[]>
+    )
+
+    return Object.entries(groupedResults).map(([floor, objects]) => ({
+      floor,
+      objects
+    }))
   }, [query, mapData])
 
   React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
         if (
           (e.target instanceof HTMLElement && e.target.isContentEditable) ||
@@ -97,12 +94,12 @@ export function CommandMenu({ ...props }: DialogProps) {
         }
 
         e.preventDefault()
-        setOpen(open => !open)
+        setOpen(prev => !prev)
       }
     }
 
-    document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   const runCommand = React.useCallback((command: () => unknown) => {
@@ -110,28 +107,31 @@ export function CommandMenu({ ...props }: DialogProps) {
     command()
   }, [])
 
-  const onEmployeeClick = (employee: StrapiResponse['data'][0]) => {
-    const employeeRooms = employee?.attributes?.positions
-      .map(position =>
-        position?.contacts.map(contact => contact?.room?.data.attributes)
-      )
-      .flat()
+  const onEmployeeClick = React.useCallback(
+    (employee: StrapiResponse['data'][0]) => {
+      const employeeRooms = employee?.attributes?.positions
+        .flatMap(position =>
+          position?.contacts.map(contact => contact?.room?.data.attributes)
+        )
+        .filter(Boolean)
 
-    if (employeeRooms.length === 1) {
-      if (employeeRooms[0]?.name && employeeRooms[0]?.campus) {
-        const room = {
-          name: employeeRooms[0]?.name,
-          campus: employeeRooms[0]?.campus,
-          mapObject: null
+      if (employeeRooms.length === 1) {
+        const room = employeeRooms[0]
+        if (room?.name && room?.campus) {
+          setSelectedFromSearchRoom({
+            name: room.name,
+            campus: room.campus,
+            mapObject: null
+          })
+          setOpen(false)
+          return
         }
-        setSelectedFromSearchRoom(room)
-        setOpen(false)
-        return
       }
-    }
 
-    toast.error('Не удалось определить аудиторию сотрудника')
-  }
+      toast.error('Не удалось определить аудиторию сотрудника')
+    },
+    [setSelectedFromSearchRoom]
+  )
 
   return (
     <>
@@ -155,11 +155,12 @@ export function CommandMenu({ ...props }: DialogProps) {
       <Button
         className="mr-2 lg:hidden"
         onClick={() => setOpen(true)}
-        variant={'ghost'}
+        variant="ghost"
       >
         <span className="sr-only">Поиск</span>
         <Search className="h-6 w-6" aria-hidden="true" />
       </Button>
+
       <CommandDialog open={open} onOpenChange={setOpen}>
         <DialogTitle className="sr-only">
           Поиск аудиторий или сотрудников...
@@ -168,83 +169,43 @@ export function CommandMenu({ ...props }: DialogProps) {
           placeholder="Введите или выберите команду..."
           onValueChange={setQuery}
         />
+
         <CommandList>
           {query === '' && (
             <CommandEmpty>
               Введите запрос для поиска сотрудников или аудиторий
             </CommandEmpty>
           )}
-          {employeeData?.data && employeeData?.data.length > 0 && (
-            <CommandGroup heading="Сотрудники">
-              {employeeData.data.map(employee => (
-                <CommandItem
-                  key={employee.id}
-                  onSelect={() => onEmployeeClick(employee)}
-                >
-                  {employee.attributes.photo && (
-                    <Image
-                      className="mr-2 h-12 w-12 flex-shrink-0 rounded-full object-cover"
-                      src={employee.attributes.photo.data.attributes.url}
-                      width={48}
-                      height={48}
-                      alt={`${employee.attributes.firstName} ${employee.attributes.lastName}`}
-                    />
-                  )}
-                  <div className="flex flex-col">
-                    <span>
-                      {employee.attributes.lastName}{' '}
-                      {employee.attributes.firstName}
-                      {employee.attributes.patronymic &&
-                        ` ${employee.attributes.patronymic}`}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {employee.attributes.positions.map(position => (
-                        <span key={position.post}>
-                          {position.post}, {position.department}
-                        </span>
-                      ))}
-                    </span>
-                  </div>
-                </CommandItem>
+
+          {results.length > 0 && (
+            <CommandGroup heading="Аудитории">
+              {results.map(({ floor, objects }) => (
+                <React.Fragment key={floor}>
+                  <h4 className="py-4 pl-2 text-sm font-medium">{`Этаж ${floor}`}</h4>
+                  {objects.map(obj => (
+                    <CommandItem
+                      key={obj.mapObject.id}
+                      onSelect={() => {
+                        setSelectedFromSearchRoom({
+                          name: obj.mapObject.name,
+                          campus: '',
+                          mapObject: obj.mapObject
+                        })
+                        setOpen(false)
+                      }}
+                      value={obj.mapObject.name}
+                    >
+                      <div className="mr-2 flex h-4 w-4 items-center justify-center">
+                        <CircleIcon className="h-3 w-3" />
+                      </div>
+                      {obj.mapObject.name}
+                    </CommandItem>
+                  ))}
+                </React.Fragment>
               ))}
             </CommandGroup>
           )}
-          {results.length > 0 && (
-            <CommandGroup heading="Аудитории">
-              {results.map(object =>
-                Object.entries(object).map(([floor, objects]) => (
-                  <div key={floor}>
-                    <h4 className="py-4 pl-2 text-sm font-medium">{`Этаж ${floor}`}</h4>
-                    {objects.map((obj: any) => (
-                      <CommandItem
-                        key={obj.mapObject.id}
-                        onSelect={() => {
-                          setSelectedFromSearchRoom({
-                            name: obj.mapObject.name,
-                            campus: '',
-                            mapObject: obj.mapObject
-                          })
-                          setOpen(false)
-                        }}
-                        value={obj.mapObject.name}
-                      >
-                        <div className="mr-2 flex h-4 w-4 items-center justify-center">
-                          <CircleIcon className="h-3 w-3" />
-                        </div>
-                        {obj.mapObject.name}
-                      </CommandItem>
-                    ))}
-                  </div>
-                ))
-              )}
-            </CommandGroup>
-          )}
-          {query !== '' &&
-            employeeData &&
-            employeeData.data.length === 0 &&
-            results.length === 0 && (
-              <CommandEmpty>Результатов не найдено</CommandEmpty>
-            )}
+
           <CommandSeparator />
           <CommandGroup heading="Тема">
             <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
@@ -264,4 +225,4 @@ export function CommandMenu({ ...props }: DialogProps) {
       </CommandDialog>
     </>
   )
-}
+})
