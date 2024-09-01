@@ -13,10 +13,11 @@ const config: Config = {
     {
       shortName: 'Сокол',
       description: 'Волоколамское шоссе, 11',
-      floors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      floors: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       initialFloor: 1,
       initialScale: 1,
       svgMaps: {
+        '0': '/svg-maps/0.svg',
         '1': '/svg-maps/1.svg',
         '2': '/svg-maps/2.svg',
         '3': '/svg-maps/3.svg',
