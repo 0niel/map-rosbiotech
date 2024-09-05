@@ -213,6 +213,7 @@ const MapContainer = () => {
 
       const target = e.target as HTMLElement
       let room = target.closest(mapObjectSelector)
+      console.log('ROOM:', room)
       if (
         getMapObjectIdByElement(room?.parentElement as Element) ===
         getMapObjectIdByElement(room as Element)

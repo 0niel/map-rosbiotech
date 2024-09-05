@@ -203,6 +203,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <FastNavigateButton
                     onClick={() =>
                       findNearestObject(MapObjectType.TOILET, [
+                        'Туалет',
                         'Туалет М',
                         'Туалет МЖ'
                       ])
@@ -212,6 +213,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                   <FastNavigateButton
                     onClick={() =>
                       findNearestObject(MapObjectType.TOILET, [
+                        'Туалет',
                         'Туалет Ж',
                         'Туалет МЖ'
                       ])
