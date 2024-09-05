@@ -119,7 +119,7 @@ const MapContainer = () => {
         object => object.id === getMapObjectIdByElement(room)
       )
       if (!mapObject) {
-        toast.error('Нет данных для этой карты')
+        toast.error('Нет данных для этой аудитории')
         return
       }
 
