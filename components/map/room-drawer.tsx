@@ -160,7 +160,7 @@ const RoomDrawer: React.FC<RoomDrawerProps> = ({
                           renderAs="svg"
                         />
 
-                        <p className="mt-2 text-sm text-gray-900">
+                        <p className="mt-2 text-sm">
                           Этот QR-код можно отсканировать, чтобы открыть эту
                           аудиторию на карте
                         </p>
