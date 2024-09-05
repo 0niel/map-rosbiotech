@@ -350,7 +350,7 @@ const MapContainer = () => {
         )}
 
         {mapData && (
-          <div className="relative z-0 mb-4 h-full w-full overflow-hidden">
+          <div className="relative z-0 mb-4 h-full w-full overflow-hidden bg-[#f5f5f7] dark:bg-background">
             <NavigationDialog
               isOpen={navigationDialogOpen}
               onClose={() => setNavigationDialogOpen(false)}
