@@ -264,7 +264,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       </div>
 
       {/* Расписание */}
-      <ScrollArea className="h-[calc(100vh-267  px)]">
+      <ScrollArea className="h-[calc(100vh-267px)]">
         <div className="flex flex-col space-y-2">
           {groupLessonsByGroups(
             weeklyLessons.find(

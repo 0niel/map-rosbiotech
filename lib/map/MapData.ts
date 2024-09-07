@@ -128,66 +128,53 @@ export class MapData {
 
     return path
   }
-
   getShortestPathBySegments(
     startMapObject: MapObject,
     endMapObject: MapObject
   ): Vertex[][] | null {
-    const path = this.getShortestPath(startMapObject, endMapObject)
+    const path = this.getShortestPath(startMapObject, endMapObject);
 
-    // Список сегментов пути, разделенных лестницами
-    const pathsByStairs = [] as Vertex[][]
+    if (!path) return null;
 
-    if (!path) return null
-
-    // Первый сегмент пути всегда начинается с начальной точки
-    pathsByStairs.push([path[0] as Vertex])
+    const pathsBySegments: Vertex[][] = [[path[0] as Vertex]];
+    const isTransitionObject = (type: MapObjectType) =>
+      type === MapObjectType.STAIRS || type === MapObjectType.ELEVATOR;
 
     for (let i = 1; i < path.length; i++) {
-      const vert = path[i] as Vertex
-      const prevVert = path[i - 1] as Vertex
+      const vert = path[i] as Vertex;
+      const prevVert = path[i - 1] as Vertex;
 
       if (!vert.mapObjectId && !prevVert.mapObjectId) {
-        ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
-        continue
+        pathsBySegments[pathsBySegments.length - 1]?.push(vert);
+        continue;
       }
 
-      const mapObj = this.getMapObjectById(vert.mapObjectId as string)
-      const prevMapObj = this.getMapObjectById(prevVert.mapObjectId as string)
+      const mapObj = vert.mapObjectId ? this.getMapObjectById(vert.mapObjectId) : null;
+      const prevMapObj = prevVert.mapObjectId
+        ? this.getMapObjectById(prevVert.mapObjectId)
+        : null;
 
       if (mapObj && prevMapObj) {
-        if (
-          mapObj.type === MapObjectType.STAIRS &&
-          prevMapObj.type === MapObjectType.STAIRS
-        ) {
-          // Если оба объекта лестницы, то добавить новый сегмент пути
-          pathsByStairs.push([vert])
-        } else if (
-          mapObj.type === MapObjectType.STAIRS &&
-          prevMapObj.type !== MapObjectType.STAIRS
-        ) {
-          // Если текущий объект лестница, а предыдущий нет, то добавить текущий объект в последний сегмент пути
-          ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
-        } else if (
-          mapObj.type !== MapObjectType.STAIRS &&
-          prevMapObj.type === MapObjectType.STAIRS
-        ) {
-          // Если текущий объект не лестница, а предыдущий объект лестница, то добавить текущий объект в новый сегмент пути
-          pathsByStairs.push([vert])
-        } else if (
-          mapObj.type !== MapObjectType.STAIRS &&
-          prevMapObj.type !== MapObjectType.STAIRS
-        ) {
-          // Если оба объекта не лестницы, то добавить текущий объект в последний сегмент пути
-          ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+        const isCurrentTransition = isTransitionObject(mapObj.type);
+        const isPrevTransition = isTransitionObject(prevMapObj.type);
+
+        if (isCurrentTransition && isPrevTransition) {
+          pathsBySegments.push([vert]);
+        } else if (isCurrentTransition && !isPrevTransition) {
+          pathsBySegments[pathsBySegments.length - 1]?.push(vert);
+        } else if (!isCurrentTransition && isPrevTransition) {
+          pathsBySegments.push([vert]);
+        } else {
+          pathsBySegments[pathsBySegments.length - 1]?.push(vert);
         }
       } else {
-        ; (pathsByStairs[pathsByStairs.length - 1] as Vertex[]).push(vert)
+        pathsBySegments[pathsBySegments.length - 1]?.push(vert);
       }
     }
 
-    return pathsByStairs
+    return pathsBySegments;
   }
+
 
   getNearestMapObjectByType(
     startMapObject: MapObject,
