@@ -89,7 +89,7 @@ const NavigationDialog: React.FC<RoutesModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-3xl max-h-[calc(100vh-env(safe-area-inset-bottom))] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Навигация</DialogTitle>
           <DialogDescription>
