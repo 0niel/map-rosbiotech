@@ -1,0 +1,279 @@
+Создайте файл hiv-map-kostroma.html со следующим содержимым:
+
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта поддержки ВИЧ-положительной молодёжи - Кострома</title>
+    
+    <!-- Подключаем Leaflet CSS и JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            border-radius: 5px;
+            max-width: 300px;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .layer-control { margin: 10px 0; }
+        button { 
+            background: #e74c3c; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .medical { background: #3498db; color: white; }
+        .legal { background: #2ecc71; color: white; }
+        .psychological { background: #9b59b6; color: white; }
+        .support { background: #f39c12; color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🏥 Карта поддержки ВИЧ+ молодёжи</h2>
+        <p>г. Кострома и Костромская область</p>
+    </div>
+
+    <div class="controls">
+        <h4>Слои карты:</h4>
+        <div class="layer-control">
+            <label><input type="checkbox" id="medical" checked> Медицинские центры</label>
+        </div>
+        <div class="layer-control">
+            <label><input type="checkbox" id="legal" checked> Юридическая помощь</label>
+        </div>
+        <div class="layer-control">
+            <label><input type="checkbox" id="psychological" checked> Психологическая поддержка</label>
+        </div>
+        <div class="layer-control">
+            <label><input type="checkbox" id="support" checked> Группы взаимопомощи</label>
+        </div>
+        
+        <button onclick="openProblemForm()">🚨 Сообщить о проблеме</button>
+        <button onclick="openFeedback()">💬 Оставить отзыв</button>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        // Инициализация карты с центром в Костроме
+        var map = L.map('map').setView([57.767, 40.926], 13);
+
+        // Добавляем слой OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Группы для разных типов организаций
+        var medicalGroup = L.layerGroup().addTo(map);
+        var legalGroup = L.layerGroup().addTo(map);
+        var psychologicalGroup = L.layerGroup().addTo(map);
+        var supportGroup = L.layerGroup().addTo(map);
+
+        // Данные организаций Костромы
+        var organizations = [
+            {
+                name: "Костромской областной центр профилактики и борьбы со СПИД",
+                coords: [57.768, 40.928],
+                address: "ул. Свердлова, 23",
+                phone: "(4942) 55-XX-XX",
+                type: "medical",
+                services: ["Консультация врача", "АРВ-терапия", "Лабораторная диагностика", "До- и послетестовое консультирование"],
+                hours: "Пн-Пт: 8:00-18:00"
+            },
+            {
+                name: "Костромская областная больница",
+                coords: [57.772, 40.935],
+                address: "ул. Советская, 77",
+                phone: "(4942) 31-XX-XX",
+                type: "medical",
+                services: ["Общее медицинское обслуживание", "Стационарная помощь"],
+                hours: "Круглосуточно"
+            },
+            {
+                name: "Центр психологической помощи молодежи",
+                coords: [57.762, 40.915],
+                address: "ул. Юношеская, 1",
+                phone: "(4942) 44-XX-XX",
+                type: "psychological",
+                services: ["Психологическое консультирование", "Кризисная помощь", "Групповая терапия"],
+                hours: "Пн-Сб: 9:00-20:00"
+            },
+            {
+                name: "Юридическая клиника КГУ",
+                coords: [57.758, 40.922],
+                address: "ул. Дзержинского, 17",
+                phone: "(4942) 39-XX-XX",
+                type: "legal",
+                services: ["Бесплатные юридические консультации", "Помощь в составлении документов", "Защита прав пациентов"],
+                hours: "Вт, Чт: 15:00-18:00"
+            },
+            {
+                name: "Группа взаимопомощи 'Ты не один'",
+                coords: [57.765, 40.918],
+                address: "ул. Ленина, 45 (оф. 304)",
+                phone: "+7-910-XXX-XX-XX",
+                type: "support",
+                services: ["Встречи группы поддержки", "Обмен опытом", "Социальное сопровождение"],
+                hours: "Ср: 19:00-21:00, Сб: 15:00-17:00"
+            }
+        ];
+
+        // Функция для создания иконок разных цветов
+        function createIcon(type) {
+            var color;
+            switch(type) {
+                case 'medical': color = '#3498db'; break;
+                case 'legal': color = '#2ecc71'; break;
+                case 'psychological': color = '#9b59b6'; break;
+                case 'support': color = '#f39c12'; break;
+                default: color = '#95a5a6';
+            }
+            
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="background-color: ${color}; width: 25px; height: 25px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>`,
+                iconSize: [25, 25],
+                iconAnchor: [12, 12]
+            });
+        }
+
+        // Добавляем маркеры на карту
+        organizations.forEach(function(org) {
+            var popupContent = `
+                <div class="popup-content">
+                    <h3>${org.name}</h3>
+                    <p><strong>📍 Адрес:</strong> ${org.address}</p>
+                    <p><strong>📞 Телефон:</strong> ${org.phone}</p>
+                    <p><strong>🕒 Часы работы:</strong> ${org.hours}</p>
+                    <p><strong>✅ Услуги:</strong> ${org.services.join(', ')}</p>
+                    <button onclick="rateOrganization('${org.name}')" style="background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin: 5px;">Оценить</button>
+                    <button onclick="openDirections(${org.coords[0]}, ${org.coords[1]})" style="background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin: 5px;">Проложить маршрут</button>
+                </div>
+            `;
+            
+            var marker = L.marker(org.coords, {icon: createIcon(org.type)})
+                .bindPopup(popupContent);
+            
+            // Добавляем маркер в соответствующую группу
+            switch(org.type) {
+                case 'medical': marker.addTo(medicalGroup); break;
+                case 'legal': marker.addTo(legalGroup); break;
+                case 'psychological': marker.addTo(psychologicalGroup); break;
+                case 'support': marker.addTo(supportGroup); break;
+            }
+        });
+
+        // Управление видимостью слоев
+        document.getElementById('medical').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(medicalGroup);
+            } else {
+                map.removeLayer(medicalGroup);
+            }
+        });
+
+        document.getElementById('legal').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(legalGroup);
+            } else {
+                map.removeLayer(legalGroup);
+            }
+        });
+
+        document.getElementById('psychological').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(psychologicalGroup);
+            } else {
+                map.removeLayer(psychologicalGroup);
+            }
+        });
+
+        document.getElementById('support').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(supportGroup);
+            } else {
+                map.removeLayer(supportGroup);
+            }
+        });
+
+        // Функции для взаимодействия
+        function openProblemForm() {
+            var problem = prompt("Опишите случай дискриминации или нарушения прав (анонимно):");
+            if (problem) {
+                // В реальном приложении здесь будет отправка на сервер
+                alert("Спасибо! Ваше сообщение поможет улучшить ситуацию. Мы уже работаем над этой проблемой.");
+                console.log("Новое сообщение о проблеме:", problem);
+            }
+        }
+
+        function openFeedback() {
+            var feedback = prompt("Поделитесь вашим мнением или предложением по улучшению карты:");
+            if (feedback) {
+                alert("Благодарим за обратную связь!");
+                console.log("Отзыв пользователя:", feedback);
+            }
+        }
+
+        function rateOrganization(orgName) {
+            var rating = prompt(`Оцените работу "${orgName}" по шкале от 1 до 5:`);
+            if (rating >= 1 && rating <= 5) {
+                alert("Спасибо за вашу оценку!");
+                console.log(`Оценка для ${orgName}: ${rating} звезд`);
+            }
+        }
+
+        function openDirections(lat, lng) {
+            // Открывает маршрут в Google Maps
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+        }
+
+        // Добавляем поиск по адресу
+        var searchControl = L.control({position: 'topleft'});
+        searchControl.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'search-control');
+            div.innerHTML = `
+                <input type="text" id="address-search" placeholder="Поиск по адресу..." style="padding: 8px; width: 200px;">
+                <button onclick="searchAddress()" style="padding: 8px;">Найти</button>
+            `;
+            return div;
+        };
+        searchControl.addTo(map);
+
+        function searchAddress() {
+            var query = document.getElementById('address-search').value;
+            if (query) {
+                alert("Поиск адреса: " + query + "\n\nВ реальном приложении здесь будет подключение к геокодеру.");
+            }
+        }
+    </script>
+</body>
+</html>
